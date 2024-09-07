@@ -31,12 +31,6 @@ public class Bootstrap implements ApplicationRunner {
             log.info("Creating admin user");
             userService.bootstrap();
 
-            log.info("TimezoneData");
-
-            for (String it : TimeZone.getAvailableIDs()) {
-                System.out.println(it);
-            }
-
         } catch (Exception e) {
             log.error(e.getMessage());
         }
