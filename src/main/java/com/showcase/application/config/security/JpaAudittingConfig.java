@@ -11,6 +11,7 @@ import java.util.Optional;
 @EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 public class JpaAudittingConfig {
 
+    //Auditing LastModifiedDate and modifiedBy
     @Bean
     public AuditorAware<String> auditorProvider() {
         return () -> Optional.of(SecurityUtils.getUser());

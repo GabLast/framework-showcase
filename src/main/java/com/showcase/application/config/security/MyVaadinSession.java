@@ -7,14 +7,12 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.stereotype.Component;
 
-import java.util.Locale;
-
 @Data
 @NoArgsConstructor
 @ToString
 @Component
 @VaadinSessionScope
-public class VaadinSession {
+public class MyVaadinSession {
 
     public enum SessionVariables {
         USER("VAADINUSER");

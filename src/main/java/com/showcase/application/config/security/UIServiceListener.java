@@ -54,7 +54,7 @@ public class UIServiceListener implements VaadinServiceInitListener {
         }
 
         Locale locale = event.getUI().getLocale();
-        User user = (User) event.getUI().getSession().getAttribute(VaadinSession.SessionVariables.USER.toString());
+        User user = (User) event.getUI().getSession().getAttribute(MyVaadinSession.SessionVariables.USER.toString());
         if (locale == null || (user != null && StringUtils.isNotBlank(user.getLanguage()) && !user.getLanguage().equalsIgnoreCase(locale.getLanguage()))) {
             setLanguage(event.getUI());
         }
@@ -62,7 +62,7 @@ public class UIServiceListener implements VaadinServiceInitListener {
 
     private void setLanguage(UI ui) {
         Locale locale;
-        User user = (User) ui.getSession().getAttribute(VaadinSession.SessionVariables.USER.toString());
+        User user = (User) ui.getSession().getAttribute(MyVaadinSession.SessionVariables.USER.toString());
 
         if (user == null || StringUtils.isBlank(user.getLanguage())) {
             Optional<Cookie> localeCookie = Optional.empty();
