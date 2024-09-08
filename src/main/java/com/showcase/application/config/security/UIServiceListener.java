@@ -1,5 +1,6 @@
 package com.showcase.application.config.security;
 
+import com.showcase.application.models.configuration.UserSetting;
 import com.showcase.application.models.security.User;
 import com.showcase.application.utils.TranslationProvider;
 import com.showcase.application.views.general.HomeView;
@@ -26,7 +27,6 @@ public class UIServiceListener implements VaadinServiceInitListener {
 
     private final AuthenticatedUser authenticatedUser;
     private final AccessAnnotationChecker accessChecker;
-//    private final TranslationProvider translationProvider;
 
     @Override
     public void serviceInit(ServiceInitEvent event) {
@@ -39,6 +39,8 @@ public class UIServiceListener implements VaadinServiceInitListener {
     }
 
     private void beforeEnter(BeforeEnterEvent event) {
+        setSettings(event.getUI());
+
         if (authenticatedUser.isUserLoggedIn()) {
             if (event.getNavigationTarget() == LoginView.class) {
                 event.rerouteTo(HomeView.class);
@@ -89,6 +91,19 @@ public class UIServiceListener implements VaadinServiceInitListener {
         }
 
         ui.setLocale(locale);
+    }
+
+    private void setSettings(UI ui) {
+        UserSetting settings = (UserSetting) ui.getSession().getAttribute(MyVaadinSession.SessionVariables.USERSETTINGS.toString());
+        if (settings == null) {
+            settings = new UserSetting();
+            UserSetting finalSettings = new UserSetting();
+            ui.getPage().retrieveExtendedClientDetails(detail -> {
+                finalSettings.setTimeZoneString(detail.getTimeZoneId());
+            });
+            settings.setTimeZoneString(finalSettings.getTimeZoneString());
+        }
+        UI.getCurrent().getSession().setAttribute(MyVaadinSession.SessionVariables.USERSETTINGS.toString(), settings);
     }
 }
 

@@ -1,19 +1,22 @@
 package com.showcase.application.utils;
 
-import com.showcase.application.models.configurations.Document;
+import com.showcase.application.models.configuration.Document;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.grid.GridSortOrder;
+import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.server.StreamResource;
 import jakarta.persistence.Id;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Sort;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
+import java.util.*;
 
 public class Utilities {
 
@@ -115,5 +118,36 @@ public class Utilities {
         } else {
             return null;
         }
+    }
+
+    public static <T> String getIdName(Class<T> entityType) {
+        if (entityType == null) {
+            return null;
+        }
+
+        Field idField = getIdField(entityType);
+        return idField != null ? idField.getName() : null;
+    }
+
+    public static <T> Sort generarSortDeBusquedaTabla(Class<T> entityType, List<GridSortOrder<T>> sortOrder, Sort defaultSort, Map<String, String> mapKeysOrderObjects) {
+        Sort sort = defaultSort;
+        if (sortOrder != null && !sortOrder.isEmpty()) {
+            sort = Sort.by(new ArrayList<>(List.of(
+                    sortOrder.stream().map(it -> new Sort.Order(
+                            it.getDirection() == SortDirection.DESCENDING ? Sort.Direction.DESC : Sort.Direction.ASC,
+                            mapKeysOrderObjects != null && mapKeysOrderObjects.containsKey(it.getSorted().getKey()) ? mapKeysOrderObjects.get(it.getSorted().getKey()) : it.getSorted().getKey()
+                    )).toArray(Sort.Order[]::new)
+            )));
+        } else if (defaultSort == null) {
+            String idName = getIdName(entityType);
+            if (idName != null && !idName.isEmpty()) {
+                sort = Sort.by(Sort.Direction.ASC, idName);
+            }
+        }
+        return sort;
+    }
+
+    public static List<String> listBooleanI18() {
+        return List.of(UI.getCurrent().getTranslation("yes"), UI.getCurrent().getTranslation("no"));
     }
 }

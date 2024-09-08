@@ -10,11 +10,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
 @Slf4j
 public class TestTypeService extends BaseService<TestType, Long> {
+
     private final TestTypeRepository testTypeRepository;
 
     @Override
@@ -42,5 +45,9 @@ public class TestTypeService extends BaseService<TestType, Long> {
                 throw new MyException(MyException.SERVER_ERROR, e.getMessage());
             }
         }
+    }
+
+    public List<TestType> findAllByEnabled(boolean a) {
+        return testTypeRepository.findAllByEnabled(true);
     }
 }

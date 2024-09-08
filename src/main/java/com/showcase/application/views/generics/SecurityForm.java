@@ -51,7 +51,7 @@ public class SecurityForm extends VerticalLayout {
     }
 
     SecurityForm(Object object) {
-        super();
+        this();
         fillFields(object);
     }
 

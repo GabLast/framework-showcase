@@ -8,7 +8,8 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.commons.lang3.StringUtils;
+import org.hibernate.envers.AuditOverride;
+import org.hibernate.envers.Audited;
 
 import java.util.Locale;
 
@@ -16,9 +17,9 @@ import java.util.Locale;
 @Setter
 @NoArgsConstructor
 @Entity
+@Table(name = "user_class")
 //@Audited
 //@AuditOverride(forClass = Base.class)
-@Table(name = "user_class")
 public class User extends Base {
 
     @Column(unique = true)
@@ -29,7 +30,6 @@ public class User extends Base {
     private String mail;
 
     private String language;
-    private boolean lightMode = true;
 
     private boolean admin = false;
 

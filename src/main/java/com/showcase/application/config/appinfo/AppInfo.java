@@ -14,7 +14,8 @@ public class AppInfo {
     @Value("${app.version}")
     private String appVersion;
 
-    //    @Value("${spring.profiles.active}") -> has to start the app a spring profile or
+    //    @Value("${spring.profiles.active}") -> has to start the app with a spring profile.
+    //    Crashes if it's not provided or with the default one
     private String appProfile;
 
 }

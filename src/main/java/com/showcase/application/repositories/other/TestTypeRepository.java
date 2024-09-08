@@ -12,4 +12,5 @@ public interface TestTypeRepository extends JpaRepository<TestType, Long> {
     TestType findByCode(Integer code);
     TestType findByCodeAndEnabled(Integer code, boolean enabled);
     List<TestType> findAllByEnabled(boolean a);
+
 }

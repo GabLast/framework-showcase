@@ -7,7 +7,6 @@ import com.showcase.application.utils.MyException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,11 +28,14 @@ public class UserService extends BaseService<User, Long> {
 
     public void bootstrap() {
         try {
-            User user = new User();
-            user.setUsername("admin");
-            user.setPassword(passwordEncoder.encode("123"));
-            user.setLanguage("en");
-            user.setAdmin(true);
+            User user = findByUsername("admin");
+            if (user == null) {
+                user = new User();
+                user.setUsername("admin");
+                user.setPassword(passwordEncoder.encode("123"));
+                user.setLanguage("en");
+                user.setAdmin(true);
+            }
 
             saveAndFlush(user);
         } catch (Exception e) {

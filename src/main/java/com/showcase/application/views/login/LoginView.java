@@ -3,7 +3,6 @@ package com.showcase.application.views.login;
 import com.showcase.application.config.appinfo.AppInfo;
 import com.showcase.application.utils.GlobalConstants;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.login.LoginI18n;

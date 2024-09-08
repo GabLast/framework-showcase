@@ -19,7 +19,7 @@ public abstract class CustomFormFactory<T> extends DefaultCrudFormFactory<T> {
         super(domainType);
     }
 
-    public abstract Component modificarFormulario(CrudOperation operation, boolean readOnly, FormLayout campos, Component footer, VerticalLayout mainLayout);
+    public abstract Component applyChanges(CrudOperation operation, boolean readOnly, FormLayout campos, Component footer, VerticalLayout mainLayout);
 
     @Override
     public Component buildNewForm(CrudOperation operation, T domainObject, boolean readOnly, ComponentEventListener<ClickEvent<Button>> cancelButtonClickListener, ComponentEventListener<ClickEvent<Button>> operationButtonClickListener) {
@@ -35,7 +35,7 @@ public abstract class CustomFormFactory<T> extends DefaultCrudFormFactory<T> {
         Component footerLayout = this.buildFooter(operation, domainObject, cancelButtonClickListener, operationButtonClickListener);
 
         //Security form
-        SecurityForm formBase = new SecurityForm(domainObject);
+        SecurityForm securityForm = new SecurityForm(domainObject);
 
         Div contentTab = new Div();
         contentTab.setWidthFull();
@@ -56,7 +56,7 @@ public abstract class CustomFormFactory<T> extends DefaultCrudFormFactory<T> {
             if (event.getSelectedTab().equals(tabGeneral)) {
                 contentTab.add(formLayout);
             } else if (event.getSelectedTab().equals(tabSecurity)) {
-                contentTab.add(formBase);
+                contentTab.add(securityForm);
             }
         });
 
@@ -68,6 +68,6 @@ public abstract class CustomFormFactory<T> extends DefaultCrudFormFactory<T> {
         mainLayout.setSpacing(true);
 
         this.configureForm(formLayout, fields);
-        return modificarFormulario(operation, readOnly, formLayout, footerLayout, mainLayout);
+        return applyChanges(operation, readOnly, formLayout, footerLayout, mainLayout);
     }
 }

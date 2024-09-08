@@ -1,5 +1,6 @@
 package com.showcase.application.config.security;
 
+import com.showcase.application.models.configuration.UserSetting;
 import com.showcase.application.models.security.User;
 import com.vaadin.flow.spring.annotation.VaadinSessionScope;
 import lombok.Data;
@@ -15,7 +16,8 @@ import org.springframework.stereotype.Component;
 public class MyVaadinSession {
 
     public enum SessionVariables {
-        USER("VAADINUSER");
+        USER("VAADINUSER"),
+        USERSETTINGS("USERSETTINGS");
 
         private final String name;
 
@@ -23,11 +25,11 @@ public class MyVaadinSession {
             this.name = name;
         }
 
-        @Override
         public String toString() {
             return name;
         }
     }
 
     private User user;
+    private UserSetting userSetting;
 }

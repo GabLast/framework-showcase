@@ -1,6 +1,12 @@
 package com.showcase.application.views;
 
+import com.showcase.application.config.appinfo.AppInfo;
+import com.showcase.application.views.general.AboutView;
+import com.showcase.application.views.general.HomeView;
+import com.showcase.application.views.generics.navigation.MySideNavItem;
+import com.showcase.application.views.module.TabTestData;
 import com.showcase.application.views.myview.MyViewView;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.html.Footer;
@@ -9,7 +15,6 @@ import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.sidenav.SideNav;
-import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.theme.lumo.Lumo;
 import com.vaadin.flow.theme.lumo.LumoUtility;
@@ -22,7 +27,10 @@ public class MainLayout extends AppLayout {
 
     private H1 viewTitle;
 
-    public MainLayout() {
+    private final AppInfo appInfo;
+
+    public MainLayout(AppInfo appInfo) {
+        this.appInfo = appInfo;
         setPrimarySection(Section.DRAWER);
         addDrawerContent();
         addHeaderContent();
@@ -39,9 +47,12 @@ public class MainLayout extends AppLayout {
     }
 
     private void addDrawerContent() {
-        Span appName = new Span("framework-showcase");
+        Span appName = new Span("Framework Showcase");
         appName.addClassNames(LumoUtility.FontWeight.SEMIBOLD, LumoUtility.FontSize.LARGE);
         Header header = new Header(appName);
+        header.addClickListener(event -> {
+            UI.getCurrent().navigate(HomeView.class);
+        });
 
         Scroller scroller = new Scroller(createNavigation());
 
@@ -50,8 +61,12 @@ public class MainLayout extends AppLayout {
 
     private SideNav createNavigation() {
         SideNav nav = new SideNav();
-
-        nav.addItem(new SideNavItem("My View", MyViewView.class, LineAwesomeIcon.PENCIL_RULER_SOLID.create()));
+        nav.setLabel("Label");
+        nav.setCollapsible(true);
+        nav.setVisible(true);
+        nav.addItem(new MySideNavItem("My View", MyViewView.class, LineAwesomeIcon.PENCIL_RULER_SOLID.create(), true));
+        nav.addItem(new MySideNavItem(UI.getCurrent().getTranslation("title.testdata"), TabTestData.class, LineAwesomeIcon.BOOK_SOLID.create(), true));
+        nav.addItem(new MySideNavItem(UI.getCurrent().getTranslation("title.about"), AboutView.class, LineAwesomeIcon.ADDRESS_CARD.create(), true));
 
         return nav;
     }

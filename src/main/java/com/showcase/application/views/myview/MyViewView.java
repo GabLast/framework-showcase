@@ -8,8 +8,8 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 
 @PageTitle("My View")
-@Route(value = "", layout = MainLayout.class)
-@RouteAlias(value = "", layout = MainLayout.class)
+@Route(value = "view", layout = MainLayout.class)
+@RouteAlias(value = "view", layout = MainLayout.class)
 public class MyViewView extends Composite<VerticalLayout> {
 
     public MyViewView() {

@@ -1,5 +1,7 @@
 package com.showcase.application.views.generics;
 
+import com.showcase.application.config.security.MyVaadinSession;
+import com.showcase.application.models.configuration.UserSetting;
 import com.showcase.application.utils.Utilities;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
@@ -23,6 +25,7 @@ import com.vaadin.flow.component.textfield.BigDecimalField;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.textfield.TextFieldVariant;
+import com.vaadin.flow.server.VaadinSession;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.ByteArrayOutputStream;
@@ -43,17 +46,42 @@ public class FilterBoxReports extends Accordion {
     private final Runnable refreshCall;
     private final Runnable downloadCall;
     private final Map<String, Component> filterMap;
+    private final DatePicker.DatePickerI18n datePickerFormat;
+    protected final UserSetting settings;
 
     public FilterBoxReports(Runnable refreshCall, Runnable downloadCall) {
         this.refreshCall = refreshCall;
         this.downloadCall = downloadCall;
         this.filterMap = new HashMap<>();
+        this.settings = (UserSetting) VaadinSession.getCurrent().getAttribute(MyVaadinSession.SessionVariables.USERSETTINGS.toString());
+        this.datePickerFormat = new DatePicker.DatePickerI18n();
+        configDateFormats(this.datePickerFormat);
 
         setId("FilterBoxReports");
 
         add(UI.getCurrent().getTranslation("filter.title"), construirVentana()).addThemeVariants(DetailsVariant.FILLED, DetailsVariant.REVERSE, DetailsVariant.SMALL);
 
         setWidthFull();
+    }
+
+    private void configDateFormats(DatePicker.DatePickerI18n datePickerI18n) {
+        datePickerI18n.setDateFormat(settings.getDateFormat());
+        datePickerI18n.setToday(UI.getCurrent().getTranslation("today"));
+        datePickerI18n.setMonthNames(List.of(
+                UI.getCurrent().getTranslation("january"),
+                UI.getCurrent().getTranslation("february"),
+                UI.getCurrent().getTranslation("march"),
+                UI.getCurrent().getTranslation("april"),
+                UI.getCurrent().getTranslation("may"),
+                UI.getCurrent().getTranslation("june"),
+                UI.getCurrent().getTranslation("july"),
+                UI.getCurrent().getTranslation("august"),
+                UI.getCurrent().getTranslation("september"),
+                UI.getCurrent().getTranslation("october"),
+                UI.getCurrent().getTranslation("november"),
+                UI.getCurrent().getTranslation("december")
+        ));
+        datePickerI18n.setCancel(UI.getCurrent().getTranslation("cancel"));
     }
 
     private Component construirVentana() {
@@ -183,7 +211,7 @@ public class FilterBoxReports extends Accordion {
             dpStart.setLocale(UI.getCurrent().getLocale());
             dpStart.addValueChangeListener(datePickerLocalDateComponentValueChangeEvent -> refreshData());
 
-            DatePicker dpEnd = new DatePicker(UI.getCurrent().getTranslation("filtrobuscador.component.hasta"));
+            DatePicker dpEnd = new DatePicker(UI.getCurrent().getTranslation("to"));
             dpEnd.setWidthFull();
             dpEnd.setId(id + "end");
             dpEnd.setRequired(isRequired);
@@ -213,8 +241,9 @@ public class FilterBoxReports extends Accordion {
             dpStart.getElement().setAttribute("theme", "small");
             dpStart.setLocale(UI.getCurrent().getLocale());
             dpStart.addValueChangeListener(datePickerLocalDateComponentValueChangeEvent -> refreshData());
+            dpStart.setDatePickerI18n(datePickerFormat);
 
-            DateTimePicker dpEnd = new DateTimePicker("Hasta");
+            DateTimePicker dpEnd = new DateTimePicker(UI.getCurrent().getTranslation("to"));
             dpEnd.setWidthFull();
             dpEnd.setId(id + "end");
             dpEnd.setValue(null);
@@ -222,6 +251,7 @@ public class FilterBoxReports extends Accordion {
             dpEnd.getElement().setAttribute("theme", "small");
             dpEnd.setLocale(UI.getCurrent().getLocale());
             dpEnd.addValueChangeListener(datePickerLocalDateComponentValueChangeEvent -> refreshData());
+            dpEnd.setDatePickerI18n(datePickerFormat);
 
             FormLayout formDates = new FormLayout();
             formDates.setSizeFull();
