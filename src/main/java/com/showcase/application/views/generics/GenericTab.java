@@ -4,6 +4,7 @@ import com.showcase.application.config.security.MyVaadinSession;
 import com.showcase.application.models.configuration.UserSetting;
 import com.showcase.application.models.security.User;
 import com.showcase.application.utils.MyException;
+import com.showcase.application.utils.Utilities;
 import com.showcase.application.views.generics.notifications.ErrorNotification;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
@@ -19,6 +20,8 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.menubar.MenuBarVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.AfterNavigationEvent;
+import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.server.VaadinSession;
 import org.apache.commons.lang3.StringUtils;
 import org.vaadin.crudui.crud.CrudOperation;
@@ -29,7 +32,7 @@ import org.vaadin.crudui.layout.impl.WindowBasedCrudLayout;
 
 import java.util.Optional;
 
-public abstract class GenericTab<T> extends Div {
+public abstract class GenericTab<T> extends Div implements AfterNavigationObserver {
 
     protected final User user;
     protected final UserSetting settings;
@@ -252,4 +255,9 @@ public abstract class GenericTab<T> extends Div {
     protected abstract void modifyBtnState();
 
     protected abstract void delete();
+
+    @Override
+    public void afterNavigation(AfterNavigationEvent event) {
+        modifyBtnState();
+    }
 }

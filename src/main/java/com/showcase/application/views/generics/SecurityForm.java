@@ -1,18 +1,27 @@
 package com.showcase.application.views.generics;
 
+import com.showcase.application.config.security.MyVaadinSession;
+import com.showcase.application.models.configuration.UserSetting;
+import com.showcase.application.models.security.User;
 import com.showcase.application.utils.Utilities;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.server.VaadinSession;
+
+import java.util.Date;
 
 public class SecurityForm extends VerticalLayout {
 
     private TextField tfId, tfCreatedBy, tfModifiedBy, tfCreationDate, tfModifiedDate, tfVersion;
     private Checkbox checkEnabled;
+    protected UserSetting userSetting;
 
-    SecurityForm() {
+    public SecurityForm() {
+        this.userSetting = (UserSetting) VaadinSession.getCurrent().getAttribute(MyVaadinSession.SessionVariables.USERSETTINGS.toString());
+
         tfId = new TextField(UI.getCurrent().getTranslation("databaseID"));
         tfId.setReadOnly(true);
 
@@ -50,84 +59,88 @@ public class SecurityForm extends VerticalLayout {
         addAndExpand(formLayout);
     }
 
-    SecurityForm(Object object) {
+    public SecurityForm(Object object) {
         this();
         fillFields(object);
     }
 
-    private void fillFields(Object object) {
+    public void fillFields(Object object) {
         if (object == null) {
             return;
         }
 
         try {
-            fillId(Utilities.getFieldValue(object, "id").toString());
+            setFieldId(Utilities.getFieldValue(object, "id").toString());
         } catch (Exception e) {
-            fillId("-1");
+            setFieldId("-1");
         }
 
         try {
-            fillCreatedBy(Utilities.getFieldValue(object, "createdBy").toString());
+            setCreatedBy(Utilities.getFieldValue(object, "createdBy").toString());
         } catch (Exception e) {
-            fillCreatedBy("-1");
+            setCreatedBy("-1");
         }
 
         try {
-            fillModifiedBy(Utilities.getFieldValue(object, "modifiedBy").toString());
+            setModifiedBy(Utilities.getFieldValue(object, "modifiedBy").toString());
         } catch (Exception e) {
-            fillModifiedBy("-1");
+            setModifiedBy("-1");
         }
 
         try {
-            fillCreationDate(Utilities.getFieldValue(object, "dateCreated").toString());
+            setCreationDate((Date) Utilities.getFieldValue(object, "dateCreated"));
         } catch (Exception e) {
-            fillCreationDate("-1");
+            setCreationDate(new Date());
         }
 
         try {
-            fillLastModificationDate(Utilities.getFieldValue(object, "lastUpdated").toString());
+            setLastModificationDate((Date) Utilities.getFieldValue(object, "lastUpdated"));
         } catch (Exception e) {
-            fillLastModificationDate("-1");
+            setLastModificationDate(new Date());
         }
 
         try {
-            fillEnabled((Boolean) Utilities.getFieldValue(object, "enabled"));
+            setEnabledField((Boolean) Utilities.getFieldValue(object, "enabled"));
         } catch (Exception e) {
-            fillEnabled(false);
+            setEnabledField(false);
         }
 
         try {
-            fillVersion(Utilities.getFieldValue(object, "version").toString());
+            setVersion(Utilities.getFieldValue(object, "version").toString());
         } catch (Exception e) {
-            fillVersion("-1");
+            setVersion("-1");
         }
     }
 
-    private void fillId(String value) {
+    private void setFieldId(String value) {
         tfId.setValue(value);
     }
 
-    private void fillCreatedBy(String value) {
+    private void setCreatedBy(String value) {
         tfCreatedBy.setValue(value);
     }
 
-    private void fillModifiedBy(String value) {
+    private void setModifiedBy(String value) {
         tfModifiedBy.setValue(value);
     }
 
-    private void fillCreationDate(String value) {
-        tfCreationDate.setValue(value);
+    private void setCreationDate(Date value) {
+        tfCreationDate.setValue(Utilities.formatDate(value, userSetting.getDateTimeFormat(), userSetting.getTimeZoneString()));
     }
 
-    private void fillLastModificationDate(String value) {
-        tfModifiedDate.setValue(value);
+    private void setLastModificationDate(Date value) {
+        tfModifiedDate.setValue(Utilities.formatDate(value, userSetting.getDateTimeFormat(), userSetting.getTimeZoneString()));
     }
 
-    private void fillEnabled(boolean value) {
+    private void setEnabledField(boolean value) {
         checkEnabled.setValue(value);
     }
 
-    private void fillVersion(String value) {
+    private void setVersion(String value) {
         tfVersion.setValue(value);
+    }
+
+    public String getIdFieldValue() {
+        return tfId.getValue();
     }
 }

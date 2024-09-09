@@ -5,6 +5,7 @@ import com.showcase.application.config.security.MyVaadinSession;
 import com.showcase.application.models.configuration.UserSetting;
 import com.showcase.application.models.security.User;
 import com.showcase.application.services.configuration.UserSettingService;
+import com.showcase.application.services.security.CustomUserDetailsService;
 import com.showcase.application.utils.GlobalConstants;
 import com.showcase.application.views.MainLayout;
 import com.vaadin.flow.component.UI;
@@ -26,11 +27,13 @@ public class HomeView extends VerticalLayout implements BeforeEnterListener, Has
     private final AuthenticatedUser authenticatedUser;
 
     private final UserSettingService userSettingService;
+    private final CustomUserDetailsService userDetailsService;
     private String timeZone;
 
-    public HomeView(AuthenticatedUser authenticatedUser, UserSettingService userSettingService) {
+    public HomeView(AuthenticatedUser authenticatedUser, UserSettingService userSettingService, CustomUserDetailsService userDetailsService) {
         this.authenticatedUser = authenticatedUser;
         this.userSettingService = userSettingService;
+        this.userDetailsService = userDetailsService;
 
         //VaadinSession variables init
         setSession();
@@ -63,6 +66,8 @@ public class HomeView extends VerticalLayout implements BeforeEnterListener, Has
         }
         userSetting = userSettingService.save(userSetting);
         UI.getCurrent().getSession().setAttribute(MyVaadinSession.SessionVariables.USERSETTINGS.toString(), userSetting);
+
+        userDetailsService.grantAuthorities(user);
     }
 
     @Override

@@ -1,7 +1,7 @@
-package com.showcase.application.services.other;
+package com.showcase.application.services.module;
 
-import com.showcase.application.models.other.TestType;
-import com.showcase.application.repositories.other.TestTypeRepository;
+import com.showcase.application.models.module.TestType;
+import com.showcase.application.repositories.module.TestTypeRepository;
 import com.showcase.application.services.BaseService;
 import com.showcase.application.utils.MyException;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +37,7 @@ public class TestTypeService extends BaseService<TestType, Long> {
                     saveAndFlush(tipoDeal);
                 }
             }
+            log.info("Created TestType Pre-defined values");
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             if (e instanceof MyException) {

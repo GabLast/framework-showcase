@@ -7,7 +7,7 @@ public class ConfirmWindow extends ConfirmDialog {
 
     public ConfirmWindow(String message, Runnable callbackYes) {
         this(
-                UI.getCurrent().getTranslation("action.confirm"),
+                UI.getCurrent().getTranslation("action.confirm.question"),
                 message,
                 callbackYes);
     }

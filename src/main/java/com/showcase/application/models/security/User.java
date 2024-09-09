@@ -8,8 +8,6 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.envers.AuditOverride;
-import org.hibernate.envers.Audited;
 
 import java.util.Locale;
 

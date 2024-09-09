@@ -17,20 +17,20 @@ public final class SecurityUtils {
 
     public static boolean isAccessGranted(String permit) {
         // lookup needed role in user roles
-        final List<String> allowedPrivilegios = Collections.singletonList("ROLE_" + permit);
+        final List<String> list = Collections.singletonList("ROLE_" + permit);
         final Authentication userAuthentication = SecurityContextHolder.getContext().getAuthentication();
 
-        //validando.
-        return userAuthentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
-                .anyMatch(allowedPrivilegios::contains);
+        return userAuthentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch(list::contains);
     }
 
     public static void updateGrantedAuthorities(Set<Permit> permits) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         Set<GrantedAuthority> updatedAuthorities = new HashSet<>();
-        for (Permit privilegio : permits) {
-            updatedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + privilegio.getName()));
+        for (Permit it : permits) {
+            updatedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + it.getCode()));
         }
 
         Authentication newAuth = new UsernamePasswordAuthenticationToken(auth.getPrincipal(), auth.getCredentials(), updatedAuthorities);

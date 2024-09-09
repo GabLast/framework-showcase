@@ -1,9 +1,9 @@
 package com.showcase.application.views.module;
 
-import com.showcase.application.models.other.TestData;
-import com.showcase.application.models.other.TestType;
-import com.showcase.application.services.other.TestDataService;
-import com.showcase.application.services.other.TestTypeService;
+import com.showcase.application.models.module.TestData;
+import com.showcase.application.models.module.TestType;
+import com.showcase.application.services.module.TestDataService;
+import com.showcase.application.services.module.TestTypeService;
 import com.showcase.application.utils.MyException;
 import com.showcase.application.utils.Utilities;
 import com.showcase.application.views.MainLayout;
@@ -23,7 +23,6 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.select.Select;
-import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.router.Route;
@@ -37,7 +36,6 @@ import org.vaadin.crudui.crud.impl.GridCrud;
 import org.vaadin.crudui.form.impl.form.factory.DefaultCrudFormFactory;
 import org.vaadin.crudui.layout.impl.WindowBasedCrudLayout;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Route(value = "testdata", layout = MainLayout.class)
@@ -54,8 +52,8 @@ public class TabTestData extends GenericTab<TestData> {
         super(TestData.class);
         this.testDataService = testDataService;
         this.testTypeService = testTypeService;
+
         prepareComponets();
-        modifyBtnState();
     }
 
     @Override
@@ -82,8 +80,7 @@ public class TabTestData extends GenericTab<TestData> {
         filterBox.addFilter(String.class, "word", UI.getCurrent().getTranslation("tab.testdata.word"), null, null, false);
         filterBox.addFilter(TestType.class, "testType", UI.getCurrent().getTranslation("tab.testdata.testtype"), testTypeService.findAllByEnabled(true), null, false);
         filterBox.addFilter(String.class, "description", UI.getCurrent().getTranslation("tab.testdata.description"), null, null, false);
-
-        filterBox.addFilter(Date.class, "date", UI.getCurrent().getTranslation("tab.testdata.lastmodified"), null, null, false);
+        filterBox.addFilter(Date.class, "date", UI.getCurrent().getTranslation("tab.testdata.date"), null, null, false);
     }
 
     @Override
@@ -113,7 +110,8 @@ public class TabTestData extends GenericTab<TestData> {
         btnBorrar.addThemeVariants(ButtonVariant.LUMO_ERROR);
         btnBorrar.setSizeFull();
 
-        miCreate = toolBar.addItem(btnNuevo, e -> UI.getCurrent().navigate(FormTestData.class));
+        miCreate = toolBar.addItem(
+                btnNuevo, e -> UI.getCurrent().navigate(FormTestData.class));
 
         miEdit = toolBar.addItem(btnEditar, e -> {
             RouteParameters parameters = new RouteParameters(
@@ -127,7 +125,7 @@ public class TabTestData extends GenericTab<TestData> {
         miView = toolBar.addItem(btnVisualizar, e -> {
             RouteParameters parameters = new RouteParameters(
                     new RouteParam("id", object.getId().toString()),
-                    new RouteParam("visualizar", "1")
+                    new RouteParam("view", "1")
             );
 
             UI.getCurrent().navigate(FormTestData.class, parameters);
@@ -148,7 +146,7 @@ public class TabTestData extends GenericTab<TestData> {
         grid.removeAllColumns();
         grid.addColumn(TestData::getWord).setKey("word").setHeader(UI.getCurrent().getTranslation("tab.testdata.word")).setSortable(true).setResizable(true).setFlexGrow(1);
         grid.addColumn(TestData::getTestType).setKey("testType").setHeader(UI.getCurrent().getTranslation("tab.testdata.testtype")).setSortable(true).setResizable(true).setFlexGrow(1);
-        grid.addColumn(data -> Utilities.formatDate(data.getLastUpdated(), settings.getDateTimeFormat(), settings.getTimeZoneString())).setKey("lastUpdated").setHeader(UI.getCurrent().getTranslation("tab.testdata.lastmodified")).setSortable(true).setResizable(true).setFlexGrow(1);
+        grid.addColumn(data -> Utilities.formatDate(data.getDate(), settings.getDateTimeFormat(), settings.getTimeZoneString())).setKey("date").setHeader(UI.getCurrent().getTranslation("tab.testdata.date")).setSortable(true).setResizable(true).setFlexGrow(1);
         grid.addColumn(TestData::getDescription).setKey("description").setHeader(UI.getCurrent().getTranslation("tab.testdata.description")).setSortable(true).setResizable(true).setFlexGrow(1);
     }
 
@@ -234,7 +232,7 @@ public class TabTestData extends GenericTab<TestData> {
 //            select.setRequiredIndicatorVisible(true);
 //            select.setErrorMessage(UI.getCurrent().getTranslation("form.error"));
 //            select.setItems(testTypeService.findAllByEnabled(true));
-//            select.setItemLabelGenerator(item -> UI.getCurrent().getTranslation(TestType.toStringI18nKey(item)));
+//            select.setItemLabelGenerator(TestType::toStringI18nKey);
 //            return select;
 //        });
 //

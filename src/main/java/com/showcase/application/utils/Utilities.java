@@ -7,16 +7,22 @@ import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.server.StreamResource;
 import jakarta.persistence.Id;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.jdbc.ScriptRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.PathResource;
+import org.springframework.core.io.support.EncodedResource;
 import org.springframework.data.domain.Sort;
+import org.springframework.jdbc.datasource.init.ScriptUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.sql.Connection;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Utilities {
 
@@ -75,7 +81,6 @@ public class Utilities {
     }
 
     public static String formatDate(Date date, String format, String timeZone) {
-        //Si la fecha es nula devuelvo vacio.
         if (date == null) {
             return "";
         }
@@ -85,7 +90,6 @@ public class Utilities {
             format = "dd/MM/yyyy hh:mm a";
         }
 
-        //Formateador de fecha.
         SimpleDateFormat dateFormat = new SimpleDateFormat(format);
 
         if (StringUtils.isNotBlank(timeZone)) {
@@ -149,5 +153,57 @@ public class Utilities {
 
     public static List<String> listBooleanI18() {
         return List.of(UI.getCurrent().getTranslation("yes"), UI.getCurrent().getTranslation("no"));
+    }
+
+    public static List<String> listMonthsI18() {
+        return List.of(
+                UI.getCurrent().getTranslation("january"),
+                UI.getCurrent().getTranslation("february"),
+                UI.getCurrent().getTranslation("march"),
+                UI.getCurrent().getTranslation("april"),
+                UI.getCurrent().getTranslation("may"),
+                UI.getCurrent().getTranslation("june"),
+                UI.getCurrent().getTranslation("july"),
+                UI.getCurrent().getTranslation("august"),
+                UI.getCurrent().getTranslation("september"),
+                UI.getCurrent().getTranslation("october"),
+                UI.getCurrent().getTranslation("november"),
+                UI.getCurrent().getTranslation("december")
+        );
+    }
+
+    public static String capitalizeEveryLetterOfString(String input) {
+        input = input.toLowerCase();
+        return Arrays.stream(input.split("\\s+"))
+                .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
+                .collect(Collectors.joining(" "));
+    }
+
+    //Just for this project:
+//    public static void runScript(String path, Connection connection) {
+//        boolean continueOrError = false;
+//        boolean ignoreFailedDrops = false;
+//        String commentPrefix = "--";
+//        String separator = ";";
+//        String blockCommentStartDelimiter = "/*";
+//        String blockCommentEndDelimiter = "*/";
+//
+//        ScriptUtils.executeSqlScript(
+//                connection,
+//                new EncodedResource(new PathResource(path)),
+//                continueOrError,
+//                ignoreFailedDrops,
+//                commentPrefix,
+//                separator,
+//                blockCommentStartDelimiter,
+//                blockCommentEndDelimiter
+//        );
+//    }
+
+    public static void runScript(String path, Connection connection) throws Exception {
+        ScriptRunner scriptRunner = new ScriptRunner(connection);
+        scriptRunner.setSendFullScript(false);
+        scriptRunner.setStopOnError(true);
+        scriptRunner.runScript(new java.io.FileReader(path));
     }
 }

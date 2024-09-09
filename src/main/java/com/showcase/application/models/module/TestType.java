@@ -1,4 +1,4 @@
-package com.showcase.application.models.other;
+package com.showcase.application.models.module;
 
 import com.showcase.application.models.Base;
 import jakarta.persistence.Entity;
@@ -6,8 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.envers.AuditOverride;
-import org.hibernate.envers.Audited;
 
 
 @Getter

@@ -2,6 +2,7 @@ package com.showcase.application.config.security;
 
 import com.showcase.application.models.configuration.UserSetting;
 import com.showcase.application.models.security.User;
+import com.showcase.application.services.security.CustomUserDetailsService;
 import com.showcase.application.utils.TranslationProvider;
 import com.showcase.application.views.general.HomeView;
 import com.showcase.application.views.login.LoginView;
@@ -27,13 +28,14 @@ public class UIServiceListener implements VaadinServiceInitListener {
 
     private final AuthenticatedUser authenticatedUser;
     private final AccessAnnotationChecker accessChecker;
+    private final CustomUserDetailsService userDetailsService;
 
     @Override
     public void serviceInit(ServiceInitEvent event) {
         event.getSource().addUIInitListener(uiEvent -> {
             final UI ui = uiEvent.getUI();
 
-            //Agregamos before listener para seguridad
+            //add beforeEnter to validate settings and other configurations
             ui.addBeforeEnterListener(this::beforeEnter);
         });
     }
@@ -41,10 +43,17 @@ public class UIServiceListener implements VaadinServiceInitListener {
     private void beforeEnter(BeforeEnterEvent event) {
         setSettings(event.getUI());
 
+        User user = (User) event.getUI().getSession().getAttribute(MyVaadinSession.SessionVariables.USER.toString());
+        Locale locale = event.getUI().getLocale();
+        if (locale == null || (user != null && StringUtils.isNotBlank(user.getLanguage()) && !user.getLanguage().equalsIgnoreCase(locale.getLanguage()))) {
+            setLanguage(event.getUI());
+        }
+
         if (authenticatedUser.isUserLoggedIn()) {
             if (event.getNavigationTarget() == LoginView.class) {
                 event.rerouteTo(HomeView.class);
             }
+            setPermits(user);
         }
 
         if (!accessChecker.hasAccess(event.getNavigationTarget())) {
@@ -53,12 +62,6 @@ public class UIServiceListener implements VaadinServiceInitListener {
             } else {
                 event.rerouteTo(LoginView.class);
             }
-        }
-
-        Locale locale = event.getUI().getLocale();
-        User user = (User) event.getUI().getSession().getAttribute(MyVaadinSession.SessionVariables.USER.toString());
-        if (locale == null || (user != null && StringUtils.isNotBlank(user.getLanguage()) && !user.getLanguage().equalsIgnoreCase(locale.getLanguage()))) {
-            setLanguage(event.getUI());
         }
     }
 
@@ -104,6 +107,10 @@ public class UIServiceListener implements VaadinServiceInitListener {
             settings.setTimeZoneString(finalSettings.getTimeZoneString());
         }
         UI.getCurrent().getSession().setAttribute(MyVaadinSession.SessionVariables.USERSETTINGS.toString(), settings);
+    }
+
+    private void setPermits(User user) {
+        userDetailsService.grantAuthorities(user);
     }
 }
 

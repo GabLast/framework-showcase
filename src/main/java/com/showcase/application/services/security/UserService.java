@@ -36,8 +36,9 @@ public class UserService extends BaseService<User, Long> {
                 user.setLanguage("en");
                 user.setAdmin(true);
             }
-
             saveAndFlush(user);
+
+            log.info("Created admin user");
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             if (e instanceof MyException) {

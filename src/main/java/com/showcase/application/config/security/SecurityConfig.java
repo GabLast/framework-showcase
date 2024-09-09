@@ -3,7 +3,6 @@ package com.showcase.application.config.security;
 import com.showcase.application.views.login.LoginView;
 import com.vaadin.flow.spring.security.VaadinWebSecurity;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.AuthorizeHttpRequestsDsl;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;

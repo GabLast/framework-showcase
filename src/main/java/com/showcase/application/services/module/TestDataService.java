@@ -1,13 +1,12 @@
-package com.showcase.application.services.other;
+package com.showcase.application.services.module;
 
-import com.showcase.application.models.other.TestData;
-import com.showcase.application.models.other.TestType;
-import com.showcase.application.repositories.other.TestDataRepository;
+import com.showcase.application.models.module.TestData;
+import com.showcase.application.models.module.TestType;
+import com.showcase.application.repositories.module.TestDataRepository;
 import com.showcase.application.services.BaseService;
 import com.showcase.application.utils.GlobalConstants;
 import com.showcase.application.utils.MyException;
 import com.showcase.application.utils.OffsetBasedPageRequest;
-import com.showcase.application.utils.Utilities;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -19,6 +18,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.TimeZone;
 
 @Service
@@ -34,6 +34,11 @@ public class TestDataService extends BaseService<TestData, Long> {
     }
 
     @Transactional(readOnly = true)
+    public Optional<TestData> getTestDataById(Long id) {
+        return testDataRepository.getTestDataById(id);
+    }
+
+    @Transactional(readOnly = true)
     public List<TestData> findAllFilter(boolean enabled, String timeZoneId,
                                         String word, String description, TestType testType, LocalDate dateStart, LocalDate dateEnd,
                                         Integer limit, Integer offset, Sort sort) {
@@ -43,8 +48,6 @@ public class TestDataService extends BaseService<TestData, Long> {
             if (timeZone == null) {
                 timeZone = TimeZone.getTimeZone(GlobalConstants.DEFAULT_TIMEZONE);
             }
-
-            System.out.println("date: " + Utilities.formatDate(Date.from(dateStart.atStartOfDay().atZone(timeZone.toZoneId()).toInstant()), "", timeZoneId));
 
             return testDataRepository.findAllFilter(
                     enabled,
