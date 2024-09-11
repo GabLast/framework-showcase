@@ -10,10 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.PathResource;
-import org.springframework.core.io.support.EncodedResource;
 import org.springframework.data.domain.Sort;
-import org.springframework.jdbc.datasource.init.ScriptUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -178,27 +175,6 @@ public class Utilities {
                 .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
                 .collect(Collectors.joining(" "));
     }
-
-    //Just for this project:
-//    public static void runScript(String path, Connection connection) {
-//        boolean continueOrError = false;
-//        boolean ignoreFailedDrops = false;
-//        String commentPrefix = "--";
-//        String separator = ";";
-//        String blockCommentStartDelimiter = "/*";
-//        String blockCommentEndDelimiter = "*/";
-//
-//        ScriptUtils.executeSqlScript(
-//                connection,
-//                new EncodedResource(new PathResource(path)),
-//                continueOrError,
-//                ignoreFailedDrops,
-//                commentPrefix,
-//                separator,
-//                blockCommentStartDelimiter,
-//                blockCommentEndDelimiter
-//        );
-//    }
 
     public static void runScript(String path, Connection connection) throws Exception {
         ScriptRunner scriptRunner = new ScriptRunner(connection);

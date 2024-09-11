@@ -16,6 +16,16 @@ public class TranslationProvider implements I18NProvider {
 
     private Map<String, ResourceBundle> locales;
 
+    public String localeToLanguageName(Locale locale) {
+        if(locale == ENGLISH) {
+            return "english";
+        } else if(locale == ESPANOL) {
+            return "spanish";
+        } else {
+            return "empty";
+        }
+    }
+
     @Override
     public List<Locale> getProvidedLocales() {
         return List.of(ENGLISH, ESPANOL);

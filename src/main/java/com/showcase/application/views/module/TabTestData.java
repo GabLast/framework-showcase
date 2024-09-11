@@ -1,7 +1,9 @@
 package com.showcase.application.views.module;
 
+import com.showcase.application.config.security.SecurityUtils;
 import com.showcase.application.models.module.TestData;
 import com.showcase.application.models.module.TestType;
+import com.showcase.application.models.security.Permit;
 import com.showcase.application.services.module.TestDataService;
 import com.showcase.application.services.module.TestTypeService;
 import com.showcase.application.utils.MyException;
@@ -49,7 +51,7 @@ public class TabTestData extends GenericTab<TestData> {
     private MenuItem miCreate, miEdit, miView, miDelete;
 
     public TabTestData(TestDataService testDataService, TestTypeService testTypeService) {
-        super(TestData.class);
+        super(TestData.class, false);
         this.testDataService = testDataService;
         this.testTypeService = testTypeService;
 
@@ -64,15 +66,10 @@ public class TabTestData extends GenericTab<TestData> {
         crud.setDeleteOperationVisible(false);
         menuVisualizar.setVisible(false);
 
-//        miCreate.setVisible(SecurityUtils.isAccessGranted(Permit.TEST_DATA_CREATE));
-//        miEdit.setVisible(SecurityUtils.isAccessGranted(Permit.TEST_DATA_EDIT));
-//        miView.setVisible(SecurityUtils.isAccessGranted(Permit.TEST_DATA_VIEW));
-//        miDelete.setVisible(SecurityUtils.isAccessGranted(Permit.TEST_DATA_DELETE));
-
-        miCreate.setVisible(true);
-        miEdit.setVisible(true);
-        miView.setVisible(true);
-        miDelete.setVisible(true);
+        miCreate.setVisible(SecurityUtils.isAccessGranted(Permit.TEST_DATA_CREATE));
+        miEdit.setVisible(SecurityUtils.isAccessGranted(Permit.TEST_DATA_EDIT));
+        miView.setVisible(SecurityUtils.isAccessGranted(Permit.TEST_DATA_VIEW));
+        miDelete.setVisible(SecurityUtils.isAccessGranted(Permit.TEST_DATA_DELETE));
     }
 
     @Override
@@ -144,9 +141,9 @@ public class TabTestData extends GenericTab<TestData> {
     @Override
     protected void configGrid(Grid<TestData> grid) {
         grid.removeAllColumns();
-        grid.addColumn(TestData::getWord).setKey("word").setHeader(UI.getCurrent().getTranslation("tab.testdata.word")).setSortable(true).setResizable(true).setFlexGrow(1);
-        grid.addColumn(TestData::getTestType).setKey("testType").setHeader(UI.getCurrent().getTranslation("tab.testdata.testtype")).setSortable(true).setResizable(true).setFlexGrow(1);
-        grid.addColumn(data -> Utilities.formatDate(data.getDate(), settings.getDateTimeFormat(), settings.getTimeZoneString())).setKey("date").setHeader(UI.getCurrent().getTranslation("tab.testdata.date")).setSortable(true).setResizable(true).setFlexGrow(1);
+        grid.addColumn(TestData::getWord).setKey("word").setHeader(UI.getCurrent().getTranslation("tab.testdata.word")).setSortable(true).setResizable(true).setFlexGrow(0).setWidth("12rem");
+        grid.addColumn(data -> UI.getCurrent().getTranslation(TestType.toStringI18nKey(data.getTestType()))).setKey("testType").setHeader(UI.getCurrent().getTranslation("tab.testdata.testtype")).setSortable(true).setResizable(true).setFlexGrow(0).setWidth("7.5rem");
+        grid.addColumn(data -> Utilities.formatDate(data.getDate(), settings.getDateTimeFormat(), settings.getTimeZoneString())).setKey("date").setHeader(UI.getCurrent().getTranslation("tab.testdata.date")).setSortable(true).setResizable(true).setFlexGrow(0).setWidth("10.625rem");
         grid.addColumn(TestData::getDescription).setKey("description").setHeader(UI.getCurrent().getTranslation("tab.testdata.description")).setSortable(true).setResizable(true).setFlexGrow(1);
     }
 

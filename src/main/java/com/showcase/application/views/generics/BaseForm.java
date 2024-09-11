@@ -165,7 +165,7 @@ public abstract class BaseForm<T> extends VerticalLayout implements HasDynamicTi
 
     ;
 
-    protected abstract void setInicialvalues();
+    protected abstract void setComponentValues();
 
     protected abstract void buildComponents();
 
@@ -179,7 +179,7 @@ public abstract class BaseForm<T> extends VerticalLayout implements HasDynamicTi
 
     @Override
     public void afterNavigation(AfterNavigationEvent event) {
-        setInicialvalues();
+        setComponentValues();
 
         if (tabs.getChildren().findAny().isPresent()) {
             tabs.setSelectedTab(null);
@@ -193,7 +193,12 @@ public abstract class BaseForm<T> extends VerticalLayout implements HasDynamicTi
 
         try {
             Long id = ((Long) Utilities.getFieldValue(objectToSave, "id"));
-            if(id != 0L) {
+
+            if (objectToSave instanceof UserSetting) {
+                return;
+            }
+
+            if (id != 0L) {
                 fillFields();
                 securityForm.fillFields(objectToSave);
                 securityTab.setVisible(true);

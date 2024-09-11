@@ -15,7 +15,7 @@ public class WarningNotification extends Notification {
     public WarningNotification(String message) {
         super();
 
-        addThemeVariants(NotificationVariant.LUMO_ERROR);
+        addThemeVariants(NotificationVariant.LUMO_WARNING);
         setPosition(Position.MIDDLE);
         setDuration(4 * 1000);
 
@@ -38,7 +38,7 @@ public class WarningNotification extends Notification {
     public WarningNotification(String message, int timeInSeconds) {
         super();
 
-        addThemeVariants(NotificationVariant.LUMO_ERROR);
+        addThemeVariants(NotificationVariant.LUMO_WARNING);
         setPosition(Position.MIDDLE);
         setDuration(timeInSeconds * 1000);
 

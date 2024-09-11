@@ -3,6 +3,7 @@ package com.showcase.application.models.configuration;
 import com.showcase.application.models.Base;
 import com.showcase.application.models.security.User;
 import com.showcase.application.utils.GlobalConstants;
+import com.showcase.application.utils.TranslationProvider;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -10,7 +11,9 @@ import jakarta.persistence.OneToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 
+import java.util.Locale;
 import java.util.TimeZone;
 
 @Getter
@@ -34,16 +37,26 @@ import java.util.TimeZone;
 //})})
 public class UserSetting extends Base {
 
-    @OneToOne(optional = false,fetch = FetchType.LAZY)
+    @OneToOne(optional = false, fetch = FetchType.LAZY)
     private User user;
     @Column(nullable = false)
     private String timeZoneString = "America/Santo_Domingo";
     @Column(nullable = false)
-    private boolean lightMode = true;
+    private boolean darkMode = false;
     @Column(nullable = false)
     private String dateFormat = "dd/MM/yy";
     @Column(nullable = false)
     private String dateTimeFormat = "dd/MM/yyyy hh:mm a";
+    @Column(nullable = false)
+    private String language = "en";
+
+    public Locale getLocale() {
+        Locale locale = Locale.forLanguageTag(StringUtils.isBlank(this.language) ? "es" : this.language);
+        if(locale == null) {
+            locale = TranslationProvider.ENGLISH;
+        }
+        return locale;
+    }
 
     public TimeZone getTimezone() {
         TimeZone timeZone = TimeZone.getTimeZone(this.timeZoneString);

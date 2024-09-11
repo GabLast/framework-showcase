@@ -2,7 +2,9 @@ package com.showcase.application.config.security;
 
 import com.showcase.application.models.configuration.UserSetting;
 import com.showcase.application.models.security.User;
+import com.showcase.application.services.configuration.UserSettingService;
 import com.showcase.application.services.security.CustomUserDetailsService;
+import com.showcase.application.utils.GlobalConstants;
 import com.showcase.application.utils.TranslationProvider;
 import com.showcase.application.views.general.HomeView;
 import com.showcase.application.views.login.LoginView;
@@ -20,6 +22,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.TimeZone;
 
 
 @Configuration
@@ -29,6 +32,9 @@ public class UIServiceListener implements VaadinServiceInitListener {
     private final AuthenticatedUser authenticatedUser;
     private final AccessAnnotationChecker accessChecker;
     private final CustomUserDetailsService userDetailsService;
+    private final UserSettingService userSettingService;
+    private String timeZone;
+    private Locale locale;
 
     @Override
     public void serviceInit(ServiceInitEvent event) {
@@ -41,19 +47,20 @@ public class UIServiceListener implements VaadinServiceInitListener {
     }
 
     private void beforeEnter(BeforeEnterEvent event) {
-        setSettings(event.getUI());
+        event.getUI().getPage().retrieveExtendedClientDetails(detail -> timeZone = detail.getTimeZoneId());
 
-        User user = (User) event.getUI().getSession().getAttribute(MyVaadinSession.SessionVariables.USER.toString());
+        UserSetting userSetting = (UserSetting) event.getUI().getSession().getAttribute(MyVaadinSession.SessionVariables.USERSETTINGS.toString());
         Locale locale = event.getUI().getLocale();
-        if (locale == null || (user != null && StringUtils.isNotBlank(user.getLanguage()) && !user.getLanguage().equalsIgnoreCase(locale.getLanguage()))) {
-            setLanguage(event.getUI());
+        if (locale == null || (userSetting != null && StringUtils.isNotBlank(userSetting.getLanguage()) && !userSetting.getLanguage().equalsIgnoreCase(locale.getLanguage()))) {
+            setLanguage(event.getUI(), userSetting);
         }
 
         if (authenticatedUser.isUserLoggedIn()) {
+            setPermits(authenticatedUser.get().orElse(null));
+            setSettings(event.getUI(), authenticatedUser.get().orElse(null));
             if (event.getNavigationTarget() == LoginView.class) {
                 event.rerouteTo(HomeView.class);
             }
-            setPermits(user);
         }
 
         if (!accessChecker.hasAccess(event.getNavigationTarget())) {
@@ -65,11 +72,8 @@ public class UIServiceListener implements VaadinServiceInitListener {
         }
     }
 
-    private void setLanguage(UI ui) {
-        Locale locale;
-        User user = (User) ui.getSession().getAttribute(MyVaadinSession.SessionVariables.USER.toString());
-
-        if (user == null || StringUtils.isBlank(user.getLanguage())) {
+    private void setLanguage(UI ui, UserSetting userSetting) {
+        if (userSetting == null || StringUtils.isBlank(userSetting.getLanguage())) {
             Optional<Cookie> localeCookie = Optional.empty();
 
             Cookie[] cookies = VaadinService.getCurrentRequest().getCookies();
@@ -90,27 +94,29 @@ public class UIServiceListener implements VaadinServiceInitListener {
                 locale = TranslationProvider.ENGLISH;
             }
         } else {
-            locale = Locale.forLanguageTag(user.getLanguage());
+            locale = Locale.forLanguageTag(userSetting.getLanguage());
         }
 
         ui.setLocale(locale);
     }
 
-    private void setSettings(UI ui) {
+    private void setSettings(UI ui, User user) {
         UserSetting settings = (UserSetting) ui.getSession().getAttribute(MyVaadinSession.SessionVariables.USERSETTINGS.toString());
         if (settings == null) {
             settings = new UserSetting();
-            UserSetting finalSettings = new UserSetting();
-            ui.getPage().retrieveExtendedClientDetails(detail -> {
-                finalSettings.setTimeZoneString(detail.getTimeZoneId());
-            });
-            settings.setTimeZoneString(finalSettings.getTimeZoneString());
+            settings.setUser(user);
+            settings.setTimeZoneString(StringUtils.isBlank(timeZone) || (TimeZone.getTimeZone(timeZone) != null) ? GlobalConstants.DEFAULT_TIMEZONE : timeZone);
         }
         UI.getCurrent().getSession().setAttribute(MyVaadinSession.SessionVariables.USERSETTINGS.toString(), settings);
     }
 
     private void setPermits(User user) {
+        if(user == null) {
+            return;
+        }
+        UI.getCurrent().getSession().setAttribute(MyVaadinSession.SessionVariables.USER.toString(), user);
         userDetailsService.grantAuthorities(user);
     }
+
 }
 

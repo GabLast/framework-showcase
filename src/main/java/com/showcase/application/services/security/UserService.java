@@ -33,7 +33,7 @@ public class UserService extends BaseService<User, Long> {
                 user = new User();
                 user.setUsername("admin");
                 user.setPassword(passwordEncoder.encode("123"));
-                user.setLanguage("en");
+                user.setName("Administrator");
                 user.setAdmin(true);
             }
             saveAndFlush(user);

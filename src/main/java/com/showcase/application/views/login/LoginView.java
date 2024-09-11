@@ -27,7 +27,6 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver, HasD
     public LoginView(AppInfo appInfo) {
 
         setAction(RouteUtil.getRoutePath(VaadinService.getCurrent().getContext(), getClass()));
-
         //Error Handler
         LoginI18n.ErrorMessage errorMessage = new LoginI18n.ErrorMessage();
         errorMessage.setTitle(UI.getCurrent().getTranslation("login.error.title"));
@@ -41,8 +40,8 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver, HasD
         i18n.setAdditionalInformation(null);
 
         i18n.getForm().setTitle(UI.getCurrent().getTranslation("login.title"));
-        i18n.getForm().setUsername(UI.getCurrent().getTranslation("login.username"));
-        i18n.getForm().setPassword(UI.getCurrent().getTranslation("login.password"));
+        i18n.getForm().setUsername(UI.getCurrent().getTranslation("login.username") + " - admin");
+        i18n.getForm().setPassword(UI.getCurrent().getTranslation("login.password") + "- 123");
         i18n.getForm().setForgotPassword(UI.getCurrent().getTranslation("login.forgotpassword"));
         i18n.getForm().setSubmit(UI.getCurrent().getTranslation("login.submit"));
         i18n.setAdditionalInformation(UI.getCurrent().getTranslation("login.appinfo", appInfo.getAppVersion(), "Gabriel Marte"));
@@ -71,7 +70,6 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver, HasD
         addForgotPasswordListener(forgotPasswordEvent -> UI.getCurrent().navigate(RecoverPasswordView.class));
 
         setOpened(true);
-
     }
 
     @Override

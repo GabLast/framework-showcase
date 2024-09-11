@@ -4,7 +4,6 @@ import com.showcase.application.config.security.MyVaadinSession;
 import com.showcase.application.models.configuration.UserSetting;
 import com.showcase.application.models.security.User;
 import com.showcase.application.utils.MyException;
-import com.showcase.application.utils.Utilities;
 import com.showcase.application.views.generics.notifications.ErrorNotification;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
@@ -51,7 +50,7 @@ public abstract class GenericTab<T> extends Div implements AfterNavigationObserv
 
     protected final Div divCustomizeBar;
 
-    public GenericTab(Class<T> tClass) {
+    public GenericTab(Class<T> tClass, boolean footer) {
         //Crud object
         this.gridCrud = new GridCrud<>(tClass);
 
@@ -74,7 +73,9 @@ public abstract class GenericTab<T> extends Div implements AfterNavigationObserv
                 GridVariant.LUMO_ROW_STRIPES,
                 GridVariant.LUMO_WRAP_CELL_CONTENT
         );
-        grid.appendFooterRow();
+        if(footer) {
+            grid.appendFooterRow();
+        }
 
         //FormFactory
         gridCrud.setCrudFormFactory(new CustomFormFactory<>(tClass) {

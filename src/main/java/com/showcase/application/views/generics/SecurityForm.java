@@ -2,7 +2,6 @@ package com.showcase.application.views.generics;
 
 import com.showcase.application.config.security.MyVaadinSession;
 import com.showcase.application.models.configuration.UserSetting;
-import com.showcase.application.models.security.User;
 import com.showcase.application.utils.Utilities;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.checkbox.Checkbox;

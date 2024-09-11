@@ -45,7 +45,7 @@ public class FormTestData extends BaseForm<TestData> {
     }
 
     @Override
-    protected void setInicialvalues() {
+    protected void setComponentValues() {
         cbTestType.setItems(testTypeService.findAllByEnabled(true));
         cbTestType.setItemLabelGenerator(it -> UI.getCurrent().getTranslation(TestType.toStringI18nKey(it)));
     }
@@ -68,7 +68,7 @@ public class FormTestData extends BaseForm<TestData> {
         dpDate = new DateTimePicker(UI.getCurrent().getTranslation("form.testdata.date"));
         dpDate.setRequiredIndicatorVisible(true);
         dpDate.setErrorMessage(UI.getCurrent().getTranslation("form.error"));
-        dpDate.setLocale(user.getLocale());
+        dpDate.setLocale(userSetting.getLocale());
         dpDate.setSizeFull();
 
         tfDescription = new TextArea(UI.getCurrent().getTranslation("form.testdata.description"));
@@ -86,10 +86,10 @@ public class FormTestData extends BaseForm<TestData> {
 
     @Override
     protected void enableVisualizationOnly() {
-        tfWord.setEnabled(false);
-        cbTestType.setEnabled(false);
-        dpDate.setEnabled(false);
-        tfDescription.setEnabled(false);
+        tfWord.setReadOnly(true);
+        cbTestType.setReadOnly(true);
+        dpDate.setReadOnly(true);
+        tfDescription.setReadOnly(true);
     }
 
     @Override
@@ -100,7 +100,6 @@ public class FormTestData extends BaseForm<TestData> {
 
         tfWord.setValue(objectToSave.getWord());
         cbTestType.setValue(objectToSave.getTestType());
-        System.out.println(cbTestType.getValue());
         tfDescription.setValue(objectToSave.getDescription());
         dpDate.setValue(objectToSave.getDate().toInstant().atZone(userSetting.getTimezone().toZoneId()).toLocalDateTime());
 //        dpDate.setValue(objectToSave.getDate().toInstant().atZone(userSetting.getTimezone().toZoneId()).toLocalDate());
@@ -159,7 +158,7 @@ public class FormTestData extends BaseForm<TestData> {
             objectToSave.setDate(Date.from(dpDate.getValue().atZone(userSetting.getTimezone().toZoneId()).toInstant()));
 //            Date.from(localDate.atStartOfDay(userSetting.getTimezone().toZoneId())).toInstant());
 
-            objectToSave = testDataService.save(objectToSave);
+            objectToSave = testDataService.saveAndFlush(objectToSave);
 
             new SuccessNotification(UI.getCurrent().getTranslation("action.save.object", objectToSave.toString()));
 

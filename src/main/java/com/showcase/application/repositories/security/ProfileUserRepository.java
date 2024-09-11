@@ -1,6 +1,5 @@
 package com.showcase.application.repositories.security;
 
-import com.showcase.application.models.security.Permit;
 import com.showcase.application.models.security.ProfileUser;
 import com.showcase.application.models.security.User;
 import org.springframework.data.jpa.repository.EntityGraph;

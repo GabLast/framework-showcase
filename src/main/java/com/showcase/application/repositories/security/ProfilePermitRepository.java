@@ -2,8 +2,6 @@ package com.showcase.application.repositories.security;
 
 import com.showcase.application.models.security.Profile;
 import com.showcase.application.models.security.ProfilePermit;
-import com.showcase.application.models.security.ProfileUser;
-import com.showcase.application.models.security.User;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;

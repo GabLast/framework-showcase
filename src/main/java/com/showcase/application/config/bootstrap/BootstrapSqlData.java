@@ -1,6 +1,5 @@
 package com.showcase.application.config.bootstrap;
 
-import com.showcase.application.utils.MyException;
 import com.showcase.application.utils.Utilities;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,11 +38,6 @@ public class BootstrapSqlData implements ApplicationRunner {
                 .getResource("data/test_data.sql")).getFile()).toPath().toString();
         Utilities.runScript(path, connection);
         log.info("SQL Script has been Loaded");
-//        Statement statement = connection.createStatement();
-//        ResultSet resultSet = statement.executeQuery("SELECT COUNT(1) FROM employees");
-//        if (resultSet.next()) {
-//            int count = resultSet.getInt(1);
-//        }
     }
 
     private void runScript() {
@@ -51,8 +45,8 @@ public class BootstrapSqlData implements ApplicationRunner {
             prepareConnection();
             execute();
             closeConnection();
-        } catch (MyException ignored) {
         } catch (Exception e) {
+            log.info("SQL Script error: " + e.getMessage());
             throw new RuntimeException(e);
         }
     }
