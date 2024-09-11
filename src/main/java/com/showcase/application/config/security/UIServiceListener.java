@@ -34,7 +34,6 @@ public class UIServiceListener implements VaadinServiceInitListener {
     private final CustomUserDetailsService userDetailsService;
     private final UserSettingService userSettingService;
     private String timeZone;
-    private Locale locale;
 
     @Override
     public void serviceInit(ServiceInitEvent event) {
@@ -73,6 +72,7 @@ public class UIServiceListener implements VaadinServiceInitListener {
     }
 
     private void setLanguage(UI ui, UserSetting userSetting) {
+        Locale locale;
         if (userSetting == null || StringUtils.isBlank(userSetting.getLanguage())) {
             Optional<Cookie> localeCookie = Optional.empty();
 
