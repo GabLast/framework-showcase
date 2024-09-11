@@ -8,7 +8,6 @@ import com.showcase.application.models.configuration.UserSetting;
 import com.showcase.application.models.security.Permit;
 import com.showcase.application.models.security.User;
 import com.showcase.application.services.configuration.UserSettingService;
-import com.showcase.application.services.security.UserService;
 import com.showcase.application.utils.MyException;
 import com.showcase.application.utils.TranslationProvider;
 import com.showcase.application.views.general.AboutView;
@@ -45,7 +44,7 @@ import org.vaadin.lineawesome.LineAwesomeIcon;
 /**
  * The main view is a top-level placeholder for other views.
  */
-public class MainLayout extends AppLayout implements AfterNavigationObserver {
+public class MainLayout extends AppLayout {
 
     private final AppInfo appInfo;
     private AuthenticatedUser authenticatedUser;
@@ -219,15 +218,11 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
     protected void afterNavigation() {
         super.afterNavigation();
         viewTitle.setText(getCurrentPageTitle());
+        setTheme(settings.isDarkMode());
     }
 
     private String getCurrentPageTitle() {
         PageTitle title = getContent().getClass().getAnnotation(PageTitle.class);
         return title == null ? "" : title.value();
-    }
-
-    @Override
-    public void afterNavigation(AfterNavigationEvent event) {
-        setTheme(settings.isDarkMode());
     }
 }
