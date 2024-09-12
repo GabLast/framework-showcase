@@ -28,11 +28,17 @@ public class PermitService extends BaseService<Permit, Long> {
 
     public void bootstrap() {
         try {
-            Permit testData = create(null, Permit.MENU_TEST_DATA, "Menu for Test Data");
-            create(testData, Permit.TEST_DATA_CREATE, "Create on Test Data");
-            create(testData, Permit.TEST_DATA_EDIT, "Create on Test Data");
-            create(testData, Permit.TEST_DATA_VIEW, "Create on Test Data");
-            create(testData, Permit.TEST_DATA_DELETE, "Create on Test Data");
+
+            Permit processes = create(null, Permit.PROCESSES_MODULE, "", "module.processes");
+
+            Permit testData = create(processes, Permit.MENU_TEST_DATA, "", "menu.testdata");
+            create(testData, Permit.TEST_DATA_CREATE, "", "menu.testdata.action");
+            create(testData, Permit.TEST_DATA_EDIT, "", "menu.testdata.action");
+            create(testData, Permit.TEST_DATA_VIEW, "", "menu.testdata.action");
+            create(testData, Permit.TEST_DATA_DELETE, "", "menu.testdata.action");
+
+            Permit reports = create(null, Permit.REPORTS_MODULE, "", "module.reports");
+            create(reports, Permit.REPORT_TEST_DATA, "", "report.testdata");
 
             log.info("Created Permits");
         } catch (MyException e) {
@@ -41,10 +47,10 @@ public class PermitService extends BaseService<Permit, Long> {
         }
     }
 
-    private Permit create(Permit father, String code, String description) {
+    private Permit create(Permit father, String code, String description, String descriptionI18) {
         Permit tmp = findFirstByCodeAndEnabled(true, code);
         if (tmp == null) {
-            tmp = saveAndFlush(new Permit(father, code, Utilities.capitalizeEveryLetterOfString(code.replaceAll("_", " ")), description));
+            tmp = saveAndFlush(new Permit(father, code, Utilities.capitalizeEveryLetterOfString(code.replaceAll("_", " ")), description, descriptionI18));
         }
         return tmp;
     }
@@ -60,6 +66,7 @@ public class PermitService extends BaseService<Permit, Long> {
     public List<Permit> findAllByEnabledAndPermitFatherIsNull(boolean enabled) {
         return permitRepository.findAllByEnabledAndPermitFatherIsNull(enabled);
     }
+
     public List<Permit> findAllByEnabledAndPermitFather(boolean enabled, Permit father) {
         return permitRepository.findAllByEnabledAndPermitFather(enabled, father);
     }

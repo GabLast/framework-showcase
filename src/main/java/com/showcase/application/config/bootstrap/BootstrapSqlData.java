@@ -1,5 +1,6 @@
 package com.showcase.application.config.bootstrap;
 
+import com.showcase.application.services.module.TestDataService;
 import com.showcase.application.utils.Utilities;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,8 @@ import java.util.Objects;
 @Slf4j
 public class BootstrapSqlData implements ApplicationRunner {
 
+
+    private final TestDataService testDataService;
 
     private static Connection connection = null;
     private static final String JDBC_URL = "jdbc:h2:~/frameworkshowcase";
@@ -54,7 +57,9 @@ public class BootstrapSqlData implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         try {
-            runScript();
+            if(testDataService.count() == 0) {
+                runScript();
+            }
         } catch (Exception e) {
             log.error(e.getMessage());
         }

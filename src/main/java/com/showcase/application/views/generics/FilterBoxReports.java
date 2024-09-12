@@ -59,7 +59,7 @@ public class FilterBoxReports extends Accordion {
 
         setId("FilterBoxReports");
 
-        add(UI.getCurrent().getTranslation("filter.title"), construirVentana()).addThemeVariants(DetailsVariant.FILLED, DetailsVariant.REVERSE, DetailsVariant.SMALL);
+        add(UI.getCurrent().getTranslation("filter.title"), buildView()).addThemeVariants(DetailsVariant.FILLED, DetailsVariant.REVERSE, DetailsVariant.SMALL);
 
         setWidthFull();
     }
@@ -84,14 +84,14 @@ public class FilterBoxReports extends Accordion {
         datePickerI18n.setCancel(UI.getCurrent().getTranslation("cancel"));
     }
 
-    private Component construirVentana() {
+    private Component buildView() {
         btnDownloadCSV = new Anchor();
         btnDownloadCSV.setWidthFull();
         btnDownloadCSV.setVisible(false);
 
         Button btnAux = new Button(UI.getCurrent().getTranslation("download.csv"));
         btnAux.setIcon(VaadinIcon.FILE_PROCESS.create());
-        btnAux.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_PRIMARY);
+        btnAux.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_SUCCESS, ButtonVariant.LUMO_PRIMARY);
         btnAux.setWidthFull();
 
         btnDownloadCSV.add(btnAux);
@@ -118,7 +118,6 @@ public class FilterBoxReports extends Accordion {
 
         Div div = new Div();
         div.setHeight("10px");
-
         form.add(div, 5);
         form.add(btnDownloadCSV, 1);
         form.add(btnDownloadPDF, 1);
@@ -145,6 +144,7 @@ public class FilterBoxReports extends Accordion {
 
             select.getElement().setAttribute("theme", "small");
             select.addValueChangeListener(comboBoxTComponentValueChangeEvent -> refreshData());
+            select.setErrorMessage(UI.getCurrent().getTranslation("form.error"));
             addComponentToForm(id, select);
         } else if (listObjects != null) {
             MultiSelectComboBox<T> multiSelectComboBox = new MultiSelectComboBox<T>();
@@ -167,6 +167,7 @@ public class FilterBoxReports extends Accordion {
 
             multiSelectComboBox.setClearButtonVisible(true);
             multiSelectComboBox.addValueChangeListener(comboBoxTComponentValueChangeEvent -> refreshData());
+            multiSelectComboBox.setErrorMessage(UI.getCurrent().getTranslation("form.error"));
             addComponentToForm(id, multiSelectComboBox);
         } else if (dataClass == String.class) {
             TextField textField = new TextField(caption);
@@ -176,6 +177,7 @@ public class FilterBoxReports extends Accordion {
             textField.setClearButtonVisible(true);
             textField.addThemeVariants(TextFieldVariant.LUMO_SMALL);
             textField.addValueChangeListener(textFieldStringComponentValueChangeEvent -> refreshData());
+            textField.setErrorMessage(UI.getCurrent().getTranslation("form.error"));
             addComponentToForm(id, textField);
         } else if (dataClass == Integer.class || dataClass == Long.class) {
             IntegerField numberField = new IntegerField(caption);
@@ -187,6 +189,7 @@ public class FilterBoxReports extends Accordion {
             numberField.setPlaceholder("0");
             numberField.addThemeVariants(TextFieldVariant.LUMO_SMALL);
             numberField.addValueChangeListener(integerFieldIntegerComponentValueChangeEvent -> refreshData());
+            numberField.setErrorMessage(UI.getCurrent().getTranslation("form.error"));
             addComponentToForm(id, numberField);
         } else if (dataClass == BigDecimal.class) {
             BigDecimalField bigDecimalField = new BigDecimalField(caption);
@@ -198,6 +201,7 @@ public class FilterBoxReports extends Accordion {
             bigDecimalField.setPlaceholder("0");
             bigDecimalField.addThemeVariants(TextFieldVariant.LUMO_SMALL);
             bigDecimalField.addValueChangeListener(bigDecimalFieldBigDecimalComponentValueChangeEvent -> refreshData());
+            bigDecimalField.setErrorMessage(UI.getCurrent().getTranslation("form.error"));
             addComponentToForm(id, bigDecimalField);
         } else if (dataClass == Date.class || dataClass == LocalDate.class) {
             DatePicker dpStart = new DatePicker(caption);
@@ -210,6 +214,7 @@ public class FilterBoxReports extends Accordion {
             dpStart.getElement().setAttribute("theme", "small");
             dpStart.setLocale(UI.getCurrent().getLocale());
             dpStart.addValueChangeListener(datePickerLocalDateComponentValueChangeEvent -> refreshData());
+            dpStart.setErrorMessage(UI.getCurrent().getTranslation("form.error"));
 
             DatePicker dpEnd = new DatePicker(UI.getCurrent().getTranslation("to"));
             dpEnd.setWidthFull();
@@ -221,6 +226,7 @@ public class FilterBoxReports extends Accordion {
             dpEnd.getElement().setAttribute("theme", "small");
             dpEnd.setLocale(UI.getCurrent().getLocale());
             dpEnd.addValueChangeListener(datePickerLocalDateComponentValueChangeEvent -> refreshData());
+            dpEnd.setErrorMessage(UI.getCurrent().getTranslation("form.error"));
 
             FormLayout formDates = new FormLayout();
             formDates.setSizeFull();
@@ -242,6 +248,7 @@ public class FilterBoxReports extends Accordion {
             dpStart.setLocale(UI.getCurrent().getLocale());
             dpStart.addValueChangeListener(datePickerLocalDateComponentValueChangeEvent -> refreshData());
             dpStart.setDatePickerI18n(datePickerFormat);
+            dpStart.setErrorMessage(UI.getCurrent().getTranslation("form.error"));
 
             DateTimePicker dpEnd = new DateTimePicker(UI.getCurrent().getTranslation("to"));
             dpEnd.setWidthFull();
@@ -252,6 +259,7 @@ public class FilterBoxReports extends Accordion {
             dpEnd.setLocale(UI.getCurrent().getLocale());
             dpEnd.addValueChangeListener(datePickerLocalDateComponentValueChangeEvent -> refreshData());
             dpEnd.setDatePickerI18n(datePickerFormat);
+            dpEnd.setErrorMessage(UI.getCurrent().getTranslation("form.error"));
 
             FormLayout formDates = new FormLayout();
             formDates.setSizeFull();
@@ -271,14 +279,11 @@ public class FilterBoxReports extends Accordion {
     }
 
     private void addComponentToForm(String id, Component component) {
-        form.add(component);
+        form.addComponentAsFirst(component);
         filterMap.put(id, component);
     }
 
     public void setDownloadFileCsv(ByteArrayOutputStream byteArrayOutputStream, String fileName) {
-        if (verifyFields()) {
-            return;
-        }
 
         btnDownloadCSV.setVisible(true);
         btnDownloadCSV.getElement().setAttribute("download", fileName + System.currentTimeMillis());
@@ -286,10 +291,6 @@ public class FilterBoxReports extends Accordion {
     }
 
     public void setDownloadFilePdf(ByteArrayOutputStream byteArrayOutputStream, String fileName) {
-        if (verifyFields()) {
-            return;
-        }
-
         btnDownloadPDF.setVisible(true);
         btnDownloadPDF.getElement().setAttribute("download", fileName + System.currentTimeMillis());
         btnDownloadPDF.setHref(Utilities.getStreamResource(byteArrayOutputStream, fileName, ".pdf"));
@@ -303,83 +304,82 @@ public class FilterBoxReports extends Accordion {
         downloadCall.run();
     }
 
-    private boolean verifyFields() {
+    public boolean verifyFields() {
         List<Component> componentList = form.getChildren().toList();
-        Integer size = componentList.size();
-        Integer countValid = size;
+        boolean isError = false;
 
         for (Component component : componentList) {
             if (component instanceof HorizontalLayout || component instanceof VerticalLayout || component instanceof FormLayout) {
                 for (Component child : component.getChildren().toList()) {
-                    if(!verifyComponent((child))) {
-                        countValid--;
+                    if (verifyComponent(child)) {
+                        isError = true;
                     }
                 }
             } else {
-                if(!verifyComponent((component))) {
-                    countValid--;
+                if (verifyComponent((component))) {
+                    isError = true;
                 }
             }
         }
 
-        return size.equals(countValid);
+        return isError;
     }
 
     private boolean verifyComponent(Component component) {
-        boolean isValid = true;
+        boolean isError = false;
 
         if (component instanceof TextField) {
             if (((TextField) component).isRequired() && StringUtils.isBlank(((TextField) component).getValue())) {
-                isValid = false;
+                isError = true;
                 ((TextField) component).setInvalid(true);
             } else {
                 ((TextField) component).setInvalid(false);
             }
         } else if (component instanceof IntegerField) {
             if (((IntegerField) component).isRequiredIndicatorVisible() && ((IntegerField) component).getValue() == null) {
-                isValid = false;
+                isError = true;
                 ((IntegerField) component).setInvalid(true);
             } else {
                 ((IntegerField) component).setInvalid(false);
             }
         } else if (component instanceof BigDecimalField) {
             if (((BigDecimalField) component).isRequiredIndicatorVisible() && ((BigDecimalField) component).getValue() == null) {
-                isValid = false;
+                isError = true;
                 ((BigDecimalField) component).setInvalid(true);
             } else {
                 ((BigDecimalField) component).setInvalid(false);
             }
         } else if (component instanceof Select) {
             if (((Select<?>) component).isRequiredIndicatorVisible() && ((Select<?>) component).getValue() == null) {
-                isValid = false;
+                isError = true;
                 ((Select<?>) component).setInvalid(true);
             } else {
                 ((Select<?>) component).setInvalid(false);
             }
         } else if (component instanceof ComboBox) {
             if (((ComboBox<?>) component).isRequired() && ((ComboBox<?>) component).getValue() == null) {
-                isValid = false;
+                isError = true;
                 ((ComboBox<?>) component).setInvalid(true);
             } else {
                 ((ComboBox<?>) component).setInvalid(false);
             }
         } else if (component instanceof DatePicker) {
             if (((DatePicker) component).isRequired() && ((DatePicker) component).getValue() == null) {
-                isValid = false;
+                isError = true;
                 ((DatePicker) component).setInvalid(true);
             } else {
                 ((DatePicker) component).setInvalid(false);
             }
         } else if (component instanceof DateTimePicker) {
             if (((DateTimePicker) component).isRequiredIndicatorVisible() && ((DateTimePicker) component).getValue() == null) {
-                isValid = false;
+                isError = true;
                 ((DateTimePicker) component).setInvalid(true);
             } else {
                 ((DateTimePicker) component).setInvalid(false);
             }
         }
 
-        return isValid;
+        return isError;
     }
 
 }

@@ -17,6 +17,7 @@ import com.showcase.application.views.generics.navigation.MySideNavItem;
 import com.showcase.application.views.generics.notifications.ErrorNotification;
 import com.showcase.application.views.generics.notifications.WarningNotification;
 import com.showcase.application.views.module.TabTestData;
+import com.showcase.application.views.reports.module.TabReportTestData;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -32,8 +33,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.dom.ThemeList;
-import com.vaadin.flow.router.AfterNavigationEvent;
-import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
@@ -113,19 +112,26 @@ public class MainLayout extends AppLayout {
     private Div createNavigation() {
         Div div = new Div();
 
-//        SideNav menuModule = new SideNav();
-//        menuModule.setLabel("Label");
-//        menuModule.setCollapsible(true);
-//        menuModule.setVisible(SecurityUtils.isAccessGranted(Permit.MENU_TEST_DATA));
-        SideNavItem menuModule = new SideNavItem(UI.getCurrent().getTranslation("title.module"), "", VaadinIcon.ENVELOPE.create());
-        menuModule.setVisible(
-                SecurityUtils.isAccessGranted(Permit.MENU_TEST_DATA) ||
-                        SecurityUtils.isAccessGranted(Permit.MENU_TEST_DATA)
-        );
-        menuModule.addItem(new MySideNavItem(UI.getCurrent().getTranslation("title.testdata"), TabTestData.class, LineAwesomeIcon.BOOK_SOLID.create(), accessChecker.hasAccess(TabTestData.class)));
-//        menuModule.addItem(new MySideNavItem(UI.getCurrent().getTranslation("title.testdata"), TabTestData.class, LineAwesomeIcon.BOOK_SOLID.create(), accessChecker.hasAccess(TabTestData.class)));
-        div.add(menuModule);
+        SideNav processesModule = new SideNav();
+        processesModule.setCollapsible(true);
+        processesModule.setExpanded(true);
+        processesModule.setLabel(UI.getCurrent().getTranslation("title.module"));
+        processesModule.setVisible(SecurityUtils.isAccessGranted(Permit.PROCESSES_MODULE));
+        processesModule.addItem(new MySideNavItem(UI.getCurrent().getTranslation("title.testdata"),
+                TabTestData.class, LineAwesomeIcon.FILE_ALT.create(), accessChecker.hasAccess(TabTestData.class)));
+        div.add(processesModule);
 
+        //***************************************************************
+
+        SideNav reportsModule = new SideNav(UI.getCurrent().getTranslation("title.reports"));
+        reportsModule.setCollapsible(true);
+        reportsModule.setExpanded(false);
+        reportsModule.setVisible(SecurityUtils.isAccessGranted(Permit.PROCESSES_MODULE));
+        reportsModule.addItem(new MySideNavItem(UI.getCurrent().getTranslation("title.testdata"),
+                TabReportTestData.class, LineAwesomeIcon.FILE_ALT.create(), accessChecker.hasAccess(TabReportTestData.class)));
+        div.add(reportsModule);
+
+        //***************************************************************
         SideNav aboutNav = new SideNav();
         aboutNav.addItem(new MySideNavItem(UI.getCurrent().getTranslation("title.about"), AboutView.class, LineAwesomeIcon.ADDRESS_CARD.create(), accessChecker.hasAccess(AboutView.class)));
         div.add(aboutNav);

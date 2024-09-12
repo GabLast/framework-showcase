@@ -30,7 +30,7 @@ import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteParam;
 import com.vaadin.flow.router.RouteParameters;
-import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import org.springframework.data.domain.Sort;
 import org.vaadin.crudui.crud.CrudOperation;
 import org.vaadin.crudui.crud.LazyCrudListener;
@@ -41,8 +41,7 @@ import org.vaadin.crudui.layout.impl.WindowBasedCrudLayout;
 import java.util.Date;
 
 @Route(value = "testdata", layout = MainLayout.class)
-@PermitAll
-//@RolesAllowed(Permit.MENU_TEST_DATA)
+@RolesAllowed(Permit.MENU_TEST_DATA)
 public class TabTestData extends GenericTab<TestData> {
 
     private final TestDataService testDataService;

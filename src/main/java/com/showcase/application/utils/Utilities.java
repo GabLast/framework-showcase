@@ -16,7 +16,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Connection;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -82,7 +85,6 @@ public class Utilities {
             return "";
         }
 
-
         if (StringUtils.isBlank(format)) {
             format = "dd/MM/yyyy hh:mm a";
         }
@@ -91,9 +93,31 @@ public class Utilities {
 
         if (StringUtils.isNotBlank(timeZone)) {
             dateFormat.setTimeZone(TimeZone.getTimeZone(timeZone));
+        } else {
+            dateFormat.setTimeZone(TimeZone.getTimeZone(GlobalConstants.DEFAULT_TIMEZONE));
         }
 
         return dateFormat.format(date);
+    }
+
+    public static String formatDecimal(BigDecimal value) {
+        DecimalFormat df = new DecimalFormat();
+        df.setDecimalSeparatorAlwaysShown(true);
+        df.setRoundingMode(RoundingMode.HALF_UP);
+        df.setMaximumFractionDigits(2);
+        df.setMinimumFractionDigits(2);
+
+        return value != null ? df.format(value) : "0.00";
+    }
+
+    public static String formatDecimal(BigDecimal value, int cantidadDecimales) {
+        DecimalFormat df = new DecimalFormat();
+        df.setDecimalSeparatorAlwaysShown(cantidadDecimales > 0);
+        df.setRoundingMode(RoundingMode.HALF_UP);
+        df.setMaximumFractionDigits(cantidadDecimales);
+        df.setMinimumFractionDigits(cantidadDecimales);
+
+        return value != null ? df.format(value) : "0.00";
     }
 
     public static StreamResource getStreamResource(ByteArrayOutputStream baos, String nombre, String extension) {
