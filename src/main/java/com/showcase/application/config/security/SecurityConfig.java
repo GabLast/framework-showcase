@@ -21,7 +21,7 @@ public class SecurityConfig extends VaadinWebSecurity {
                         requests -> requests
                                 .requestMatchers(new AntPathRequestMatcher("/line-awesome/**/*.svg")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/images/**")).permitAll()
-                                .requestMatchers(new AntPathRequestMatcher("/dbconsole/**")).permitAll()
+//                                .requestMatchers(new AntPathRequestMatcher("/dbconsole/**")).permitAll()
 //                                .requestMatchers(new AntPathRequestMatcher("/login")).permitAll()
 //                                .anyRequest().authenticated()
                 )
@@ -37,7 +37,7 @@ public class SecurityConfig extends VaadinWebSecurity {
     protected void configure(WebSecurity web) throws Exception {
         web.ignoring().requestMatchers(
                 // (development mode) H2 debugging console
-                "/dbconsole/**"
+                "/dbconsole/*"
         );
     }
 }

@@ -18,4 +18,11 @@ public class AppInfo {
     //    Crashes if it's not provided or with the default one
     private String appProfile;
 
+    @Value("${spring.datasource.url}")
+    private String dataSourceUrl;
+    @Value("${spring.datasource.username}")
+    private String dataSourceUsername;
+    @Value("${spring.datasource.password}")
+    private String dataSourcePassword;
+
 }

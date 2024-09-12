@@ -26,8 +26,7 @@ public class TestData extends Base {
     @ManyToOne(fetch = FetchType.EAGER)
     private TestType testType;
 
-    @Lob
-    @Column(columnDefinition = "tinytext")
+    @Column(columnDefinition = "longtext")
     private String description;
 
     public String toString() {

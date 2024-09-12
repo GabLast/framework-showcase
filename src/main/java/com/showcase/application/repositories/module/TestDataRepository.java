@@ -25,8 +25,8 @@ public interface TestDataRepository extends JpaRepository<TestData, Long> {
             "u " +
             "from TestData as u " +
             "where u.enabled = :enabled " +
-            "and (:word is null or u.word like '' or u.word like lower(trim(concat('%', :word,'%')))) " +
-            "and (:description is null or u.description like '' or u.description like lower(trim(concat('%', cast(:description as string),'%')))) " +
+            "and (:word is null or u.word like '' or lower(u.word) like lower(trim(concat('%', :word,'%')))) " +
+            "and (:description is null or u.description like '' or lower(u.description) like lower(trim(concat('%', :description,'%')))) " +
             "and (:testType is null or u.testType = :testType) " +
             "and (:start is null or u.date >= :start) " +
             "and (:end is null or u.date <= :end) "
@@ -44,8 +44,8 @@ public interface TestDataRepository extends JpaRepository<TestData, Long> {
             "count (u) " +
             "from TestData as u " +
             "where u.enabled = :enabled " +
-            "and (:word is null or u.word like '' or u.word like lower(trim(concat('%', :word,'%')))) " +
-            "and (:description is null or u.description like '' or u.description like lower(trim(concat('%', cast(:description as string ) ,'%')))) " +
+            "and (:word is null or u.word like '' or lower(u.word) like lower(trim(concat('%', :word,'%')))) " +
+            "and (:description is null or u.description like '' or lower(u.description) like lower(trim(concat('%', :description,'%')))) " +
             "and (:testType is null or u.testType = :testType) " +
             "and (:start is null or u.date >= :start) " +
             "and (:end is null or u.date <= :end) "

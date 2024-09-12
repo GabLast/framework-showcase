@@ -1,5 +1,6 @@
 package com.showcase.application.config.bootstrap;
 
+import com.showcase.application.config.appinfo.AppInfo;
 import com.showcase.application.services.module.TestDataService;
 import com.showcase.application.utils.Utilities;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +25,14 @@ public class BootstrapSqlData implements ApplicationRunner {
     private final TestDataService testDataService;
 
     private static Connection connection = null;
+    private final AppInfo appInfo;
     private static final String JDBC_URL = "jdbc:h2:~/frameworkshowcase";
     private static final String USERNAME = "sa";
     private static final String PASSWORD = "";
 
     public void prepareConnection() throws Exception {
-        connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+//        connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+        connection = DriverManager.getConnection(appInfo.getDataSourceUrl(), appInfo.getDataSourceUsername(), appInfo.getDataSourcePassword());
     }
 
     public static void closeConnection() throws Exception {

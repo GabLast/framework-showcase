@@ -8,12 +8,14 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
 @ToString
 @Component
 @VaadinSessionScope
-public class MyVaadinSession {
+public class MyVaadinSession implements Serializable {
 
     public enum SessionVariables {
         USER("VAADINUSER"),

@@ -102,6 +102,9 @@ public class UIServiceListener implements VaadinServiceInitListener {
 
     private void setSettings(UI ui, User user) {
         UserSetting settings = (UserSetting) ui.getSession().getAttribute(MyVaadinSession.SessionVariables.USERSETTINGS.toString());
+        if(settings == null) {
+            settings = userSettingService.findByUserAndEnabled(user, true);
+        }
         if (settings == null) {
             settings = new UserSetting();
             settings.setUser(user);

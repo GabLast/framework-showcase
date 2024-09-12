@@ -19,7 +19,6 @@ public class Document {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @Lob
     @Column(columnDefinition = "longblob")
     private byte[] file;
     private String contentType;
