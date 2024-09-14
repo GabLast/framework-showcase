@@ -142,13 +142,18 @@ public class TabReportTestData extends GenericReportTab<TestData> {
 //                        word.getValue(), description.getValue(), type.getValue(), start.getValue(), end.getValue()
 //                );
 //
-        List<ByteArrayOutputStream> list = reportService.generateTestDataReport(
+//        List<ByteArrayOutputStream> list = reportService.generateTestDataReport(
+//                user, settings,
+//                word.getValue(), description.getValue(), type.getValue(), start.getValue(), end.getValue()
+//        );
+//
+        List<ByteArrayOutputStream> list = reportService.generateReportFromTemplate(
                 user, settings,
                 word.getValue(), description.getValue(), type.getValue(), start.getValue(), end.getValue()
         );
 
-        filterBox.setDownloadFileCsv(list.get(ReportService.EXCEL), UI.getCurrent().getTranslation("title.testdata"));
-        filterBox.setDownloadFilePdf(list.get(ReportService.PDF), UI.getCurrent().getTranslation("title.testdata"));
+//        filterBox.setDownloadFileCsv(list.get(ReportService.EXCEL), UI.getCurrent().getTranslation("title.testdata"));
+        filterBox.setDownloadFilePdf(list.get(ReportService.EXCEL), UI.getCurrent().getTranslation("title.testdata"));
     }
 
     @Override

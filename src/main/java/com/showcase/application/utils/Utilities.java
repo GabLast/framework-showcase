@@ -172,8 +172,28 @@ public class Utilities {
         return sort;
     }
 
-    public static List<String> listBooleanI18() {
+    public static List<String> listBooleanI18YesNo() {
         return List.of(UI.getCurrent().getTranslation("yes"), UI.getCurrent().getTranslation("no"));
+    }
+
+    public static boolean isYes(String status) {
+        if (StringUtils.isBlank(status)) {
+            return false;
+        }
+
+        return UI.getCurrent().getTranslation("yes").equalsIgnoreCase(status);
+    }
+
+    public static List<String> listBooleanI18ActiveDisabled() {
+        return List.of(UI.getCurrent().getTranslation("active"), UI.getCurrent().getTranslation("disabled"));
+    }
+
+    public static boolean isActive(String status) {
+        if (StringUtils.isBlank(status)) {
+            return false;
+        }
+
+        return UI.getCurrent().getTranslation("active").equalsIgnoreCase(status);
     }
 
     public static List<String> listMonthsI18() {

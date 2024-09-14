@@ -46,9 +46,9 @@ public class ReportUtilities {
     public static final Integer DATE_TIME_WIDTH = 75;
 
 
-    public static AutoText generateAutoText(String mensaje, byte tipo, byte position, byte alignment, int width, int width2, Style style) {
-        AutoText autoText = new AutoText(tipo, position, HorizontalBandAlignment.buildAligment(alignment));
-        autoText.setMessageKey(mensaje);
+    public static AutoText generateAutoText(String msg, byte type, byte position, byte alignment, int width, int width2, Style style) {
+        AutoText autoText = new AutoText(type, position, HorizontalBandAlignment.buildAligment(alignment));
+        autoText.setMessageKey(msg);
         autoText.setPrintWhenExpression(ExpressionHelper.printInFirstPage());
         autoText.setWidth(width);
         autoText.setWidth2(width2);

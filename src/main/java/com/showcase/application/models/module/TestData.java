@@ -19,8 +19,6 @@ public class TestData extends Base {
 
     @Column(nullable = false)
     private String word;
-    private byte[] image;
-
     private Date date;
 
     @ManyToOne(fetch = FetchType.EAGER)
