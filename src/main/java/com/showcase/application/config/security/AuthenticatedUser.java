@@ -2,7 +2,9 @@ package com.showcase.application.config.security;
 
 import com.showcase.application.models.security.User;
 import com.showcase.application.services.security.UserService;
+import com.vaadin.flow.server.VaadinServletRequest;
 import com.vaadin.flow.spring.security.AuthenticationContext;
+import jakarta.servlet.ServletException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -25,6 +27,11 @@ public class AuthenticatedUser {
     }
 
     public void logout() {
-        authenticationContext.logout();
+        try {
+            VaadinServletRequest.getCurrent().getHttpServletRequest().logout();
+//            authenticationContext.logout();
+        } catch (ServletException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.showcase.application.config.bootstrap;
 
+import com.showcase.application.services.configuration.ParameterService;
 import com.showcase.application.services.module.TestTypeService;
 import com.showcase.application.services.security.PermitService;
 import com.showcase.application.services.security.UserService;
@@ -19,6 +20,7 @@ public class Bootstrap implements ApplicationRunner {
     private final TestTypeService testTypeService;
     private final UserService userService;
     private final PermitService permitService;
+    private final ParameterService parameterService;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -26,7 +28,7 @@ public class Bootstrap implements ApplicationRunner {
             testTypeService.bootstrap();
             userService.bootstrap();
             permitService.bootstrap();
-
+            parameterService.bootstrap();
         } catch (Exception e) {
             log.error(e.getMessage());
         }

@@ -3,9 +3,9 @@ package com.showcase.application.views.reports.module;
 import com.showcase.application.models.module.TestData;
 import com.showcase.application.models.module.TestType;
 import com.showcase.application.models.security.Permit;
-import com.showcase.application.services.ReportService;
 import com.showcase.application.services.module.TestDataService;
 import com.showcase.application.services.module.TestTypeService;
+import com.showcase.application.services.reports.ReportService;
 import com.showcase.application.utils.Utilities;
 import com.showcase.application.views.MainLayout;
 import com.showcase.application.views.generics.FilterBoxReports;
@@ -18,7 +18,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.DataProvider;
-import com.vaadin.flow.router.AfterNavigationEvent;
+import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.RolesAllowed;
 import org.springframework.data.domain.Sort;
@@ -30,7 +30,7 @@ import java.util.List;
 
 @Route(value = "reports/testdata", layout = MainLayout.class)
 @RolesAllowed(value = Permit.REPORT_TEST_DATA)
-public class TabReportTestData extends GenericReportTab<TestData> {
+public class TabReportTestData extends GenericReportTab<TestData> implements HasDynamicTitle {
 
     private final ReportService reportService;
     private final TestDataService testDataService;
@@ -125,7 +125,7 @@ public class TabReportTestData extends GenericReportTab<TestData> {
 
     @Override
     protected void setDownloadContent() {
-        if(filterBox.verifyFields()) {
+        if (filterBox.verifyFields()) {
             new ErrorNotification(UI.getCurrent().getTranslation("error"));
             return;
         }
@@ -153,11 +153,12 @@ public class TabReportTestData extends GenericReportTab<TestData> {
         );
 
 //        filterBox.setDownloadFileCsv(list.get(ReportService.EXCEL), UI.getCurrent().getTranslation("title.testdata"));
-        filterBox.setDownloadFilePdf(list.get(ReportService.EXCEL), UI.getCurrent().getTranslation("title.testdata"));
+        filterBox.setDownloadFileExcel(list.get(ReportService.EXCEL), UI.getCurrent().getTranslation("title.testdata"));
+        filterBox.setDownloadFilePdf(list.get(ReportService.PDF), UI.getCurrent().getTranslation("title.testdata"));
     }
 
     @Override
-    public void afterNavigation(AfterNavigationEvent event) {
-
+    public String getPageTitle() {
+        return UI.getCurrent().getTranslation("title.testdata") + UI.getCurrent().getTranslation("title.reports");
     }
 }

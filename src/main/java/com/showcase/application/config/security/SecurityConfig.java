@@ -1,7 +1,11 @@
 package com.showcase.application.config.security;
 
+import com.showcase.application.config.appinfo.AppInfo;
+import com.showcase.application.services.configuration.ParameterService;
+import com.showcase.application.services.security.CustomUserDetailsService;
 import com.showcase.application.views.login.LoginView;
 import com.vaadin.flow.spring.security.VaadinWebSecurity;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -12,7 +16,12 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @EnableWebSecurity
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig extends VaadinWebSecurity {
+
+    private final AppInfo appInfo;
+    private final ParameterService parameterService;
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -28,6 +37,14 @@ public class SecurityConfig extends VaadinWebSecurity {
 //                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(withDefaults());
 //                .addFilterBefore(authenticationJwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+
+        http.rememberMe(
+                httpSecurityRememberMeConfigurer ->
+                        httpSecurityRememberMeConfigurer
+                                .key(appInfo.getRememberMeToken())
+                                .tokenValiditySeconds(86400 * 1000)
+                                .userDetailsService(customUserDetailsService)
+        );
 
         super.configure(http);
         setLoginView(http, LoginView.class);

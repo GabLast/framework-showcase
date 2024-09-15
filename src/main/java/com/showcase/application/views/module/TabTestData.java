@@ -27,6 +27,7 @@ import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.DataProvider;
+import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteParam;
 import com.vaadin.flow.router.RouteParameters;
@@ -42,7 +43,7 @@ import java.util.Date;
 
 @Route(value = "testdata", layout = MainLayout.class)
 @RolesAllowed(Permit.MENU_TEST_DATA)
-public class TabTestData extends GenericTab<TestData> {
+public class TabTestData extends GenericTab<TestData> implements HasDynamicTitle {
 
     private final TestDataService testDataService;
     private final TestTypeService testTypeService;
@@ -81,7 +82,7 @@ public class TabTestData extends GenericTab<TestData> {
 
     @Override
     protected void configCrudUIMessages(WindowBasedCrudLayout crudLayout) {
-        crudLayout.setWindowCaption(CrudOperation.ADD, UI.getCurrent().getTranslation("new"));
+        crudLayout.setWindowCaption(CrudOperation.ADD, UI.getCurrent().getTranslation("create"));
         crudLayout.setWindowCaption(CrudOperation.UPDATE, UI.getCurrent().getTranslation("edit"));
         crudLayout.setWindowCaption(CrudOperation.DELETE, UI.getCurrent().getTranslation("delete"));
 
@@ -92,24 +93,24 @@ public class TabTestData extends GenericTab<TestData> {
 
     @Override
     protected void configButtons(MenuBar toolBar) {
-        Button btnNuevo = new Button(UI.getCurrent().getTranslation("new.object", UI.getCurrent().getTranslation("data")), new Icon(VaadinIcon.PLUS));
-        btnNuevo.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        btnNuevo.setSizeFull();
+        Button btnCreate = new Button(UI.getCurrent().getTranslation("create.object", UI.getCurrent().getTranslation("data")), new Icon(VaadinIcon.PLUS));
+        btnCreate.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        btnCreate.setSizeFull();
 
-        Button btnVisualizar = new Button(UI.getCurrent().getTranslation("view.object", UI.getCurrent().getTranslation("data")), new Icon(VaadinIcon.SEARCH));
-        btnVisualizar.setSizeFull();
+        Button btnView = new Button(UI.getCurrent().getTranslation("view.object", UI.getCurrent().getTranslation("data")), new Icon(VaadinIcon.SEARCH));
+        btnView.setSizeFull();
 
-        Button btnEditar = new Button(UI.getCurrent().getTranslation("edit.object", UI.getCurrent().getTranslation("data")), new Icon(VaadinIcon.PENCIL));
-        btnEditar.setSizeFull();
+        Button btnEdit = new Button(UI.getCurrent().getTranslation("edit.object", UI.getCurrent().getTranslation("data")), new Icon(VaadinIcon.PENCIL));
+        btnEdit.setSizeFull();
 
-        Button btnBorrar = new Button(UI.getCurrent().getTranslation("delete.object", UI.getCurrent().getTranslation("data")), new Icon(VaadinIcon.TRASH));
-        btnBorrar.addThemeVariants(ButtonVariant.LUMO_ERROR);
-        btnBorrar.setSizeFull();
+        Button btnDelete = new Button(UI.getCurrent().getTranslation("delete.object", UI.getCurrent().getTranslation("data")), new Icon(VaadinIcon.TRASH));
+        btnDelete.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        btnDelete.setSizeFull();
 
         miCreate = toolBar.addItem(
-                btnNuevo, e -> UI.getCurrent().navigate(FormTestData.class));
+                btnCreate, e -> UI.getCurrent().navigate(FormTestData.class));
 
-        miEdit = toolBar.addItem(btnEditar, e -> {
+        miEdit = toolBar.addItem(btnEdit, e -> {
             RouteParameters parameters = new RouteParameters(
                     new RouteParam("id", object.getId().toString()),
                     new RouteParam("view", "0")
@@ -118,7 +119,7 @@ public class TabTestData extends GenericTab<TestData> {
             UI.getCurrent().navigate(FormTestData.class, parameters);
         });
 
-        miView = toolBar.addItem(btnVisualizar, e -> {
+        miView = toolBar.addItem(btnView, e -> {
             RouteParameters parameters = new RouteParameters(
                     new RouteParam("id", object.getId().toString()),
                     new RouteParam("view", "1")
@@ -127,13 +128,13 @@ public class TabTestData extends GenericTab<TestData> {
             UI.getCurrent().navigate(FormTestData.class, parameters);
         });
 
-        miDelete = toolBar.addItem(btnBorrar, e -> {
+        miDelete = toolBar.addItem(btnDelete, e -> {
 
-            ConfirmWindow ventanaConfirmacion =
+            ConfirmWindow confirmWindow =
                     new ConfirmWindow(
-                            UI.getCurrent().getTranslation("action.delete.object", object.toString()),
+                            UI.getCurrent().getTranslation("action.confirm.question", object.toString()),
                             this::delete);
-            ventanaConfirmacion.open();
+            confirmWindow.open();
         });
     }
 
@@ -142,7 +143,7 @@ public class TabTestData extends GenericTab<TestData> {
         grid.removeAllColumns();
         grid.addColumn(TestData::getWord).setKey("word").setHeader(UI.getCurrent().getTranslation("tab.testdata.word")).setSortable(true).setResizable(true).setFlexGrow(0).setWidth("12rem");
         grid.addColumn(data -> UI.getCurrent().getTranslation(TestType.toStringI18nKey(data.getTestType()))).setKey("testType").setHeader(UI.getCurrent().getTranslation("tab.testdata.testtype")).setSortable(true).setResizable(true).setFlexGrow(0).setWidth("7.5rem");
-        grid.addColumn(data -> Utilities.formatDate(data.getDate(), settings.getDateTimeFormat(), settings.getTimeZoneString())).setKey("date").setHeader(UI.getCurrent().getTranslation("tab.testdata.date")).setSortable(true).setResizable(true).setFlexGrow(0).setWidth("10.625rem");
+        grid.addColumn(data -> Utilities.formatDate(data.getDate(), userSetting.getDateTimeFormat(), userSetting.getTimeZoneString())).setKey("date").setHeader(UI.getCurrent().getTranslation("tab.testdata.date")).setSortable(true).setResizable(true).setFlexGrow(0).setWidth("10.625rem");
         grid.addColumn(TestData::getDescription).setKey("description").setHeader(UI.getCurrent().getTranslation("tab.testdata.description")).setSortable(true).setResizable(true).setFlexGrow(1);
     }
 
@@ -160,7 +161,7 @@ public class TabTestData extends GenericTab<TestData> {
                 return DataProvider.fromCallbacks(
                         query -> testDataService.findAllFilter(
                                 true,
-                                settings.getTimeZoneString(),
+                                userSetting.getTimeZoneString(),
                                 word.getValue(),
                                 description.getValue(),
                                 type.getValue(),
@@ -176,7 +177,7 @@ public class TabTestData extends GenericTab<TestData> {
                         ).stream(),
                         query -> testDataService.countAllFilter(
                                 true,
-                                settings.getTimeZoneString(),
+                                userSetting.getTimeZoneString(),
                                 word.getValue(),
                                 description.getValue(),
                                 type.getValue(),
@@ -267,12 +268,17 @@ public class TabTestData extends GenericTab<TestData> {
     @Override
     protected void modifyBtnState() {
         if (object != null) {
-            miEdit.setEnabled(true);
             miView.setEnabled(true);
-            miDelete.setEnabled(true);
+            if(object.isEnabled()) {
+                miEdit .setEnabled(true);
+                miDelete.setEnabled(true);
+            } else {
+                miDelete.setEnabled(false);
+                miEdit.setEnabled(false);
+            }
         } else {
-            miEdit.setEnabled(false);
             miView.setEnabled(false);
+            miEdit.setEnabled(false);
             miDelete.setEnabled(false);
         }
     }
@@ -287,9 +293,14 @@ public class TabTestData extends GenericTab<TestData> {
             testDataService.disable(object);
             gridCrud.refreshGrid();
 
-            new SuccessNotification(UI.getCurrent().getTranslation("action.delete.object", object.toString()));
+            new SuccessNotification(UI.getCurrent().getTranslation("action.delete"));
         } catch (MyException e) {
             new ErrorNotification(e.getMessage());
         }
+    }
+
+    @Override
+    public String getPageTitle() {
+        return UI.getCurrent().getTranslation("title.testdata");
     }
 }

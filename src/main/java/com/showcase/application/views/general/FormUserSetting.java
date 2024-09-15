@@ -16,6 +16,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Hr;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -33,7 +34,7 @@ public class FormUserSetting extends Dialog {
     private UserSettingService userSettingService;
 
     private Button btnExit, btnSave;
-    private VerticalLayout formLayout;
+    private FormLayout formLayout;
 
     private ComboBox<Locale> cbLocale;
     private ComboBox<String> cbTimeZone;
@@ -62,6 +63,7 @@ public class FormUserSetting extends Dialog {
         setCloseOnOutsideClick(true);
         setModal(true);
 
+        setHeaderTitle(UI.getCurrent().getTranslation("title.setting"));
         add(buildForm());
         buildBtns();
         buildComponents();
@@ -105,17 +107,17 @@ public class FormUserSetting extends Dialog {
         btnExit = new Button(UI.getCurrent().getTranslation("exit"), new Icon(VaadinIcon.ARROW_LEFT));
         btnExit.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         btnExit.addClickListener(e -> {
-            UI.getCurrent().getPage().getHistory().back();
+            close();
         });
 
         btnSave = new Button(UI.getCurrent().getTranslation("save"), new Icon(VaadinIcon.CHECK));
         btnSave.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
         btnSave.addClickListener(buttonClickEvent -> {
-            ConfirmWindow ventanaConfirmacion =
+            ConfirmWindow confirmWindow =
                     new ConfirmWindow(
                             UI.getCurrent().getTranslation("action.confirm.title"),
                             UI.getCurrent().getTranslation("action.confirm.question"), this::save);
-            ventanaConfirmacion.open();
+            confirmWindow.open();
         });
 
         getFooter().add(btnExit);
@@ -124,12 +126,22 @@ public class FormUserSetting extends Dialog {
 
     private Component buildForm() {
 
-        formLayout = new VerticalLayout();
-        formLayout.setSpacing(false);
-        formLayout.setMargin(false);
-        formLayout.setPadding(false);
+        VerticalLayout layout = new VerticalLayout();
+        layout.setSpacing(true);
+        layout.setPadding(false);
+        layout.setMargin(false);
 
-        return formLayout;
+        formLayout = new FormLayout();
+        formLayout.setSizeUndefined();
+        formLayout.setResponsiveSteps(
+                new FormLayout.ResponsiveStep("1px", 1),
+                new FormLayout.ResponsiveStep("600px", 2),
+                new FormLayout.ResponsiveStep("900px", 3),
+                new FormLayout.ResponsiveStep("1200px", 4));
+
+        layout.add(formLayout);
+
+        return layout;
     }
 
     private void buildComponents() {

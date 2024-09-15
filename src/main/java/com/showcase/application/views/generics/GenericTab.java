@@ -34,7 +34,7 @@ import java.util.Optional;
 public abstract class GenericTab<T> extends Div implements AfterNavigationObserver {
 
     protected final User user;
-    protected final UserSetting settings;
+    protected final UserSetting userSetting;
 
     //Selected Object
     protected T object = null;
@@ -56,7 +56,7 @@ public abstract class GenericTab<T> extends Div implements AfterNavigationObserv
 
         //Variables de session
         this.user = (User) VaadinSession.getCurrent().getAttribute(MyVaadinSession.SessionVariables.USER.toString());
-        this.settings = (UserSetting) VaadinSession.getCurrent().getAttribute(MyVaadinSession.SessionVariables.USERSETTINGS.toString());
+        this.userSetting = (UserSetting) VaadinSession.getCurrent().getAttribute(MyVaadinSession.SessionVariables.USERSETTINGS.toString());
         this.filterBox = new FilterBox(gridCrud::refreshGrid);
 
         //Defaults
@@ -93,7 +93,7 @@ public abstract class GenericTab<T> extends Div implements AfterNavigationObserv
         gridCrud.getDeleteButton().setSizeFull();
         gridCrud.getDeleteButton().addThemeVariants(ButtonVariant.LUMO_ERROR);
 
-        gridCrud.getAddButton().setText(UI.getCurrent().getTranslation("new"));
+        gridCrud.getAddButton().setText(UI.getCurrent().getTranslation("create"));
         gridCrud.getAddButton().setSizeFull();
 
         gridCrud.getUpdateButton().setText(UI.getCurrent().getTranslation("edit"));

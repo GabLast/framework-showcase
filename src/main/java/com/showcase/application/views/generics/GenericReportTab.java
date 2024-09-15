@@ -15,12 +15,11 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.menubar.MenuBarVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.server.VaadinSession;
 import org.vaadin.crudui.crud.LazyCrudListener;
 import org.vaadin.crudui.crud.impl.GridCrud;
 
-public abstract class GenericReportTab<T> extends Div implements AfterNavigationObserver {
+public abstract class GenericReportTab<T> extends Div {
 
     protected final User user;
     protected final UserSetting settings;
@@ -71,7 +70,7 @@ public abstract class GenericReportTab<T> extends Div implements AfterNavigation
         gridCrud.getDeleteButton().setSizeFull();
         gridCrud.getDeleteButton().addThemeVariants(ButtonVariant.LUMO_ERROR);
 
-        gridCrud.getAddButton().setText(UI.getCurrent().getTranslation("new"));
+        gridCrud.getAddButton().setText(UI.getCurrent().getTranslation("create"));
         gridCrud.getAddButton().setSizeFull();
 
         gridCrud.getUpdateButton().setText(UI.getCurrent().getTranslation("edit"));

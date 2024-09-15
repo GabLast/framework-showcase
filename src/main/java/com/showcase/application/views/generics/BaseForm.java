@@ -27,6 +27,9 @@ import com.vaadin.flow.server.VaadinSession;
 
 public abstract class BaseForm<T> extends VerticalLayout implements HasDynamicTitle, BeforeEnterObserver, AfterNavigationObserver {
 
+    public static final Boolean TYPE_TABS_ON_TOP = false;
+    public static final Boolean TYPE_TABS_AS_DETAILS = true;
+
     protected Button btnExit, btnSave;
     protected SecurityForm securityForm;
     protected Tabs tabs;
@@ -39,11 +42,13 @@ public abstract class BaseForm<T> extends VerticalLayout implements HasDynamicTi
     protected UserSetting userSetting;
     protected T objectToSave;
     protected boolean view;
+    private boolean type;
 
-    public BaseForm() {
+    public BaseForm(boolean type) {
         this.user = (User) VaadinSession.getCurrent().getAttribute(MyVaadinSession.SessionVariables.USER.toString());
         this.userSetting = (UserSetting) VaadinSession.getCurrent().getAttribute(MyVaadinSession.SessionVariables.USERSETTINGS.toString());
         this.view = false;
+        this.type = type;
 
         setSizeFull();
         setMargin(false);
@@ -51,7 +56,9 @@ public abstract class BaseForm<T> extends VerticalLayout implements HasDynamicTi
         setSpacing(false);
 
         add(buildBtns());
-        add(buildSeparation());
+//        if (!type) {
+//            add(buildSeparation());
+//        }
         add(buildForm());
         buildComponents();
     }
@@ -73,11 +80,11 @@ public abstract class BaseForm<T> extends VerticalLayout implements HasDynamicTi
         btnSave = new Button(UI.getCurrent().getTranslation("save"), new Icon(VaadinIcon.CHECK));
         btnSave.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
         btnSave.addClickListener(buttonClickEvent -> {
-            ConfirmWindow ventanaConfirmacion =
+            ConfirmWindow confirmWindow =
                     new ConfirmWindow(
                             UI.getCurrent().getTranslation("action.confirm.title"),
                             UI.getCurrent().getTranslation("action.confirm.question"), this::save);
-            ventanaConfirmacion.open();
+            confirmWindow.open();
         });
 
         HorizontalLayout hlSave = new HorizontalLayout();
@@ -111,7 +118,11 @@ public abstract class BaseForm<T> extends VerticalLayout implements HasDynamicTi
         securityTab = new Tab(UI.getCurrent().getTranslation("security"));
         securityTab.setVisible(false);
 
-        tabs = new Tabs(generalTab, securityTab);
+        if (type) {
+            tabs = new Tabs(securityTab);
+        } else {
+            tabs = new Tabs(generalTab, securityTab);
+        }
         tabs.setWidthFull();
         tabs.setAutoselect(true);
 
@@ -136,10 +147,16 @@ public abstract class BaseForm<T> extends VerticalLayout implements HasDynamicTi
                 return;
             }
 
-            if (event.getSelectedTab().equals(generalTab)) {
-                contentDiv.add(formLayout);
-            } else if (event.getSelectedTab().equals(securityTab)) {
-                contentDiv.add(securityForm);
+            if (type) {
+                if (event.getSelectedTab().equals(securityTab)) {
+                    contentDiv.add(securityForm);
+                }
+            } else {
+                if (event.getSelectedTab().equals(generalTab)) {
+                    contentDiv.add(formLayout);
+                } else if (event.getSelectedTab().equals(securityTab)) {
+                    contentDiv.add(securityForm);
+                }
             }
         });
 
@@ -149,21 +166,24 @@ public abstract class BaseForm<T> extends VerticalLayout implements HasDynamicTi
         vl.setPadding(true);
         vl.setMargin(false);
         vl.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-        vl.add(tabs);
-//        vl.add(formLayout);
+        if (type) {
+            vl.add(formLayout);
+            vl.add(tabs);
+        } else {
+            vl.add(tabs);
+        }
         vl.addAndExpand(contentDiv);
 
-        VerticalLayout vl2 = new VerticalLayout();
-        vl2.setSizeFull();
-        vl2.setSpacing(false);
-        vl2.setMargin(false);
-        vl2.setPadding(false);
-        vl2.add(vl);
+        HorizontalLayout holderLayout = new HorizontalLayout();
+        holderLayout.setSizeFull();
+        holderLayout.setSpacing(false);
+        holderLayout.setMargin(false);
+        holderLayout.setPadding(false);
+        holderLayout.add(vl);
 
-        return vl2;
+        return holderLayout;
     }
 
-    ;
 
     protected abstract void setComponentValues();
 
@@ -193,10 +213,6 @@ public abstract class BaseForm<T> extends VerticalLayout implements HasDynamicTi
 
         try {
             Long id = ((Long) Utilities.getFieldValue(objectToSave, "id"));
-
-            if (objectToSave instanceof UserSetting) {
-                return;
-            }
 
             if (id != 0L) {
                 fillFields();

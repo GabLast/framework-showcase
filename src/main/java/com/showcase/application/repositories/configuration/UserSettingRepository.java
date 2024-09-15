@@ -15,6 +15,6 @@ public interface UserSettingRepository extends JpaRepository<UserSetting, Long>,
     //Or
 //    @EntityGraph(value = "UserSetting.name", type = EntityGraph.EntityGraphType.FETCH)
 
-    UserSetting findByUserAndEnabled(User user, boolean bo);
+    UserSetting findByEnabledAndUser(boolean enabled, User user);
 
 }

@@ -18,6 +18,9 @@ import com.showcase.application.views.generics.notifications.ErrorNotification;
 import com.showcase.application.views.generics.notifications.WarningNotification;
 import com.showcase.application.views.module.TabTestData;
 import com.showcase.application.views.reports.module.TabReportTestData;
+import com.showcase.application.views.security.TabProfile;
+import com.showcase.application.views.security.TabUser;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -25,15 +28,12 @@ import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.sidenav.SideNav;
-import com.vaadin.flow.component.sidenav.SideNavItem;
-import com.vaadin.flow.dom.ThemeList;
-import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 import com.vaadin.flow.theme.lumo.Lumo;
@@ -132,6 +132,18 @@ public class MainLayout extends AppLayout {
         div.add(reportsModule);
 
         //***************************************************************
+
+        SideNav securityModule = new SideNav(UI.getCurrent().getTranslation("title.security"));
+        securityModule.setCollapsible(true);
+        securityModule.setExpanded(false);
+        securityModule.setVisible(SecurityUtils.isAccessGranted(Permit.SECURITY_MODULE));
+        securityModule.addItem(new MySideNavItem(UI.getCurrent().getTranslation("title.profile"),
+                TabProfile.class, LineAwesomeIcon.ID_BADGE.create(), accessChecker.hasAccess(TabProfile.class)));
+        securityModule.addItem(new MySideNavItem(UI.getCurrent().getTranslation("title.user"),
+                TabUser.class, LineAwesomeIcon.USER.create(), accessChecker.hasAccess(TabUser.class)));
+        div.add(securityModule);
+
+        //***************************************************************
         SideNav aboutNav = new SideNav();
         aboutNav.addItem(new MySideNavItem(UI.getCurrent().getTranslation("title.about"), AboutView.class, LineAwesomeIcon.ADDRESS_CARD.create(), accessChecker.hasAccess(AboutView.class)));
         div.add(aboutNav);
@@ -208,18 +220,6 @@ public class MainLayout extends AppLayout {
         getElement().executeJs(js, dark ? Lumo.DARK : Lumo.LIGHT);
     }
 
-    private void setTheme2(boolean isDark) {
-        ThemeList themeList = UI.getCurrent().getElement().getThemeList();
-        themeList.remove(Lumo.DARK);
-        themeList.remove(Lumo.LIGHT);
-
-        if (isDark) {
-            themeList.add(Lumo.DARK);
-        } else {
-            themeList.add(Lumo.LIGHT);
-        }
-    }
-
     @Override
     protected void afterNavigation() {
         super.afterNavigation();
@@ -228,7 +228,13 @@ public class MainLayout extends AppLayout {
     }
 
     private String getCurrentPageTitle() {
-        PageTitle title = getContent().getClass().getAnnotation(PageTitle.class);
-        return title == null ? "" : title.value();
+        String title = UI.getCurrent().getTranslation("app.title");
+
+        Component content = getContent();
+        if (content instanceof HasDynamicTitle) {
+            title = ((HasDynamicTitle) content).getPageTitle();
+        }
+
+        return title;
     }
 }

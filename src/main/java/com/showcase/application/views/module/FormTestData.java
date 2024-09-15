@@ -14,6 +14,7 @@ import com.showcase.application.views.generics.notifications.SuccessNotification
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -38,7 +39,7 @@ public class FormTestData extends BaseForm<TestData> {
     private DateTimePicker dpDate;
 
     public FormTestData(TestDataService testDataService, TestTypeService testTypeService) {
-        super();
+        super(BaseForm.TYPE_TABS_ON_TOP);
         this.testDataService = testDataService;
         this.testTypeService = testTypeService;
         objectToSave = new TestData();
@@ -77,6 +78,11 @@ public class FormTestData extends BaseForm<TestData> {
         tfDescription.setErrorMessage(UI.getCurrent().getTranslation("form.error"));
         tfDescription.setPlaceholder(UI.getCurrent().getTranslation("form.testdata.description") + "...");
         tfDescription.setSizeFull();
+
+        formLayout.setResponsiveSteps(
+                new FormLayout.ResponsiveStep("1px", 1),
+                new FormLayout.ResponsiveStep("600px", 2),
+                new FormLayout.ResponsiveStep("900px", 3));
 
         formLayout.add(tfWord);
         formLayout.add(cbTestType);
@@ -165,12 +171,12 @@ public class FormTestData extends BaseForm<TestData> {
             UI.getCurrent().getPage().getHistory().back();
         } catch (MyException e) {
 
-            if (objectToSave == null) {
-                objectToSave = new TestData();
+            if (objectToSave != null && objectToSave.getId() != 0L) {
+                objectToSave = (testDataService.getTestDataById(objectToSave.getId())).orElse(null);
             }
 
-            if (objectToSave.getId() != 0L) {
-                objectToSave = (testDataService.getTestDataById(objectToSave.getId())).orElse(null);
+            if (objectToSave == null) {
+                objectToSave = new TestData();
             }
 
             new ErrorNotification(e.getMessage());

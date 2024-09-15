@@ -1,4 +1,4 @@
-package com.showcase.application.services;
+package com.showcase.application.services.reports;
 
 import ar.com.fdvs.dj.core.DynamicJasperHelper;
 import ar.com.fdvs.dj.core.layout.ClassicLayoutManager;
@@ -28,10 +28,11 @@ import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimpleWriterExporterOutput;
 import org.apache.commons.lang3.StringUtils;
+import org.jxls.builder.JxlsStreaming;
+import org.jxls.transform.poi.JxlsPoiTemplateFillerBuilder;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -45,9 +46,10 @@ import java.util.*;
 @Slf4j
 public class ReportService {
     public static final Integer EXCEL = 0;
+    public static final Integer CSV = 0;
     public static final Integer PDF = 1;
     private final String JASPER_SUFFIX = ".jasper";
-    private final String JASPER_ROUTE = "/templates/jasper/";
+    private final String JASPER_PATH = "/templates/jasper/";
 
 
     private final TranslationProvider translationProvider;
@@ -333,20 +335,22 @@ public class ReportService {
             List<ByteArrayOutputStream> list = new ArrayList<>();
 
             //EXCEL
-//            Context context = new Context();
-//            for (Map.Entry<String, Object> objectEntry : params.entrySet()) {
-//                context.putVar(objectEntry.getKey(), objectEntry.getValue());
-//            }
-//            ByteArrayOutputStream csv = new ByteArrayOutputStream();
-//            JxlsHelper.getInstance().processTemplate(getClass().getResourceAsStream("templates/excel/reportTemplate.xlsx"), new FileOutputStream("target/object_collection_output.xls"), context);
-//            csv.flush();
-//            csv.close();
-//            list.add(csv);
+//            https://jxls.sourceforge.net/migration-to-v3-0.html
+//            https://jxls.sourceforge.net/each.html
+            byte[] tmpBytes = JxlsPoiTemplateFillerBuilder.newInstance()
+                    .withTemplate(getClass().getResourceAsStream(ExcelReports.REPORT_TEMPLATE))
+                    .withStreaming(JxlsStreaming.STREAMING_ON)
+                    .buildAndFill(params);
+            ByteArrayOutputStream excel = new ByteArrayOutputStream(tmpBytes.length);
+            excel.write(tmpBytes, 0, tmpBytes.length);
+            excel.flush();
+            excel.close();
+            list.add(excel);
 
             //PDF
             JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(data);
             String reportName = "reportTemplate";
-            JasperPrint jasperPrintPDF = JasperFillManager.fillReport(getClass().getResourceAsStream(JASPER_ROUTE + reportName + JASPER_SUFFIX), params, dataSource);
+            JasperPrint jasperPrintPDF = JasperFillManager.fillReport(getClass().getResourceAsStream(JASPER_PATH + reportName + JASPER_SUFFIX), params, dataSource);
 
             ByteArrayOutputStream pdf = new ByteArrayOutputStream();
             JRPdfExporter pdfExporter = new JRPdfExporter();

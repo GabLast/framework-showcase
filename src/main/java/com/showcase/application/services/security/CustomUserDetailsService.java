@@ -6,6 +6,7 @@ import com.showcase.application.models.security.ProfilePermit;
 import com.showcase.application.models.security.ProfileUser;
 import com.showcase.application.models.security.User;
 import com.showcase.application.utils.MyException;
+import com.showcase.application.utils.TranslationProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,13 +31,14 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final PermitService permitService;
     private final ProfileUserService profileUserService;
     private final ProfilePermitService profilePermitService;
+    private final TranslationProvider translationProvider;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userService.findByUsernameOrMail(username);
 
         if(user == null) {
-            throw new UsernameNotFoundException("User was not found");
+            throw new UsernameNotFoundException(translationProvider.getTranslation("error.usernotfound", TranslationProvider.ENGLISH));
         }
 
         return new org.springframework.security.core.userdetails.User(

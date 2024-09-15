@@ -41,6 +41,7 @@ public class FilterBoxReports extends Accordion {
 
     private FormLayout form;
     public Anchor btnDownloadCSV;
+    public Anchor btnDownloadExcel;
     public Anchor btnDownloadPDF;
 
     private final Runnable refreshCall;
@@ -96,6 +97,21 @@ public class FilterBoxReports extends Accordion {
 
         btnDownloadCSV.add(btnAux);
 
+//************
+
+        btnDownloadExcel = new Anchor();
+        btnDownloadExcel.setWidthFull();
+        btnDownloadExcel.setVisible(false);
+
+        Button btnAuxExcel = new Button(UI.getCurrent().getTranslation("download.excel"));
+        btnAuxExcel.setIcon(VaadinIcon.FILE_PROCESS.create());
+        btnAuxExcel.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_SUCCESS, ButtonVariant.LUMO_PRIMARY);
+        btnAuxExcel.setWidthFull();
+
+        btnDownloadExcel.add(btnAuxExcel);
+
+//************
+
         btnDownloadPDF = new Anchor();
         btnDownloadPDF.setWidthFull();
         btnDownloadPDF.setVisible(false);
@@ -120,6 +136,7 @@ public class FilterBoxReports extends Accordion {
         div.setHeight("10px");
         form.add(div, 5);
         form.add(btnDownloadCSV, 1);
+        form.add(btnDownloadExcel, 1);
         form.add(btnDownloadPDF, 1);
 
         return form;
@@ -288,6 +305,13 @@ public class FilterBoxReports extends Accordion {
         btnDownloadCSV.setVisible(true);
         btnDownloadCSV.getElement().setAttribute("download", fileName + System.currentTimeMillis());
         btnDownloadCSV.setHref(Utilities.getStreamResource(byteArrayOutputStream, fileName, ".csv"));
+    }
+
+    public void setDownloadFileExcel(ByteArrayOutputStream byteArrayOutputStream, String fileName) {
+
+        btnDownloadExcel.setVisible(true);
+        btnDownloadExcel.getElement().setAttribute("download", fileName + System.currentTimeMillis());
+        btnDownloadExcel.setHref(Utilities.getStreamResource(byteArrayOutputStream, fileName, ".xlsx"));
     }
 
     public void setDownloadFilePdf(ByteArrayOutputStream byteArrayOutputStream, String fileName) {

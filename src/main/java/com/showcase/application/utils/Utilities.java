@@ -196,6 +196,26 @@ public class Utilities {
         return UI.getCurrent().getTranslation("active").equalsIgnoreCase(status);
     }
 
+    public static String formatBooleanYes(boolean data) {
+        String value = "";
+        if (data) {
+            value = UI.getCurrent().getTranslation("yes");
+        } else {
+            value = UI.getCurrent().getTranslation("no");
+        }
+        return value;
+    }
+
+    public static String formatBooleanActive(boolean data) {
+        String value = "";
+        if (data) {
+            value = UI.getCurrent().getTranslation("active");
+        } else {
+            value = UI.getCurrent().getTranslation("disabled");
+        }
+        return value;
+    }
+
     public static List<String> listMonthsI18() {
         return List.of(
                 UI.getCurrent().getTranslation("january"),

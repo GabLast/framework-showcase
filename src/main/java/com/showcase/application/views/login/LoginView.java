@@ -1,8 +1,10 @@
 package com.showcase.application.views.login;
 
 import com.showcase.application.config.appinfo.AppInfo;
+import com.showcase.application.config.security.AuthenticatedUser;
 import com.showcase.application.utils.GlobalConstants;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.login.LoginI18n;
@@ -10,6 +12,7 @@ import com.vaadin.flow.component.login.LoginOverlay;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.HasDynamicTitle;
@@ -24,7 +27,11 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 @CssImport(value = "./themes/framework-showcase/components/vaadin-login.css", themeFor = "vaadin-login-overlay-wrapper")
 public class LoginView extends LoginOverlay implements BeforeEnterObserver, HasDynamicTitle {
 
-    public LoginView(AppInfo appInfo) {
+    private final AuthenticatedUser authenticatedUser;
+
+    public LoginView(AppInfo appInfo, AuthenticatedUser authenticatedUser) {
+        this.setId("LoginView");
+        this.authenticatedUser = authenticatedUser;
 
         setAction(RouteUtil.getRoutePath(VaadinService.getCurrent().getContext(), getClass()));
         //Error Handler
@@ -37,7 +44,6 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver, HasD
         i18n.setHeader(new LoginI18n.Header());
         i18n.getHeader().setTitle("");
         i18n.getHeader().setDescription("");
-        i18n.setAdditionalInformation(null);
 
         i18n.getForm().setTitle(UI.getCurrent().getTranslation("login.title"));
         i18n.getForm().setUsername(UI.getCurrent().getTranslation("login.username") + " - admin");
@@ -65,15 +71,45 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver, HasD
 
         setTitle(vl);
         setDescription(null);
+        addRememberMeCheckbox();
 
         setForgotPasswordButtonVisible(true);
         addForgotPasswordListener(forgotPasswordEvent -> UI.getCurrent().navigate(RecoverPasswordView.class));
 
+        getElement().setAttribute("autocomplete", "off");
         setOpened(true);
+    }
+
+    public void addRememberMeCheckbox() {
+        Checkbox checkRememberMe = new Checkbox(UI.getCurrent().getTranslation("rememberme"));
+        checkRememberMe.setId("checkRememberMe");
+        checkRememberMe.getElement().setAttribute("name", "remember-me");
+
+        Element loginFormElement = this.getElement();
+        Element element = checkRememberMe.getElement();
+        loginFormElement.appendChild(element);
+        UI.getCurrent().getPage().executeJs(
+                "const check = document.getElementById(\"checkRememberMe\");" +
+                        "\nconst password = document.getElementById(\"vaadinLoginPassword\");" +
+                        "\npassword.after(check);");
+
+        String executeJsForFieldString = "const field = document.getElementById($0);" +
+                "if(field) {" +
+                "   field.after($1)" +
+                "} else {" +
+                "   //console.error('could not find field', $0);" +
+                "}";
+        getElement().executeJs(executeJsForFieldString, "vaadinLoginPassword", checkRememberMe);
     }
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
+        if (authenticatedUser.get().isPresent()) {
+            // Already logged in
+            setOpened(false);
+            event.forwardTo("");
+        }
+
         //Error message
         setError(event.getLocation().getQueryParameters().getParameters().containsKey("error"));
     }

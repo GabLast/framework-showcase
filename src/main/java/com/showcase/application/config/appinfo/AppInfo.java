@@ -25,4 +25,7 @@ public class AppInfo {
     @Value("${spring.datasource.password}")
     private String dataSourcePassword;
 
+    @Value("${remember.me.token}")
+    private String rememberMeToken;
+
 }

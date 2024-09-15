@@ -15,11 +15,11 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
     @Query("select " +
             "u " +
             "from Profile as u " +
-            "where u.enabled = :enabled " +
-            "and (:word is null or u.name like '' or u.name like lower(trim(concat('%', :name,'%')))) " +
-            "and (:word is null or u.description like '' or u.description like lower(trim(concat('%', :description,'%')))) "
+            "where (:enabled is null or u.enabled = :enabled) " +
+            "and (:name is null or u.name like '' or u.name like lower(trim(concat('%', :name,'%')))) " +
+            "and (:description is null or u.description like '' or u.description like lower(trim(concat('%', :description,'%')))) "
     )
-    List<Profile> findAllFilter(@Param("enabled") boolean enabled,
+    List<Profile> findAllFilter(@Param("enabled") Boolean enabled,
                                 @Param("name") String name,
                                 @Param("description") String description,
                                 Pageable pageable
@@ -28,12 +28,15 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
     @Query("select " +
             "count(u) " +
             "from Profile as u " +
-            "where u.enabled = :enabled " +
-            "and (:word is null or u.name like '' or u.name like lower(trim(concat('%', :name,'%')))) " +
-            "and (:word is null or u.description like '' or u.description like lower(trim(concat('%', :description,'%')))) "
+            "where (:enabled is null or u.enabled = :enabled) " +
+            "and (:name is null or u.name like '' or u.name like lower(trim(concat('%', :name,'%')))) " +
+            "and (:description is null or u.description like '' or u.description like lower(trim(concat('%', :description,'%')))) "
     )
-    Integer countAllFilter(@Param("enabled") boolean enabled,
+    Integer countAllFilter(@Param("enabled") Boolean enabled,
                            @Param("name") String name,
                            @Param("description") String description
     );
+
+
+    List<Profile> findAllByEnabled(boolean enabled);
 }

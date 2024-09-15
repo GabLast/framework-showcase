@@ -3,7 +3,6 @@ package com.showcase.application.models.configuration;
 import com.showcase.application.models.security.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

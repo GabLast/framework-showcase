@@ -1,6 +1,9 @@
 package com.showcase.application.services.security;
 
+import com.showcase.application.models.configuration.UserSetting;
+import com.showcase.application.models.security.Permit;
 import com.showcase.application.models.security.Profile;
+import com.showcase.application.models.security.ProfilePermit;
 import com.showcase.application.repositories.security.ProfileRepository;
 import com.showcase.application.services.BaseService;
 import com.showcase.application.utils.MyException;
@@ -21,6 +24,7 @@ import java.util.List;
 public class ProfileService extends BaseService<Profile, Long> {
 
     private final ProfileRepository profileRepository;
+    private final ProfilePermitService profilePermitService;
 
     @Override
     protected JpaRepository<Profile, Long> getRepository() {
@@ -28,7 +32,7 @@ public class ProfileService extends BaseService<Profile, Long> {
     }
 
     @Transactional(readOnly = true)
-    public List<Profile> findAllFilter(boolean enabled,
+    public List<Profile> findAllFilter(Boolean enabled,
                                        String name, String description,
                                        Integer limit, Integer offset, Sort sort) {
         try {
@@ -51,7 +55,7 @@ public class ProfileService extends BaseService<Profile, Long> {
 
 
     @Transactional(readOnly = true)
-    public Integer countAllFilter(boolean enabled,
+    public Integer countAllFilter(Boolean enabled,
                                   String name, String description) {
         try {
 
@@ -68,5 +72,65 @@ public class ProfileService extends BaseService<Profile, Long> {
                 throw new MyException(MyException.SERVER_ERROR, e.getMessage());
             }
         }
+    }
+
+    public Profile create(Profile profile, List<Permit> list, UserSetting userSetting) {
+        try {
+
+            if (profile == null) {
+                throw new MyException(MyException.CLIENT_ERROR, "error.null", userSetting.getLocale());
+            }
+
+            if (list == null || list.isEmpty()) {
+                throw new MyException(MyException.CLIENT_ERROR, "error.empty.details", userSetting.getLocale());
+            }
+
+            profile = saveAndFlush(profile);
+
+            for (ProfilePermit profilePermit : profilePermitService.findAllByEnabledAndProfile(true, profile)) {
+                profilePermitService.delete(profilePermit);
+            }
+
+            for (Permit permit : list) {
+                profilePermitService.saveAndFlush(new ProfilePermit(profile, permit));
+            }
+
+            return profile;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            if (e instanceof MyException) {
+                throw e;
+            } else {
+                throw new MyException(MyException.SERVER_ERROR, e.getMessage());
+            }
+        }
+    }
+
+    public void delete(Profile profile, UserSetting userSetting) {
+        try {
+
+            if (profile == null) {
+                throw new MyException(MyException.CLIENT_ERROR, "error.null", userSetting.getLocale());
+            }
+
+            for (ProfilePermit profilePermit : profilePermitService.findAllByEnabledAndProfile(true, profile)) {
+                profilePermitService.delete(profilePermit);
+            }
+
+            disable(profile);
+
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            if (e instanceof MyException) {
+                throw e;
+            } else {
+                throw new MyException(MyException.SERVER_ERROR, e.getMessage());
+            }
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<Profile> findAllByEnabled(boolean enabled) {
+        return profileRepository.findAllByEnabled(enabled);
     }
 }

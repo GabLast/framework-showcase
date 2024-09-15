@@ -2,8 +2,8 @@ package com.showcase.application.views.security;
 
 import com.showcase.application.config.security.SecurityUtils;
 import com.showcase.application.models.security.Permit;
-import com.showcase.application.models.security.User;
-import com.showcase.application.services.security.UserService;
+import com.showcase.application.models.security.Profile;
+import com.showcase.application.services.security.ProfileService;
 import com.showcase.application.utils.MyException;
 import com.showcase.application.utils.Utilities;
 import com.showcase.application.views.MainLayout;
@@ -35,41 +35,40 @@ import org.vaadin.crudui.crud.impl.GridCrud;
 import org.vaadin.crudui.form.impl.form.factory.DefaultCrudFormFactory;
 import org.vaadin.crudui.layout.impl.WindowBasedCrudLayout;
 
-@Route(value = "security/users", layout = MainLayout.class)
-@RolesAllowed(Permit.MENU_USER)
-public class TabUser extends GenericTab<User> implements HasDynamicTitle {
+@Route(value = "security/profiles", layout = MainLayout.class)
+@RolesAllowed(Permit.MENU_PROFILE)
+public class TabProfile extends GenericTab<Profile> implements HasDynamicTitle {
 
-    private final UserService userService;
+    private final ProfileService profileService;
 
     private MenuItem miCreate, miEdit, miView, miDelete;
 
-    public TabUser(UserService userService) {
-        super(User.class, false);
-        this.userService = userService;
+    public TabProfile(ProfileService profileService) {
+        super(Profile.class, false);
+        this.profileService = profileService;
 
         prepareComponets();
     }
 
     @Override
-    protected void applySecurity(GridCrud<User> crud) {
+    protected void applySecurity(GridCrud<Profile> crud) {
         crud.setFindAllOperationVisible(true);
         crud.setAddOperationVisible(false);
         crud.setUpdateOperationVisible(false);
         crud.setDeleteOperationVisible(false);
         menuVisualizar.setVisible(false);
 
-        miCreate.setVisible(SecurityUtils.isAccessGranted(Permit.USER_CREATE));
-        miEdit.setVisible(SecurityUtils.isAccessGranted(Permit.USER_EDIT));
-        miView.setVisible(SecurityUtils.isAccessGranted(Permit.USER_VIEW));
-        miDelete.setVisible(SecurityUtils.isAccessGranted(Permit.USER_DELETE));
+        miCreate.setVisible(SecurityUtils.isAccessGranted(Permit.PROFILE_CREATE));
+        miEdit.setVisible(SecurityUtils.isAccessGranted(Permit.PROFILE_EDIT));
+        miView.setVisible(SecurityUtils.isAccessGranted(Permit.PROFILE_VIEW));
+        miDelete.setVisible(SecurityUtils.isAccessGranted(Permit.PROFILE_DELETE));
     }
 
     @Override
     protected void configFilters(FilterBox filterBox) {
-        filterBox.addFilter(String.class, "name", UI.getCurrent().getTranslation("tab.user.name"), null, null, false);
-        filterBox.addFilter(String.class, "mail", UI.getCurrent().getTranslation("tab.user.mail"), null, null, false);
-        filterBox.addFilter(String.class, "admin", UI.getCurrent().getTranslation("tab.user.admin"), Utilities.listBooleanI18YesNo(), null, false);
-        filterBox.addFilter(String.class, "enabled", UI.getCurrent().getTranslation("enabled"), Utilities.listBooleanI18YesNo(), UI.getCurrent().getTranslation("yes"), false);
+        filterBox.addFilter(String.class, "name", UI.getCurrent().getTranslation("tab.profile.name"), null, null, false);
+        filterBox.addFilter(String.class, "description", UI.getCurrent().getTranslation("tab.profile.description"), null, null, false);
+        filterBox.addFilter(String.class, "enabled", UI.getCurrent().getTranslation("enabled"), Utilities.listBooleanI18YesNo(),  UI.getCurrent().getTranslation("yes"), false);
     }
 
     @Override
@@ -94,7 +93,7 @@ public class TabUser extends GenericTab<User> implements HasDynamicTitle {
         btnDelete.setSizeFull();
 
         miCreate = toolBar.addItem(
-                btnCreate, e -> UI.getCurrent().navigate(FormUser.class));
+                btnCreate, e -> UI.getCurrent().navigate(FormProfile.class));
 
         miEdit = toolBar.addItem(btnEdit, e -> {
             RouteParameters parameters = new RouteParameters(
@@ -102,7 +101,7 @@ public class TabUser extends GenericTab<User> implements HasDynamicTitle {
                     new RouteParam("view", "0")
             );
 
-            UI.getCurrent().navigate(FormUser.class, parameters);
+            UI.getCurrent().navigate(FormProfile.class, parameters);
         });
 
         miView = toolBar.addItem(btnView, e -> {
@@ -111,7 +110,7 @@ public class TabUser extends GenericTab<User> implements HasDynamicTitle {
                     new RouteParam("view", "1")
             );
 
-            UI.getCurrent().navigate(FormUser.class, parameters);
+            UI.getCurrent().navigate(FormProfile.class, parameters);
         });
 
         miDelete = toolBar.addItem(btnDelete, e -> {
@@ -125,21 +124,12 @@ public class TabUser extends GenericTab<User> implements HasDynamicTitle {
     }
 
     @Override
-    protected void configGrid(Grid<User> grid) {
+    protected void configGrid(Grid<Profile> grid) {
         grid.removeAllColumns();
-
-        grid.addColumn(User::getName).setKey("name").setHeader(UI.getCurrent().getTranslation("tab.user.name")).setSortable(true).setResizable(true).setFlexGrow(0).setWidth("13rem");
-        grid.addColumn(User::getMail).setKey("mail").setHeader(UI.getCurrent().getTranslation("tab.user.mail")).setSortable(true).setResizable(true).setFlexGrow(1);
-        grid.addColumn(data -> Utilities.formatBooleanYes(data.isAdmin())).setKey("admin").setHeader(UI.getCurrent().getTranslation("tab.user.admin")).setSortable(true).setResizable(true).setFlexGrow(1);
+        grid.addColumn(Profile::getName).setKey("word").setHeader(UI.getCurrent().getTranslation("tab.profile.name")).setSortable(true).setResizable(true).setFlexGrow(0).setWidth("13rem");
+        grid.addColumn(Profile::getDescription).setKey("description").setHeader(UI.getCurrent().getTranslation("tab.profile.description")).setSortable(true).setResizable(true).setFlexGrow(1);
 
         grid.setClassNameGenerator(data -> {
-            if (data.isAdmin()) {
-                if (userSetting.isDarkMode()) {
-                    return "row-green-dark";
-                } else {
-                    return "row-green";
-                }
-            }
             if (!data.isEnabled()) {
                 if (userSetting.isDarkMode()) {
                     return "row-red-dark";
@@ -152,62 +142,55 @@ public class TabUser extends GenericTab<User> implements HasDynamicTitle {
     }
 
     @Override
-    protected LazyCrudListener<User> configDataSource() {
+    protected LazyCrudListener<Profile> configDataSource() {
         return new LazyCrudListener<>() {
             @Override
-            public DataProvider<User, ?> getDataProvider() {
+            public DataProvider<Profile, ?> getDataProvider() {
                 TextField name = (TextField) filterBox.getFilter("name");
-                TextField mail = (TextField) filterBox.getFilter("mail");
+                TextField description = (TextField) filterBox.getFilter("description");
                 Select<String> enabled = (Select<String>) filterBox.getFilter("enabled");
-                Select<String> admin = (Select<String>) filterBox.getFilter("admin");
 
                 return DataProvider.fromCallbacks(
-                        query -> userService.findAllFilter(
-                                null,
-                                null,
-                                null,
-                                null,
+                        query -> profileService.findAllFilter(
+                                enabled.getValue() != null ? Utilities.isYes(enabled.getValue()) : null,
+                                name.getValue(),
+                                description.getValue(),
                                 query.getLimit(),
                                 query.getOffset(),
                                 Utilities.generarSortDeBusquedaTabla(
-                                        User.class,
+                                        Profile.class,
                                         gridCrud.getGrid().getSortOrder(),
                                         Sort.by(Sort.Direction.DESC, "id"),
                                         null
                                 )
                         ).stream(),
-                        query -> userService.countAllFilter(
-                                null,
-                                null,
-                                null,
-                                null
-//                                enabled.getValue() != null ? Utilities.isYes(enabled.getValue()) : null,
-//                                name.getValue(),
-//                                mail.getValue(),
-//                                admin.getValue() != null ? Utilities.isYes(admin.getValue()) : null
+                        query -> profileService.countAllFilter(
+                                enabled.getValue() != null ? Utilities.isYes(enabled.getValue()) : null,
+                                name.getValue(),
+                                description.getValue()
                         )
                 );
             }
 
             @Override
-            public User add(User data) {
+            public Profile add(Profile data) {
                 return null;
             }
 
             @Override
-            public User update(User data) {
+            public Profile update(Profile data) {
                 return null;
             }
 
             @Override
-            public void delete(User data) {
+            public void delete(Profile data) {
             }
         };
     }
 
 
     @Override
-    protected void buildFromCruidUI(DefaultCrudFormFactory<User> formFactory) {
+    protected void buildFromCruidUI(DefaultCrudFormFactory<Profile> formFactory) {
     }
 
     @Override
@@ -219,8 +202,8 @@ public class TabUser extends GenericTab<User> implements HasDynamicTitle {
     protected void modifyBtnState() {
         if (object != null) {
             miView.setEnabled(true);
-            if (object.isEnabled()) {
-                miEdit.setEnabled(true);
+            if(object.isEnabled()) {
+                miEdit .setEnabled(true);
                 miDelete.setEnabled(true);
             } else {
                 miDelete.setEnabled(false);
@@ -240,7 +223,7 @@ public class TabUser extends GenericTab<User> implements HasDynamicTitle {
                 return;
             }
 
-            userService.delete(object, userSetting);
+            profileService.delete(object, userSetting);
             gridCrud.refreshGrid();
 
             new SuccessNotification(UI.getCurrent().getTranslation("action.delete"));
@@ -251,6 +234,6 @@ public class TabUser extends GenericTab<User> implements HasDynamicTitle {
 
     @Override
     public String getPageTitle() {
-        return UI.getCurrent().getTranslation("title.user");
+        return UI.getCurrent().getTranslation("title.profile");
     }
 }

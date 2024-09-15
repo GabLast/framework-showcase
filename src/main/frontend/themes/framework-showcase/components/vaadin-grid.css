@@ -1,0 +1,35 @@
+.row-green {
+    background-color: #99ff99;
+}
+
+.row-red {
+    background-color: #ff8566;
+}
+
+.row-yellow {
+    background-color: #ffffb3;
+}
+
+.row-white {
+    background-color: #ffffff;
+}
+
+.row-green-dark {
+    background-color: #99ff99;
+    color: #000000;
+}
+
+.row-red-dark {
+    background-color: #ff8566;
+    color: #000000;
+}
+
+.row-yellow-dark {
+    background-color: #ffffb3;
+    color: #000000;
+}
+
+.row-white-dark {
+    background-color: #ffffff;
+    color: #000000;
+}

@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "user_class")
+@Table(name = "sec_user")
 //@Audited
 //@AuditOverride(forClass = Base.class)
 public class User extends Base {

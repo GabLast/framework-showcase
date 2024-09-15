@@ -4,3 +4,8 @@ html {
     --lumo-border-radius-m: calc(var(--lumo-size-m) / 1.5);
     --lumo-border-radius-l: var(--lumo-size-m);
 }
+
+/*https://vaadin.com/docs/latest/styling/lumo/lumo-style-properties/color*/
+/*[theme~="dark"] {*/
+/*    --lumo-base-color: #333333;*/
+/*}*/

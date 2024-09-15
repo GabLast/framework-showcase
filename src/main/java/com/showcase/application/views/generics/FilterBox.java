@@ -235,14 +235,14 @@ public class FilterBox extends Accordion {
     private void clearAll() {
         form.getChildren().forEach(component -> {
             if (component instanceof HorizontalLayout || component instanceof VerticalLayout || component instanceof FormLayout) {
-                component.getChildren().forEach(this::limpiarComponente);
+                component.getChildren().forEach(this::clearComponent);
             } else {
-                limpiarComponente(component);
+                clearComponent(component);
             }
         });
     }
 
-    private void limpiarComponente(Component component) {
+    private void clearComponent(Component component) {
 
         if (component instanceof HasValueAndElement && ((HasValueAndElement<?, ?>) component).isReadOnly()) {
             return;
