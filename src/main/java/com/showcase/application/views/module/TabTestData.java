@@ -3,9 +3,11 @@ package com.showcase.application.views.module;
 import com.showcase.application.config.security.SecurityUtils;
 import com.showcase.application.models.module.TestData;
 import com.showcase.application.models.module.TestType;
+import com.showcase.application.models.redis.RedisTest;
 import com.showcase.application.models.security.Permit;
 import com.showcase.application.services.module.TestDataService;
 import com.showcase.application.services.module.TestTypeService;
+import com.showcase.application.services.redis.RedisTestRedisService;
 import com.showcase.application.utils.MyException;
 import com.showcase.application.utils.Utilities;
 import com.showcase.application.views.MainLayout;
@@ -21,6 +23,7 @@ import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
@@ -40,6 +43,7 @@ import org.vaadin.crudui.form.impl.form.factory.DefaultCrudFormFactory;
 import org.vaadin.crudui.layout.impl.WindowBasedCrudLayout;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Route(value = "testdata", layout = MainLayout.class)
 @RolesAllowed(Permit.MENU_TEST_DATA)
@@ -47,13 +51,15 @@ public class TabTestData extends GenericTab<TestData> implements HasDynamicTitle
 
     private final TestDataService testDataService;
     private final TestTypeService testTypeService;
+    private final RedisTestRedisService redisTestRedisService;
 
     private MenuItem miCreate, miEdit, miView, miDelete;
 
-    public TabTestData(TestDataService testDataService, TestTypeService testTypeService) {
+    public TabTestData(TestDataService testDataService, TestTypeService testTypeService, RedisTestRedisService redisTestRedisService) {
         super(TestData.class, false);
         this.testDataService = testDataService;
         this.testTypeService = testTypeService;
+        this.redisTestRedisService = redisTestRedisService;
 
         prepareComponets();
     }
@@ -262,15 +268,22 @@ public class TabTestData extends GenericTab<TestData> implements HasDynamicTitle
 
     @Override
     protected void configOtherComponents(Div divCustomizeBar) {
+        Optional<RedisTest> redisTest = redisTestRedisService.findById("testdata");
+        Span span;
+        span = redisTest.map(
+                test -> new Span(UI.getCurrent().getTranslation("redis.testdata.count", test.getTestTypeCount())))
+                .orElseGet(() -> new Span(UI.getCurrent().getTranslation("redis.testdata.count", UI.getCurrent().getTranslation("empty"))));
 
+        divCustomizeBar.add(span);
+        divCustomizeBar.setVisible(true);
     }
 
     @Override
     protected void modifyBtnState() {
         if (object != null) {
             miView.setEnabled(true);
-            if(object.isEnabled()) {
-                miEdit .setEnabled(true);
+            if (object.isEnabled()) {
+                miEdit.setEnabled(true);
                 miDelete.setEnabled(true);
             } else {
                 miDelete.setEnabled(false);

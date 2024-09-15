@@ -160,12 +160,19 @@
             <artifactId>jxls-poi</artifactId>
             <version>3.0.0</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.jxls</groupId>-->
-<!--            <artifactId>jxls-jexcel</artifactId>-->
-<!--            <version>1.0.9</version>-->
-<!--        </dependency>-->
 
+<!--        unirest-->
+        <dependency>
+            <groupId>com.mashape.unirest</groupId>
+            <artifactId>unirest-java</artifactId>
+            <version>1.4.9</version>
+        </dependency>
+
+<!--        mail service-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

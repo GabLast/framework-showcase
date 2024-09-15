@@ -16,7 +16,7 @@ import java.sql.DriverManager;
 import java.util.Objects;
 
 @Component
-@Order()
+@Order(value = 2)
 @RequiredArgsConstructor
 @Slf4j
 public class BootstrapSqlData implements ApplicationRunner {
