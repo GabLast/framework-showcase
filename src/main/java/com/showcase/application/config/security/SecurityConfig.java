@@ -30,6 +30,7 @@ public class SecurityConfig extends VaadinWebSecurity {
                         requests -> requests
                                 .requestMatchers(new AntPathRequestMatcher("/line-awesome/**/*.svg")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/images/**")).permitAll()
+//                                .requestMatchers( new AntPathRequestMatcher("/rest/**")).anonymous() -> for rest ?
 //                                .requestMatchers(new AntPathRequestMatcher("/dbconsole/**")).permitAll()
 //                                .requestMatchers(new AntPathRequestMatcher("/login")).permitAll()
 //                                .anyRequest().authenticated()
@@ -38,11 +39,12 @@ public class SecurityConfig extends VaadinWebSecurity {
                 .httpBasic(withDefaults());
 //                .addFilterBefore(authenticationJwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
+        //https://github.com/jcgueriaud1/remember-me
         http.rememberMe(
                 httpSecurityRememberMeConfigurer ->
                         httpSecurityRememberMeConfigurer
                                 .key(appInfo.getRememberMeToken())
-                                .tokenValiditySeconds(86400 * 1000)
+                                .tokenValiditySeconds(86400)
                                 .userDetailsService(customUserDetailsService)
         );
 

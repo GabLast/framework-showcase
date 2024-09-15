@@ -26,6 +26,7 @@ public class ParameterService extends BaseService<Parameter, Long> {
     public void bootstrap() {
         try {
             create(Parameter.REMEMBER_ME_TOKEN,"param.remembermetoken", UUID.randomUUID().toString());
+            create(Parameter.JWT_KEY,"param.jwtkey", UUID.randomUUID().toString());
 
             log.info("Parameters created");
         } catch (MyException e) {

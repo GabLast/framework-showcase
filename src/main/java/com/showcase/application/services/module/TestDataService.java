@@ -30,7 +30,9 @@ import java.util.TimeZone;
 @RequiredArgsConstructor
 @Slf4j
 public class TestDataService extends BaseService<TestData, Long> {
+
     private final TestDataRepository testDataRepository;
+    private final TestTypeService testTypeService;
 
     @Override
     protected JpaRepository<TestData, Long> getRepository() {
@@ -104,6 +106,16 @@ public class TestDataService extends BaseService<TestData, Long> {
         try {
 
             if (testData == null) {
+                throw new MyException(MyException.CLIENT_ERROR, "error.null", userSetting.getLocale());
+            }
+
+            if(testData.getTestType() == null || testData.getTestType().getId() == 0L) {
+                throw new MyException(MyException.CLIENT_ERROR, "error.null", userSetting.getLocale());
+            }
+
+            testData.setTestType(testTypeService.get(testData.getTestType().getId()).orElse(null));
+
+            if(testData.getTestType() == null || testData.getTestType().getId() == 0L) {
                 throw new MyException(MyException.CLIENT_ERROR, "error.null", userSetting.getLocale());
             }
 

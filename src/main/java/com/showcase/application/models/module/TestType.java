@@ -1,6 +1,7 @@
 package com.showcase.application.models.module;
 
 import com.showcase.application.models.Base;
+import com.showcase.application.models.rest.module.TestTypeRest;
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -49,5 +50,12 @@ public class TestType extends Base {
             typeName = "type3";
         }
         return typeName;
+    }
+
+    public TestType(TestTypeRest testTypeRest) {
+        this.id = testTypeRest.getId();
+        this.code = testTypeRest.getCode();
+        this.name = testTypeRest.getName();
+        this.description = testTypeRest.getDescription();
     }
 }

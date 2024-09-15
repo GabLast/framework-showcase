@@ -81,6 +81,7 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver, HasD
     }
 
     public void addRememberMeCheckbox() {
+        //https://github.com/jcgueriaud1/remember-me
         Checkbox checkRememberMe = new Checkbox(UI.getCurrent().getTranslation("rememberme"));
         checkRememberMe.setId("checkRememberMe");
         checkRememberMe.getElement().setAttribute("name", "remember-me");

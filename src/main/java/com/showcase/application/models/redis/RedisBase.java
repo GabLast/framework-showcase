@@ -1,4 +1,4 @@
-package com.showcase.application.models;
+package com.showcase.application.models.redis;
 
 
 import lombok.Getter;

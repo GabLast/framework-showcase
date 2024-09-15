@@ -2,6 +2,7 @@ package com.showcase.application.models.module;
 
 
 import com.showcase.application.models.Base;
+import com.showcase.application.models.rest.module.TestDataRest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -32,5 +33,12 @@ public class TestData extends Base {
 
     public String toString() {
         return word;
+    }
+
+    public TestData(TestDataRest testDataRest) {
+        this.word = testDataRest.getWord();
+        this.description = testDataRest.getDescription();
+        this.testType = new TestType(testDataRest.getTestTypeRest());
+        this.word = testDataRest.getWord();
     }
 }

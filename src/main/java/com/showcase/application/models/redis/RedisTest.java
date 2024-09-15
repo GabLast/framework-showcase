@@ -1,6 +1,5 @@
 package com.showcase.application.models.redis;
 
-import com.showcase.application.models.RedisBase;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

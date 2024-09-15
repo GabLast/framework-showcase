@@ -5,6 +5,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.grid.GridSortOrder;
 import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.server.StreamResource;
+import io.jsonwebtoken.security.Keys;
 import jakarta.persistence.Id;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.jdbc.ScriptRunner;
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 
+import javax.crypto.SecretKey;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -89,7 +91,12 @@ public class Utilities {
             format = "dd/MM/yyyy hh:mm a";
         }
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+        SimpleDateFormat dateFormat;
+        try {
+            dateFormat = new SimpleDateFormat(format);
+        } catch (IllegalArgumentException e) {
+            dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+        }
 
         if (StringUtils.isNotBlank(timeZone)) {
             dateFormat.setTimeZone(TimeZone.getTimeZone(timeZone));
@@ -245,5 +252,10 @@ public class Utilities {
         scriptRunner.setSendFullScript(false);
         scriptRunner.setStopOnError(true);
         scriptRunner.runScript(new java.io.FileReader(path));
+    }
+
+    public static SecretKey generateJWTKey(String key) {
+        //docs at https://github.com/jwtk/jjwt
+        return Keys.hmacShaKeyFor(key.getBytes());
     }
 }

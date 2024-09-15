@@ -11,11 +11,14 @@ import com.showcase.application.services.redis.RedisTestRedisService;
 import com.showcase.application.utils.MyException;
 import com.showcase.application.utils.Utilities;
 import com.showcase.application.views.MainLayout;
+import com.showcase.application.views.broadcaster.module.BroadcasterTestData;
 import com.showcase.application.views.generics.FilterBox;
 import com.showcase.application.views.generics.GenericTab;
 import com.showcase.application.views.generics.dialog.ConfirmWindow;
 import com.showcase.application.views.generics.notifications.ErrorNotification;
 import com.showcase.application.views.generics.notifications.SuccessNotification;
+import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -34,6 +37,7 @@ import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteParam;
 import com.vaadin.flow.router.RouteParameters;
+import com.vaadin.flow.shared.Registration;
 import jakarta.annotation.security.RolesAllowed;
 import org.springframework.data.domain.Sort;
 import org.vaadin.crudui.crud.CrudOperation;
@@ -54,6 +58,8 @@ public class TabTestData extends GenericTab<TestData> implements HasDynamicTitle
     private final RedisTestRedisService redisTestRedisService;
 
     private MenuItem miCreate, miEdit, miView, miDelete;
+
+    private Registration broadcaster;
 
     public TabTestData(TestDataService testDataService, TestTypeService testTypeService, RedisTestRedisService redisTestRedisService) {
         super(TestData.class, false);
@@ -271,7 +277,7 @@ public class TabTestData extends GenericTab<TestData> implements HasDynamicTitle
         Optional<RedisTest> redisTest = redisTestRedisService.findById("testdata");
         Span span;
         span = redisTest.map(
-                test -> new Span(UI.getCurrent().getTranslation("redis.testdata.count", test.getTestTypeCount())))
+                        test -> new Span(UI.getCurrent().getTranslation("redis.testdata.count", test.getTestTypeCount())))
                 .orElseGet(() -> new Span(UI.getCurrent().getTranslation("redis.testdata.count", UI.getCurrent().getTranslation("empty"))));
 
         divCustomizeBar.add(span);
@@ -315,5 +321,26 @@ public class TabTestData extends GenericTab<TestData> implements HasDynamicTitle
     @Override
     public String getPageTitle() {
         return UI.getCurrent().getTranslation("title.testdata");
+    }
+
+    @Override
+    protected void onAttach(AttachEvent attachEvent) {
+        broadcaster = BroadcasterTestData.getInstance().register(data -> {
+            if (attachEvent.getUI().isClosing()) {
+                return;
+            }
+
+            attachEvent.getUI().access(() -> {
+                if (data.getId() != 0L) {
+                    gridCrud.refreshGrid();
+                }
+            });
+        });
+    }
+
+    @Override
+    protected void onDetach(DetachEvent detachEvent) {
+        broadcaster.remove();
+        broadcaster = null;
     }
 }
