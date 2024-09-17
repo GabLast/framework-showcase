@@ -23,12 +23,15 @@ import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.server.VaadinSession;
 import org.apache.commons.lang3.StringUtils;
+import org.vaadin.crudui.crud.AddOperationListener;
 import org.vaadin.crudui.crud.CrudOperation;
 import org.vaadin.crudui.crud.LazyCrudListener;
+import org.vaadin.crudui.crud.UpdateOperationListener;
 import org.vaadin.crudui.crud.impl.GridCrud;
 import org.vaadin.crudui.form.impl.form.factory.DefaultCrudFormFactory;
 import org.vaadin.crudui.layout.impl.WindowBasedCrudLayout;
 
+import java.io.Serializable;
 import java.util.Optional;
 
 public abstract class GenericTab<T> extends Div implements AfterNavigationObserver {
@@ -113,13 +116,12 @@ public abstract class GenericTab<T> extends Div implements AfterNavigationObserv
             if (object != null) {
                 crudLayout.showDialog(
                         StringUtils.isBlank("View") ? UI.getCurrent().getTranslation("view") : "View",
-//                        UI.getCurrent().getTranslation("view"),
                         gridCrud.getCrudFormFactory().buildNewForm(
                                 CrudOperation.READ,
                                 object,
                                 true,
-                                btnCancelar -> crudLayout.hideForm(),
-                                buttonClickEvent1 -> crudLayout.hideForm()
+                                cancel -> crudLayout.hideForm(),
+                                operation -> crudLayout.hideForm()
                         )
                 );
             }
@@ -195,6 +197,8 @@ public abstract class GenericTab<T> extends Div implements AfterNavigationObserv
 
         //Grid DataSource
         gridCrud.setCrudListener(configDataSource());
+        gridCrud.setUpdateOperation(updateOperationListener(object));
+        gridCrud.getGrid().getLazyDataView().setItemIndexProvider((t, query) -> 0);
 
         //Configurando otros botones
         configButtons(toolBar);
@@ -214,7 +218,7 @@ public abstract class GenericTab<T> extends Div implements AfterNavigationObserv
         crudFormFactory.setCancelButtonCaption(UI.getCurrent().getTranslation("cancel"));
         crudFormFactory.setValidationErrorMessage(UI.getCurrent().getTranslation("form.error"));
         crudFormFactory.setButtonCaption(CrudOperation.ADD, UI.getCurrent().getTranslation("save"));
-        crudFormFactory.setButtonCaption(CrudOperation.UPDATE, UI.getCurrent().getTranslation("save"));
+        crudFormFactory.setButtonCaption(CrudOperation.UPDATE, UI.getCurrent().getTranslation("edit"));
         crudFormFactory.setButtonCaption(CrudOperation.READ, UI.getCurrent().getTranslation("view"));
         crudFormFactory.setButtonCaption(CrudOperation.DELETE, UI.getCurrent().getTranslation("delete"));
         crudFormFactory.setErrorListener(e -> {
@@ -261,4 +265,14 @@ public abstract class GenericTab<T> extends Div implements AfterNavigationObserv
     public void afterNavigation(AfterNavigationEvent event) {
         modifyBtnState();
     }
+
+    private UpdateOperationListener<T> updateOperationListener(T object) {
+        return t -> scrollToItem(object);
+    }
+
+    private T scrollToItem(T object) {
+        gridCrud.getGrid().scrollToItem(object);
+        return null;
+    }
+
 }

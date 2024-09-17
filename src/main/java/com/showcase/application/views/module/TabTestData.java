@@ -46,6 +46,7 @@ import com.vaadin.flow.router.RouteParam;
 import com.vaadin.flow.router.RouteParameters;
 import com.vaadin.flow.shared.Registration;
 import jakarta.annotation.security.RolesAllowed;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
 import org.vaadin.crudui.crud.CrudOperation;
 import org.vaadin.crudui.crud.LazyCrudListener;
@@ -211,17 +212,57 @@ public class TabTestData extends GenericTab<TestData> implements HasDynamicTitle
 
             @Override
             public TestData add(TestData data) {
+                if (StringUtils.isBlank(data.getWord())) {
+                    throw new MyException(UI.getCurrent().getTranslation("form.error"));
+                }
+
+                if (StringUtils.isBlank(data.getDescription())) {
+                    throw new MyException(UI.getCurrent().getTranslation("form.error"));
+                }
+
+                if(data.getDate() == null) {
+                    throw new MyException(UI.getCurrent().getTranslation("form.error"));
+                }
+
+                if(data.getNumber() == null) {
+                    throw new MyException(UI.getCurrent().getTranslation("form.error"));
+                }
+
+                if(data.getTestType() == null) {
+                    throw new MyException(UI.getCurrent().getTranslation("form.error"));
+                }
+
                 return testDataService.saveAndFlush(data);
             }
 
             @Override
             public TestData update(TestData data) {
+                if (StringUtils.isBlank(data.getWord())) {
+                    throw new MyException(UI.getCurrent().getTranslation("form.error"));
+                }
+
+                if (StringUtils.isBlank(data.getDescription())) {
+                    throw new MyException(UI.getCurrent().getTranslation("form.error"));
+                }
+
+                if(data.getDate() == null) {
+                    throw new MyException(UI.getCurrent().getTranslation("form.error"));
+                }
+
+                if(data.getNumber() == null) {
+                    throw new MyException(UI.getCurrent().getTranslation("form.error"));
+                }
+
+                if(data.getTestType() == null) {
+                    throw new MyException(UI.getCurrent().getTranslation("form.error"));
+                }
+
                 return testDataService.saveAndFlush(data);
             }
 
             @Override
             public void delete(TestData data) {
-                testDataService.saveAndFlush(data);
+                testDataService.disable(data);
             }
         };
     }
@@ -254,7 +295,7 @@ public class TabTestData extends GenericTab<TestData> implements HasDynamicTitle
             select.setRequiredIndicatorVisible(true);
             select.setErrorMessage(UI.getCurrent().getTranslation("form.error"));
             select.setItems(testTypeService.findAllByEnabled(true));
-            select.setItemLabelGenerator(data -> TestType.toStringI18nKey(data));
+            select.setItemLabelGenerator(data -> UI.getCurrent().getTranslation(TestType.toStringI18nKey(data)));
             return select;
         });
 
@@ -303,7 +344,7 @@ public class TabTestData extends GenericTab<TestData> implements HasDynamicTitle
 
             @Override
             public LocalDateTime convertToPresentation(Date value, ValueContext valueContext) {
-                if(value == null) {
+                if (value == null) {
                     value = new Date();
                 }
                 return Objects.requireNonNullElse(value.toInstant().atZone(userSetting.getTimezone().toZoneId()).toLocalDateTime(), null);

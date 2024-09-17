@@ -38,7 +38,7 @@ public class ErrorNotification extends Notification {
         super();
 
         addThemeVariants(NotificationVariant.LUMO_ERROR);
-        setPosition(Position.MIDDLE);
+        setPosition(Position.BOTTOM_END);
         setDuration(timeInSeconds * 1000);
 
         Div divText = new Div(new Text(message));
