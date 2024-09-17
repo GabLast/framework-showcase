@@ -5,8 +5,10 @@ import ar.com.fdvs.dj.domain.AutoText;
 import ar.com.fdvs.dj.domain.ExpressionHelper;
 import ar.com.fdvs.dj.domain.Style;
 import ar.com.fdvs.dj.domain.builders.StyleBuilder;
+import ar.com.fdvs.dj.domain.constants.*;
 import ar.com.fdvs.dj.domain.constants.Font;
-import ar.com.fdvs.dj.domain.constants.HorizontalTextAlign;
+import net.sf.jasperreports.engine.type.StretchTypeEnum;
+import net.sf.jasperreports.engine.type.TextAdjustEnum;
 
 import java.awt.*;
 
@@ -19,20 +21,49 @@ public class ReportUtilities {
             .build();
 
     public static final Style titleStyle = new StyleBuilder(true)
-            .setFont(new Font(10, Font._FONT_ARIAL, true, false, false))
+            .setFont(new Font(13, Font._FONT_ARIAL, true, false, false))
             .setBackgroundColor(Color.WHITE)
             .setTextColor(Color.BLACK)
             .setHorizontalTextAlign(HorizontalTextAlign.CENTER)
-            .setPaddingTop(7)
-            .setPaddingBottom(10)
-            .build();
+            .setStretchType(StretchTypeEnum.ELEMENT_GROUP_HEIGHT)
+            .setTextAdjust(TextAdjustEnum.STRETCH_HEIGHT)
+            .setPaddingBottom(7).setPaddingTop(5).build();
 
-    public static final Style boldStyle = new StyleBuilder(true)
+    public static final Style prettyPageHeadersStyle = new StyleBuilder(true)
             .setFont(new Font(10, Font._FONT_ARIAL, true, false, false))
-            .setBackgroundColor(Color.WHITE)
+            .setTransparent(false)
+            .setBackgroundColor(new Color(160, 255, 166)) //https://rgbcolorpicker.com/
             .setTextColor(Color.BLACK)
+            .setBorder(Border.THIN())
+            .setPaddingLeft(1)
+            .setStretchType(StretchTypeEnum.ELEMENT_GROUP_HEIGHT)
+            .setTextAdjust(TextAdjustEnum.STRETCH_HEIGHT)
             .setHorizontalTextAlign(HorizontalTextAlign.CENTER)
-            .build();
+            .setVerticalTextAlign(VerticalTextAlign.MIDDLE).build();
+
+    public static final Style prettyColumnHeaderStyle = new StyleBuilder(true)
+            .setFont(new Font(10, Font._FONT_ARIAL, true, false, false))
+            .setTransparent(false)
+            .setBackgroundColor(new Color(160, 255, 166)) //https://rgbcolorpicker.com/
+            .setTextColor(Color.BLACK)
+            .setBorder(Border.THIN())
+            .setPaddingLeft(1)
+            .setStretchType(StretchTypeEnum.ELEMENT_GROUP_HEIGHT)
+            .setTextAdjust(TextAdjustEnum.STRETCH_HEIGHT)
+            .setHorizontalTextAlign(HorizontalTextAlign.CENTER)
+            .setVerticalTextAlign(VerticalTextAlign.MIDDLE).build();
+
+    public static final Style detailsStyle = new StyleBuilder(true)
+            .setFont(new Font(10, Font._FONT_ARIAL, true, false, false))
+            .setTransparent(false)
+            .setTextColor(Color.BLACK)
+            .setBorder(Border.THIN())
+            .setPaddingLeft(2)
+            .setPaddingRight(1)
+            .setPaddingTop(1)
+            .setStretchType(StretchTypeEnum.ELEMENT_GROUP_HEIGHT)
+            .setTextAdjust(TextAdjustEnum.STRETCH_HEIGHT)
+            .setVerticalTextAlign(VerticalTextAlign.MIDDLE).build();
 
     public static final Style columnLeft = new StyleBuilder(true)
             .setHorizontalTextAlign(HorizontalTextAlign.LEFT).build();

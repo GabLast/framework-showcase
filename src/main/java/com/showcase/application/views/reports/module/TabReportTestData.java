@@ -142,18 +142,18 @@ public class TabReportTestData extends GenericReportTab<TestData> implements Has
 //                        word.getValue(), description.getValue(), type.getValue(), start.getValue(), end.getValue()
 //                );
 //
-//        List<ByteArrayOutputStream> list = reportService.generateTestDataReport(
-//                user, settings,
-//                word.getValue(), description.getValue(), type.getValue(), start.getValue(), end.getValue()
-//        );
-//
-        List<ByteArrayOutputStream> list = reportService.generateReportFromTemplate(
+        List<ByteArrayOutputStream> list = reportService.generateTestDataReport(
                 user, settings,
                 word.getValue(), description.getValue(), type.getValue(), start.getValue(), end.getValue()
         );
+//
+//        List<ByteArrayOutputStream> list = reportService.generateReportFromTemplate(
+//                user, settings,
+//                word.getValue(), description.getValue(), type.getValue(), start.getValue(), end.getValue()
+//        );
 
-//        filterBox.setDownloadFileCsv(list.get(ReportService.EXCEL), UI.getCurrent().getTranslation("title.testdata"));
-        filterBox.setDownloadFileExcel(list.get(ReportService.EXCEL), UI.getCurrent().getTranslation("title.testdata"));
+        filterBox.setDownloadFileCsv(list.get(ReportService.EXCEL), UI.getCurrent().getTranslation("title.testdata"));
+//        filterBox.setDownloadFileExcel(list.get(ReportService.EXCEL), UI.getCurrent().getTranslation("title.testdata"));
         filterBox.setDownloadFilePdf(list.get(ReportService.PDF), UI.getCurrent().getTranslation("title.testdata"));
     }
 

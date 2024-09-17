@@ -22,8 +22,10 @@ import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
@@ -31,7 +33,12 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.component.textfield.BigDecimalField;
+import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.Result;
+import com.vaadin.flow.data.binder.ValueContext;
+import com.vaadin.flow.data.converter.Converter;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
@@ -46,7 +53,10 @@ import org.vaadin.crudui.crud.impl.GridCrud;
 import org.vaadin.crudui.form.impl.form.factory.DefaultCrudFormFactory;
 import org.vaadin.crudui.layout.impl.WindowBasedCrudLayout;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Optional;
 
 @Route(value = "testdata", layout = MainLayout.class)
@@ -73,10 +83,10 @@ public class TabTestData extends GenericTab<TestData> implements HasDynamicTitle
     @Override
     protected void applySecurity(GridCrud<TestData> crud) {
         crud.setFindAllOperationVisible(true);
-        crud.setAddOperationVisible(false);
-        crud.setUpdateOperationVisible(false);
-        crud.setDeleteOperationVisible(false);
-        menuVisualizar.setVisible(false);
+        crud.setAddOperationVisible(SecurityUtils.isAccessGranted(Permit.TEST_DATA_CREATE));
+        crud.setUpdateOperationVisible(SecurityUtils.isAccessGranted(Permit.TEST_DATA_EDIT));
+        menuVisualizar.setVisible(SecurityUtils.isAccessGranted(Permit.TEST_DATA_VIEW));
+        crud.setDeleteOperationVisible(SecurityUtils.isAccessGranted(Permit.TEST_DATA_DELETE));
 
         miCreate.setVisible(SecurityUtils.isAccessGranted(Permit.TEST_DATA_CREATE));
         miEdit.setVisible(SecurityUtils.isAccessGranted(Permit.TEST_DATA_EDIT));
@@ -157,6 +167,7 @@ public class TabTestData extends GenericTab<TestData> implements HasDynamicTitle
         grid.addColumn(data -> UI.getCurrent().getTranslation(TestType.toStringI18nKey(data.getTestType()))).setKey("testType").setHeader(UI.getCurrent().getTranslation("tab.testdata.testtype")).setSortable(true).setResizable(true).setFlexGrow(0).setWidth("7.5rem");
         grid.addColumn(data -> Utilities.formatDate(data.getDate(), userSetting.getDateTimeFormat(), userSetting.getTimeZoneString())).setKey("date").setHeader(UI.getCurrent().getTranslation("tab.testdata.date")).setSortable(true).setResizable(true).setFlexGrow(0).setWidth("10.625rem");
         grid.addColumn(TestData::getDescription).setKey("description").setHeader(UI.getCurrent().getTranslation("tab.testdata.description")).setSortable(true).setResizable(true).setFlexGrow(1);
+        grid.addColumn(data -> Utilities.formatDecimal(data.getNumber())).setKey("number").setHeader(UI.getCurrent().getTranslation("tab.testdata.number")).setSortable(true).setResizable(true).setFlexGrow(1);
     }
 
     @Override
@@ -218,58 +229,86 @@ public class TabTestData extends GenericTab<TestData> implements HasDynamicTitle
 
     @Override
     protected void buildFromCruidUI(DefaultCrudFormFactory<TestData> formFactory) {
-//        formFactory.setVisibleProperties("word", "testType", "description");
-//        formFactory.setFieldCaptions(
-//                UI.getCurrent().getTranslation("tab.testdata.word"),
-//                UI.getCurrent().getTranslation("tab.testdata.testtype"),
-//                UI.getCurrent().getTranslation("tab.testdata.description")
-//        );
-//
-//        formFactory.setFieldProvider("word", a -> {
-//            TextField field = new TextField(UI.getCurrent().getTranslation("tab.testdata.word"));
-//            field.setPlaceholder(UI.getCurrent().getTranslation("tab.testdata.word") + "...");
-//            field.setRequired(true);
-//            field.setErrorMessage(UI.getCurrent().getTranslation("form.error"));
-//            field.setRequiredIndicatorVisible(true);
-//            return field;
-//        });
-//
-//        formFactory.setFieldProvider("testType", a -> {
-//            Select<TestType> select = new Select<>();
-//            select.setLabel(UI.getCurrent().getTranslation("tab.testdata.testtype"));
-//            select.setPlaceholder(UI.getCurrent().getTranslation("tab.testdata.testtype") + "...");
-//            select.setRequiredIndicatorVisible(true);
-//            select.setErrorMessage(UI.getCurrent().getTranslation("form.error"));
-//            select.setItems(testTypeService.findAllByEnabled(true));
-//            select.setItemLabelGenerator(TestType::toStringI18nKey);
-//            return select;
-//        });
-//
-//        formFactory.setFieldProvider("description", a -> {
-//            TextArea field = new TextArea(UI.getCurrent().getTranslation("tab.testdata.description"));
-//            field.setPlaceholder(UI.getCurrent().getTranslation("tab.testdata.description") + "...");
-//            field.setRequired(true);
-//            field.setErrorMessage(UI.getCurrent().getTranslation("form.error"));
-//            field.setRequiredIndicatorVisible(true);
-//            return field;
-//        });
-        //decimalfield needs setConverter
-//        BigDecimalField decimalField = new BigDecimalField("number");
-//        decimalField.setRequired(false);
-//        decimalField.setErrorMessage(UI.getCurrent().getTranslation("form.error"));
-//        decimalField.setRequiredIndicatorVisible(false);
-//        formFactory.setFieldProvider("number", a -> decimalField);
-//        formFactory.setConverter("number", new Converter<BigDecimal, BigDecimal>() {
-//            @Override
-//            public Result<BigDecimal> convertToModel(BigDecimal value, ValueContext valueContext) {
-//                return Result.ok(Objects.requireNonNullElse(value, BigDecimal.ZERO));
-//            }
-//
-//            @Override
-//            public BigDecimal convertToPresentation(BigDecimal value, ValueContext valueContext) {
-//                return Objects.requireNonNullElse(value, BigDecimal.ZERO);
-//            }
-//        });
+        formFactory.setVisibleProperties("word", "testType", "description", "number", "date");
+        formFactory.setFieldCaptions(
+                UI.getCurrent().getTranslation("tab.testdata.word"),
+                UI.getCurrent().getTranslation("tab.testdata.testtype"),
+                UI.getCurrent().getTranslation("tab.testdata.description"),
+                UI.getCurrent().getTranslation("tab.testdata.number"),
+                UI.getCurrent().getTranslation("tab.testdata.date")
+        );
+
+        formFactory.setFieldProvider("word", a -> {
+            TextField field = new TextField(UI.getCurrent().getTranslation("tab.testdata.word"));
+            field.setPlaceholder(UI.getCurrent().getTranslation("tab.testdata.word") + "...");
+            field.setRequired(true);
+            field.setErrorMessage(UI.getCurrent().getTranslation("form.error"));
+            field.setRequiredIndicatorVisible(true);
+            return field;
+        });
+
+        formFactory.setFieldProvider("testType", a -> {
+            ComboBox<TestType> select = new ComboBox<>();
+            select.setLabel(UI.getCurrent().getTranslation("tab.testdata.testtype"));
+            select.setPlaceholder(UI.getCurrent().getTranslation("tab.testdata.testtype") + "...");
+            select.setRequiredIndicatorVisible(true);
+            select.setErrorMessage(UI.getCurrent().getTranslation("form.error"));
+            select.setItems(testTypeService.findAllByEnabled(true));
+            select.setItemLabelGenerator(data -> TestType.toStringI18nKey(data));
+            return select;
+        });
+
+        formFactory.setFieldProvider("description", a -> {
+            TextArea field = new TextArea(UI.getCurrent().getTranslation("tab.testdata.description"));
+            field.setPlaceholder(UI.getCurrent().getTranslation("tab.testdata.description") + "...");
+            field.setRequired(true);
+            field.setErrorMessage(UI.getCurrent().getTranslation("form.error"));
+            field.setRequiredIndicatorVisible(true);
+            return field;
+        });
+
+        formFactory.setFieldProvider("date", a -> {
+            DateTimePicker dpDate = new DateTimePicker(UI.getCurrent().getTranslation("form.testdata.date"));
+            dpDate.setRequiredIndicatorVisible(true);
+            dpDate.setErrorMessage(UI.getCurrent().getTranslation("form.error"));
+            dpDate.setLocale(userSetting.getLocale());
+            dpDate.setSizeFull();
+            return dpDate;
+        });
+
+        formFactory.setFieldProvider("number", object1 -> {
+            BigDecimalField decimalField = new BigDecimalField("number");
+            decimalField.setRequired(true);
+            decimalField.setErrorMessage(UI.getCurrent().getTranslation("form.error"));
+            decimalField.setRequiredIndicatorVisible(false);
+            return decimalField;
+        });
+
+        formFactory.setConverter("number", new Converter<BigDecimal, BigDecimal>() {
+            @Override
+            public Result<BigDecimal> convertToModel(BigDecimal value, ValueContext valueContext) {
+                return Result.ok(Objects.requireNonNullElse(value, BigDecimal.ZERO));
+            }
+
+            @Override
+            public BigDecimal convertToPresentation(BigDecimal value, ValueContext valueContext) {
+                return Objects.requireNonNullElse(value, BigDecimal.ZERO);
+            }
+        });
+        formFactory.setConverter("date", new Converter<LocalDateTime, Date>() {
+            @Override
+            public Result<Date> convertToModel(LocalDateTime value, ValueContext valueContext) {
+                return Result.ok(Objects.requireNonNullElse(Date.from(value.atZone(userSetting.getTimezone().toZoneId()).toInstant()), null));
+            }
+
+            @Override
+            public LocalDateTime convertToPresentation(Date value, ValueContext valueContext) {
+                if(value == null) {
+                    value = new Date();
+                }
+                return Objects.requireNonNullElse(value.toInstant().atZone(userSetting.getTimezone().toZoneId()).toLocalDateTime(), null);
+            }
+        });
     }
 
     @Override

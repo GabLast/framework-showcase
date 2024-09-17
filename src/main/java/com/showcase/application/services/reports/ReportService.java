@@ -4,11 +4,13 @@ import ar.com.fdvs.dj.core.DynamicJasperHelper;
 import ar.com.fdvs.dj.core.layout.ClassicLayoutManager;
 import ar.com.fdvs.dj.domain.AutoText;
 import ar.com.fdvs.dj.domain.DynamicReport;
+import ar.com.fdvs.dj.domain.StringExpression;
 import ar.com.fdvs.dj.domain.Style;
 import ar.com.fdvs.dj.domain.builders.ColumnBuilder;
 import ar.com.fdvs.dj.domain.builders.DynamicReportBuilder;
 import ar.com.fdvs.dj.domain.builders.FastReportBuilder;
 import ar.com.fdvs.dj.domain.constants.Page;
+import ar.com.fdvs.dj.domain.entities.columns.AbstractColumn;
 import com.showcase.application.models.configuration.UserSetting;
 import com.showcase.application.models.module.TestData;
 import com.showcase.application.models.module.TestType;
@@ -91,50 +93,64 @@ public class ReportService {
             );
             tmp.forEach(it -> data.add(new ReportTestData(it, userSetting)));
 
+            AbstractColumn wordCol = ColumnBuilder.getNew()
+                    .setColumnProperty("word", String.class)
+                    .setTitle(translationProvider.getTranslation("tab.testdata.word", userSetting.getLocale()))
+                    .setWidth(ReportUtilities.NORMAL_WIDTH)
+                    .setHeaderStyle(ReportUtilities.prettyColumnHeaderStyle)
+                    .build();
+
+            AbstractColumn dateCol = ColumnBuilder.getNew()
+                    .setColumnProperty("date", String.class)
+                    .setTitle(translationProvider.getTranslation("tab.testdata.date", userSetting.getLocale()))
+                    .setWidth(ReportUtilities.DATE_WIDTH)
+                    .setHeaderStyle(ReportUtilities.prettyColumnHeaderStyle)
+                    .build();
+
             DynamicReportBuilder reportBuilder = new FastReportBuilder()
-                    .addColumn(ColumnBuilder.getNew()
-                            .setColumnProperty("word", String.class)
-                            .setTitle(translationProvider.getTranslation("tab.testdata.word", userSetting.getLocale()))
-                            .setWidth(ReportUtilities.NORMAL_WIDTH)
-                            .setStyle(ReportUtilities.columnLeft)
-                            .build())
-                    .addColumn(ColumnBuilder.getNew()
-                            .setColumnProperty("date", String.class)
-                            .setTitle(translationProvider.getTranslation("tab.testdata.date", userSetting.getLocale()))
-                            .setWidth(ReportUtilities.DATE_WIDTH)
-                            .setStyle(ReportUtilities.columnCenter)
-                            .build())
+                    .setDefaultStyles(ReportUtilities.titleStyle, null, ReportUtilities.prettyColumnHeaderStyle,  ReportUtilities.detailsStyle)
+                    .addColumn(wordCol)
+                    .addColumn(dateCol)
                     .addColumn(ColumnBuilder.getNew()
                             .setColumnProperty("testType", String.class)
                             .setTitle(translationProvider.getTranslation("tab.testdata.testtype", userSetting.getLocale()))
                             .setWidth(50)
-                            .setStyle(ReportUtilities.columnCenter)
                             .build())
                     .addColumn(ColumnBuilder.getNew()
                             .setColumnProperty("description", String.class)
                             .setTitle(translationProvider.getTranslation("tab.testdata.description", userSetting.getLocale()))
                             .setWidth(350)
-                            .setStyle(ReportUtilities.columnLeft)
                             .build())
-                    .setTitle(translationProvider.getTranslation("report.testdata.title", userSetting.getLocale()))
-                    .setTitleStyle(ReportUtilities.titleStyle)
-                    .addAutoText(ReportUtilities.generateAutoText(user != null ? translationProvider.getTranslation("createdby", userSetting.getLocale()) + ": " + user.getName() : "-", AutoText.AUTOTEXT_CUSTOM_MESSAGE, AutoText.POSITION_HEADER, AutoText.ALIGNMENT_LEFT, 200, 0, null))
-                    .addAutoText(ReportUtilities.generateAutoText(translationProvider.getTranslation("creationdate", userSetting.getLocale()) + ": " + Utilities.formatDate(currentDate, userSetting.getDateTimeFormat(), userSetting.getTimeZoneString()), AutoText.AUTOTEXT_CUSTOM_MESSAGE, AutoText.POSITION_HEADER, AutoText.ALIGNMENT_LEFT, 200, 0, null))
-                    .addAutoText(ReportUtilities.generateAutoText(translationProvider.getTranslation("report", userSetting.getLocale(), translationProvider.getTranslation("title.testdata", userSetting.getLocale())), AutoText.AUTOTEXT_CUSTOM_MESSAGE, AutoText.POSITION_HEADER, AutoText.ALIGNMENT_LEFT, 200, 0, ReportUtilities.titleStyle));
+                    .setTitle(translationProvider.getTranslation("report", userSetting.getLocale(), translationProvider.getTranslation("title.testdata", userSetting.getLocale())))
+                    .addAutoText(ReportUtilities.generateAutoText(user != null ? translationProvider.getTranslation("createdby", userSetting.getLocale()) + ": " + user.getName() : "-", AutoText.AUTOTEXT_CUSTOM_MESSAGE, AutoText.POSITION_HEADER, AutoText.ALIGNMENT_RIGHT, 200, 0, ReportUtilities.prettyPageHeadersStyle))
+                    .addAutoText(ReportUtilities.generateAutoText(translationProvider.getTranslation("creationdate", userSetting.getLocale()) + ": " + Utilities.formatDate(currentDate, userSetting.getDateTimeFormat(), userSetting.getTimeZoneString()), AutoText.AUTOTEXT_CUSTOM_MESSAGE, AutoText.POSITION_HEADER, AutoText.ALIGNMENT_RIGHT, 200, 0,  ReportUtilities.prettyPageHeadersStyle));
 
             if (!StringUtils.isBlank(range)) {
-                reportBuilder.addAutoText(ReportUtilities.generateAutoText(range, AutoText.AUTOTEXT_CUSTOM_MESSAGE, AutoText.POSITION_HEADER, AutoText.ALIGNMENT_LEFT, 200, 0, null));
+                reportBuilder.addAutoText(ReportUtilities.generateAutoText(range, AutoText.AUTOTEXT_CUSTOM_MESSAGE, AutoText.POSITION_HEADER, AutoText.ALIGNMENT_LEFT, 200, 0, ReportUtilities.prettyColumnHeaderStyle));
             }
 
             reportBuilder.setPageSizeAndOrientation(Page.Page_Letter_Landscape())
                     .setPrintColumnNames(true)
                     .setUseFullPageWidth(true)
-                    .setPrintBackgroundOnOddRows(false)
+                    .setPrintBackgroundOnOddRows(true)
                     .setIgnorePagination(true) //for Excel, we may dont want pagination, just a plain list
-                    .setMargins(10, 10, 10, 10)
                     .setReportLocale(userSetting.getLocale())
+                    .setMargins(10, 10, 10, 10)
                     .setWhenNoData(translationProvider.getTranslation("empty", userSetting.getLocale()), new Style())
-                    .setMargins(10, 10, 10, 10);
+                    .setGrandTotalLegend(" ")
+                    .addGlobalFooterVariable(wordCol, new StringExpression() {
+                        @Override
+                        public Object evaluate(Map map, Map map1, Map map2) {
+                            return translationProvider.getTranslation("total.rows", userSetting.getLocale()) + ":";
+                        }
+                    })
+                    .addGlobalFooterVariable(dateCol, new StringExpression() {
+                        @Override
+                        public Object evaluate(Map map, Map map1, Map map2) {
+                            return data.size();
+                        }
+                    })
+            ;
 
             DynamicReport report = reportBuilder.build();
             JasperPrint print = DynamicJasperHelper.generateJasperPrint(report, new ClassicLayoutManager(), data);
@@ -201,50 +217,64 @@ public class ReportService {
             );
             tmp.forEach(it -> data.add(new ReportTestData(it, userSetting)));
 
+            AbstractColumn wordCol = ColumnBuilder.getNew()
+                    .setColumnProperty("word", String.class)
+                    .setTitle(translationProvider.getTranslation("tab.testdata.word", userSetting.getLocale()))
+                    .setWidth(ReportUtilities.NORMAL_WIDTH)
+                    .setHeaderStyle(ReportUtilities.prettyColumnHeaderStyle)
+                    .build();
+
+            AbstractColumn dateCol = ColumnBuilder.getNew()
+                    .setColumnProperty("date", String.class)
+                    .setTitle(translationProvider.getTranslation("tab.testdata.date", userSetting.getLocale()))
+                    .setWidth(ReportUtilities.DATE_WIDTH)
+                    .setHeaderStyle(ReportUtilities.prettyColumnHeaderStyle)
+                    .build();
+
             DynamicReportBuilder reportBuilder = new FastReportBuilder()
-                    .addColumn(ColumnBuilder.getNew()
-                            .setColumnProperty("word", String.class)
-                            .setTitle(translationProvider.getTranslation("tab.testdata.word", userSetting.getLocale()))
-                            .setWidth(ReportUtilities.NORMAL_WIDTH)
-                            .setStyle(ReportUtilities.columnLeft)
-                            .build())
-                    .addColumn(ColumnBuilder.getNew()
-                            .setColumnProperty("date", String.class)
-                            .setTitle(translationProvider.getTranslation("tab.testdata.date", userSetting.getLocale()))
-                            .setWidth(ReportUtilities.DATE_WIDTH)
-                            .setStyle(ReportUtilities.columnCenter)
-                            .build())
+                    .setDefaultStyles(ReportUtilities.titleStyle, null, ReportUtilities.prettyColumnHeaderStyle,  ReportUtilities.detailsStyle)
+                    .addColumn(wordCol)
+                    .addColumn(dateCol)
                     .addColumn(ColumnBuilder.getNew()
                             .setColumnProperty("testType", String.class)
                             .setTitle(translationProvider.getTranslation("tab.testdata.testtype", userSetting.getLocale()))
                             .setWidth(50)
-                            .setStyle(ReportUtilities.columnCenter)
                             .build())
                     .addColumn(ColumnBuilder.getNew()
                             .setColumnProperty("description", String.class)
                             .setTitle(translationProvider.getTranslation("tab.testdata.description", userSetting.getLocale()))
                             .setWidth(350)
-                            .setStyle(ReportUtilities.columnLeft)
                             .build())
-                    .setTitle(translationProvider.getTranslation("report.testdata.title", userSetting.getLocale()))
-                    .setTitleStyle(ReportUtilities.titleStyle)
-                    .addAutoText(ReportUtilities.generateAutoText(user != null ? translationProvider.getTranslation("createdby", userSetting.getLocale()) + ": " + user.getName() : "-", AutoText.AUTOTEXT_CUSTOM_MESSAGE, AutoText.POSITION_HEADER, AutoText.ALIGNMENT_LEFT, 200, 0, null))
-                    .addAutoText(ReportUtilities.generateAutoText(translationProvider.getTranslation("creationdate", userSetting.getLocale()) + ": " + Utilities.formatDate(currentDate, userSetting.getDateTimeFormat(), userSetting.getTimeZoneString()), AutoText.AUTOTEXT_CUSTOM_MESSAGE, AutoText.POSITION_HEADER, AutoText.ALIGNMENT_LEFT, 200, 0, null))
-                    .addAutoText(ReportUtilities.generateAutoText(translationProvider.getTranslation("report", userSetting.getLocale(), translationProvider.getTranslation("title.testdata", userSetting.getLocale())), AutoText.AUTOTEXT_CUSTOM_MESSAGE, AutoText.POSITION_HEADER, AutoText.ALIGNMENT_LEFT, 200, 0, ReportUtilities.titleStyle));
+                    .setTitle(translationProvider.getTranslation("report", userSetting.getLocale(), translationProvider.getTranslation("title.testdata", userSetting.getLocale())))
+                    .addAutoText(ReportUtilities.generateAutoText(user != null ? translationProvider.getTranslation("createdby", userSetting.getLocale()) + ": " + user.getName() : "-", AutoText.AUTOTEXT_CUSTOM_MESSAGE, AutoText.POSITION_HEADER, AutoText.ALIGNMENT_RIGHT, 200, 0, ReportUtilities.prettyPageHeadersStyle))
+                    .addAutoText(ReportUtilities.generateAutoText(translationProvider.getTranslation("creationdate", userSetting.getLocale()) + ": " + Utilities.formatDate(currentDate, userSetting.getDateTimeFormat(), userSetting.getTimeZoneString()), AutoText.AUTOTEXT_CUSTOM_MESSAGE, AutoText.POSITION_HEADER, AutoText.ALIGNMENT_RIGHT, 200, 0,  ReportUtilities.prettyPageHeadersStyle));
 
             if (!StringUtils.isBlank(range)) {
-                reportBuilder.addAutoText(ReportUtilities.generateAutoText(range, AutoText.AUTOTEXT_CUSTOM_MESSAGE, AutoText.POSITION_HEADER, AutoText.ALIGNMENT_LEFT, 200, 0, null));
+                reportBuilder.addAutoText(ReportUtilities.generateAutoText(range, AutoText.AUTOTEXT_CUSTOM_MESSAGE, AutoText.POSITION_HEADER, AutoText.ALIGNMENT_LEFT, 200, 0, ReportUtilities.prettyColumnHeaderStyle));
             }
 
             reportBuilder.setPageSizeAndOrientation(Page.Page_Letter_Landscape())
                     .setPrintColumnNames(true)
                     .setUseFullPageWidth(true)
-                    .setPrintBackgroundOnOddRows(false)
+                    .setPrintBackgroundOnOddRows(true)
                     .setIgnorePagination(true) //for Excel, we may dont want pagination, just a plain list
-                    .setMargins(10, 10, 10, 10)
                     .setReportLocale(userSetting.getLocale())
+                    .setMargins(10, 10, 10, 10)
                     .setWhenNoData(translationProvider.getTranslation("empty", userSetting.getLocale()), new Style())
-                    .setMargins(10, 10, 10, 10);
+                    .setGrandTotalLegend(" ")
+                    .addGlobalFooterVariable(wordCol, new StringExpression() {
+                        @Override
+                        public Object evaluate(Map map, Map map1, Map map2) {
+                            return translationProvider.getTranslation("total.rows", userSetting.getLocale()) + ":";
+                        }
+                    })
+                    .addGlobalFooterVariable(dateCol, new StringExpression() {
+                        @Override
+                        public Object evaluate(Map map, Map map1, Map map2) {
+                            return data.size();
+                        }
+                    })
+            ;
 
 
             DynamicReport report = reportBuilder.build();

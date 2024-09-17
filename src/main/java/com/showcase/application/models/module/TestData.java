@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Getter
@@ -30,6 +31,8 @@ public class TestData extends Base {
 
     @Column(columnDefinition = "longtext")
     private String description;
+
+    private BigDecimal number;
 
     public String toString() {
         return word;
