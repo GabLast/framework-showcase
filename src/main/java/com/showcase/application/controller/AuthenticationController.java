@@ -1,8 +1,8 @@
 package com.showcase.application.controller;
 
 import com.showcase.application.config.security.CustomAuthentication;
-import com.showcase.application.models.rest.dao.UserDao;
 import com.showcase.application.models.rest.RequestFrame;
+import com.showcase.application.models.rest.dao.UserDao;
 import com.showcase.application.models.rest.security.ReturnUserRest;
 import com.showcase.application.models.rest.security.UserRest;
 import com.showcase.application.models.security.Token;
@@ -14,6 +14,7 @@ import com.showcase.application.utils.MyException;
 import com.showcase.application.utils.TranslationProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -51,16 +52,21 @@ public class AuthenticationController {
             returnData.setRequestFrame(requestFrame);
 
             Token token = authenticationService.findByUserAndEnabled(user, true);
+            String jwt = authenticationService.generateJWT(token);
 
-            if(token == null) {
+            if(token == null || StringUtils.isBlank(jwt)) {
                 throw new MyException(MyException.CLIENT_ERROR, "This user doesnt have API Access");
             }
 
-            returnData.setJwt(authenticationService.generateJWT(token));
+            returnData.setJwt(jwt);
             returnData.setUserRest(new UserRest(user));
 
             CustomAuthentication authentication = new CustomAuthentication(token, customUserDetailsService.getGrantedAuthorities(token.getUser()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
+
+//            System.out.println("Current Auth:");
+//            System.out.println(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+//            System.out.println(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getName());
 
             return new ResponseEntity<>(returnData, HttpStatus.OK);
         } catch (MyException e) {

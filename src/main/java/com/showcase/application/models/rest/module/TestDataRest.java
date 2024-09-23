@@ -2,7 +2,6 @@ package com.showcase.application.models.rest.module;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.showcase.application.models.module.TestData;
-import com.showcase.application.models.rest.RestBase;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

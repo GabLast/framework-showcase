@@ -30,5 +30,7 @@ public class AppInfo {
 
     @Value("${jwt.key}")
     private String jwtSecretKey;
+    @Value("${encryption.key}")
+    private String encryptionKey;
 
 }

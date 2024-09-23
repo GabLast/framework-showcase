@@ -5,10 +5,6 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.grid.GridSortOrder;
 import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.server.StreamResource;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.io.Encoder;
-import io.jsonwebtoken.security.Jwks;
 import io.jsonwebtoken.security.Keys;
 import jakarta.persistence.Id;
 import org.apache.commons.lang3.StringUtils;
@@ -263,4 +259,50 @@ public class Utilities {
 //        return Keys.hmacShaKeyFor(key.getBytes());
         return Keys.hmacShaKeyFor(Base64.getEncoder().encode(key.getBytes()));
     }
+
+//    public static IvParameterSpec generateIv() {
+//        byte[] iv = new byte[16];
+//        new SecureRandom().nextBytes(iv);
+//        return new IvParameterSpec(iv);
+//    }
+//
+//    private static String getEncryptionAlgorithm() {
+//        return "AES/CBC/PKCS5Padding";
+//    }
+//
+//    public static SecretKey generateSecretKey()  {
+//        try {
+//            KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+//            keyGenerator.init(128);
+//            return keyGenerator.generateKey();
+//        } catch (Exception e) {
+//            return null;
+//        }
+//    }
+//
+//    public static String encrypt(String input, SecretKey key) {
+//        try {
+//            Cipher cipher = Cipher.getInstance(getEncryptionAlgorithm());
+//            cipher.init(Cipher.ENCRYPT_MODE, key, generateIv());
+//            byte[] cipherText = cipher.doFinal(input.getBytes());
+//            return Base64.getEncoder().encodeToString(cipherText);
+//        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+//            return "";
+//        }
+//    }
+//
+//    public static String decrypt(String cipherText, SecretKey key) {
+//        try {
+//
+//            Cipher cipher = Cipher.getInstance(getEncryptionAlgorithm());
+//            cipher.init(Cipher.ENCRYPT_MODE, key, generateIv());
+//            byte[] plainText = cipher.doFinal(Base64.getDecoder()
+//                    .decode(cipherText));
+//            return new String(plainText);
+//        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+//            return "";
+//        }
+//    }
 }

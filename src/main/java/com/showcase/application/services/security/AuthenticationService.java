@@ -14,7 +14,6 @@ import com.showcase.application.utils.MyException;
 import com.showcase.application.utils.Utilities;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
@@ -130,7 +129,7 @@ public class AuthenticationService {
             token = token.replace("Bearer", "").trim();
 
             Claims claims = Jwts.parser()
-                    .verifyWith(Keys.hmacShaKeyFor(appInfo.getJwtSecretKey().getBytes()))
+                    .verifyWith(Utilities.generateJWTKey(appInfo.getJwtSecretKey()))
                     .build()
                     .parseSignedClaims(token)
                     .getPayload();
@@ -146,12 +145,13 @@ public class AuthenticationService {
             token = token.replace("Bearer", "").trim();
 
             Claims claims = Jwts.parser()
-                    .verifyWith(Keys.hmacShaKeyFor(appInfo.getJwtSecretKey().getBytes()))
+                    .verifyWith(Utilities.generateJWTKey(appInfo.getJwtSecretKey()))
                     .build()
                     .parseSignedClaims(token)
                     .getPayload();
 
-//            Token fromJason = new Gson().fromJson(claims.get("token").toString(), Token.class);
+
+//            return Utilities.decrypt(claims.get("token").toString(), Utilities.generateSecretKey());
             return claims.get("token").toString();
         } catch (Exception ignored) {
             return "";
@@ -159,19 +159,31 @@ public class AuthenticationService {
     }
 
     @Transactional(readOnly = true)
-    public String generateJWT(Token myToken) {
+    public String generateJWT(Token token) {
         try {
 
-            if(myToken == null) {
+            if (token == null) {
                 throw new MyException(MyException.SERVER_ERROR, "Server token is null");
             }
+
+            UserSetting userSetting = userSettingService.findByEnabledAndUser(true, token.getUser());
+            if (userSetting == null) {
+                userSetting = new UserSetting();
+            }
+
+//            String encryptedData = Utilities.encrypt(token.getToken(), Utilities.generateSecretKey());
+//            String decrypted = Utilities.decrypt(token.getToken(), Utilities.generateSecretKey());
+
+//            System.out.println("token: " + token.getToken());
+//            System.out.println("encripted: " + encryptedData);
+//            System.out.println("decrypted: " + decrypted);
 
             return Jwts.builder()
                     .issuer("Framework-Showcase-App")
                     .subject("data")
-                    .claim("token", myToken.getToken())
+                    .claim("token", token.getToken())
                     .signWith(Utilities.generateJWTKey(appInfo.getJwtSecretKey()))
-                    .expiration(myToken.getExpirationDate())
+                    .expiration(Date.from(token.getExpirationDate().toInstant().atZone(userSetting.getTimezone().toZoneId()).toInstant()))
                     .compact();
 
         } catch (MyException ignored) {
@@ -188,7 +200,7 @@ public class AuthenticationService {
 //            System.out.println(userDao.getPassword());
 //            System.out.println(user.getPassword());
 
-            if(!userService.getPasswordEncoder().matches(userDao.getPassword(), user.getPassword())) {
+            if (!userService.getPasswordEncoder().matches(userDao.getPassword(), user.getPassword())) {
                 throw new MyException(MyException.CLIENT_ERROR, "Invalid credentials");
             }
 
