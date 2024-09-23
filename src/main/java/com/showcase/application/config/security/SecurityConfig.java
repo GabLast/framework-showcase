@@ -8,8 +8,8 @@ import com.showcase.application.views.login.LoginView;
 import com.vaadin.flow.spring.security.VaadinWebSecurity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -64,7 +64,7 @@ public class SecurityConfig extends VaadinWebSecurity {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests ->
                                 authorizeRequests
-//                                        .requestMatchers("/rest/auth/login").permitAll()
+                                        .requestMatchers(HttpMethod.GET, "/rest/auth/login").permitAll() // -> http method POST doesnt work for some reason
                                         .requestMatchers("/rest/**").authenticated()
                 )
                 .httpBasic(withDefaults())
@@ -77,11 +77,11 @@ public class SecurityConfig extends VaadinWebSecurity {
 //        return http.build();
     }
 
-    @Override
-    protected void configure(WebSecurity web) throws Exception {
-        web.ignoring().requestMatchers(
-                "/rest/auth/login"
-        );
-    }
+//    @Override
+//    protected void configure(WebSecurity web) throws Exception {
+//        web.ignoring().requestMatchers(
+//                "/rest/auth/login"
+//        );
+//    }
 
 }

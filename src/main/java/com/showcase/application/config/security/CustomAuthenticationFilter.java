@@ -35,7 +35,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
         try {
 
             String authToken = request.getHeader("Authorization");
-//            System.out.println("For Request: " + request.getServletPath() + "\n\n");
+            System.out.println("For Request: " + request.getServletPath() + "\n\n");
             if (!authenticationService.isJWTValid(authToken)) {
                 throw new MyException(MyException.CLIENT_ERROR, "Invalid Token");
             }
