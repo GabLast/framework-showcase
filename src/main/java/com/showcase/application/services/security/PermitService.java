@@ -51,6 +51,7 @@ public class PermitService extends BaseService<Permit, Long> {
             create(users, Permit.USER_EDIT, "edit,menu.user.action", "edit,menu.user.action");
             create(users, Permit.USER_VIEW, "view,menu.user.action", "view,menu.user.action");
             create(users, Permit.USER_DELETE, "delete,menu.user.action", "delete,menu.user.action");
+            create(users, Permit.USER_TOKEN, "create,menu.user.action", "create,menu.user.action");
 
             //********************************************************************
 

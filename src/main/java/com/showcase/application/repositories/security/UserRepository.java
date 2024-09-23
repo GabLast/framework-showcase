@@ -28,7 +28,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "where (:admin is null or u.admin = :admin) " +
             "and (:enabled is null or u.enabled = :enabled) " +
             "and (:username is null or u.username like '' or u.username like lower(trim(concat('%', :username,'%')))) " +
-            "and (:mail is null or u.mail like '' or u.mail like lower(trim(concat('%', :mail,'%')))) "
+            "and (:mail is null or u.mail like '' or u.mail is null or u.mail like lower(trim(concat('%', :mail,'%')))) "
     )
     List<User> findAllFilter(@Param("enabled") Boolean enabled,
                              @Param("username") String username,
@@ -43,7 +43,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "where (:admin is null or u.admin = :admin) " +
             "and (:enabled is null or u.enabled = :enabled) " +
             "and (:username is null or u.username like '' or u.username like lower(trim(concat('%', :username,'%')))) " +
-            "and (:mail is null or u.mail like '' or u.mail like lower(trim(concat('%', :mail,'%')))) "
+            "and (:mail is null or u.mail like '' or u.mail is null or u.mail like lower(trim(concat('%', :mail,'%')))) "
     )
     Integer countAllFilter(@Param("enabled") Boolean enabled,
                            @Param("username") String username,

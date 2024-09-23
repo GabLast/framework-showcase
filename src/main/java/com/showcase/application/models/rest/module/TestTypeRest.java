@@ -3,11 +3,13 @@ package com.showcase.application.models.rest.module;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.showcase.application.models.module.TestType;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
+@NoArgsConstructor
 public class TestTypeRest {
 
     public TestTypeRest(TestType testType) {

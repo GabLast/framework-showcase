@@ -11,6 +11,7 @@ import java.util.ResourceBundle;
 public class MyException extends RuntimeException {
 
     public static final Integer CLIENT_ERROR = 400;
+    public static final Integer NO_TOKEN_FOUND = 401;
     public static final Integer SERVER_ERROR = 500;
 
     private Integer code;

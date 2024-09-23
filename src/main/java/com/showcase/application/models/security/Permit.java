@@ -41,6 +41,7 @@ public class Permit extends Base {
     public static final String USER_EDIT = "USER_EDIT";
     public static final String USER_VIEW = "USER_VIEW";
     public static final String USER_DELETE = "USER_DELETE";
+    public static final String USER_TOKEN = "USER_TOKEN";
 
     //***********************************************************************************
     public static final String REPORTS_MODULE = "REPORTS_MODULE";

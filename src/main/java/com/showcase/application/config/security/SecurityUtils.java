@@ -27,7 +27,6 @@ public final class SecurityUtils {
 
     public static void updateGrantedAuthorities(Set<Permit> permits) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
         Set<GrantedAuthority> updatedAuthorities = new HashSet<>();
         for (Permit it : permits) {
             updatedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + it.getCode()));

@@ -9,6 +9,8 @@ import com.showcase.application.utils.MyException;
 import com.showcase.application.utils.TranslationProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -37,7 +39,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userService.findByUsernameOrMail(username);
 
-        if(user == null) {
+        if (user == null) {
             throw new UsernameNotFoundException(translationProvider.getTranslation("error.usernotfound", TranslationProvider.ENGLISH));
         }
 
@@ -84,7 +86,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public void grantAuthorities(User user) {
         try {
 
-            if(user == null) {
+            if (user == null) {
                 return;
             }
 
@@ -103,5 +105,14 @@ public class CustomUserDetailsService implements UserDetailsService {
                 throw new MyException(MyException.SERVER_ERROR, e.getMessage());
             }
         }
+    }
+
+    public Set<GrantedAuthority> getGrantedAuthorities(User user) {
+        Set<GrantedAuthority> updatedAuthorities = new HashSet<>();
+        for (Permit it : findUserPermits(user)) {
+            updatedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + it.getCode()));
+        }
+
+        return updatedAuthorities;
     }
 }

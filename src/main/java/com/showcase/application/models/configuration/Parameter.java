@@ -16,7 +16,7 @@ import lombok.Setter;
 public class Parameter extends Base {
 
     public static final String REMEMBER_ME_TOKEN = "REMEMBER_ME_TOKEN";
-    public static final String JWT_KEY = "JWT_KEY";
+    public static final String TOKEN_EXPIRATION_DAYS = "TOKEN_EXPIRATION_DAYS";
 
     @Column(nullable = false)
     private String code;

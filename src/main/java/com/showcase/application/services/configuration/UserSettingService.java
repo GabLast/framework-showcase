@@ -18,7 +18,7 @@ public class UserSettingService extends BaseService<UserSetting, Long> {
         return userSettingRepository;
     }
 
-    public UserSetting findByUserAndEnabled(boolean enabled, User user) {
+    public UserSetting findByEnabledAndUser(boolean enabled, User user) {
         return userSettingRepository.findByEnabledAndUser(enabled, user);
     }
 

@@ -5,6 +5,7 @@ import com.showcase.application.models.module.TestType;
 import com.showcase.application.models.rest.RestBase;
 import com.showcase.application.models.rest.RestPagination;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
@@ -12,6 +13,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
+@NoArgsConstructor
 public class FilterTestData extends RestBase {
 
     private String word;

@@ -38,22 +38,6 @@ public class TestDataController {
     private final TestTypeService testTypeService;
     private final ReportService reportService;
 
-    //TODO JWT and/or integration with spring security
-//    Claims claims = Jwts.parser()
-//            .verifyWith(Keys.hmacShaKeyFor("".getBytes()))
-//            .build()
-//            .parseSignedClaims("receivedJWT")
-//            .getPayload();
-//
-//    FilterTestData fromJason = new Gson().fromJson(claims.get("data").toString(), FilterTestData.class);
-//
-//    String jwt = Jwts.builder()
-//            .issuer("Framework-Showcase-App")
-//            .subject("data")
-//            .claim("data", filterTestData)
-//            .signWith(Utilities.generateJWTKey(parameterService.findFirstByEnabledAndCode(true, Parameter.JWT_KEY).getValue()))
-//            .compact();
-
     @GetMapping("/findall")
     public ResponseEntity<?> findAllFilter(@RequestBody() FilterTestData filterTestData) {
         RequestFrame requestFrame = new RequestFrame();
@@ -178,7 +162,7 @@ public class TestDataController {
     public ResponseEntity<?> generateReportPDF(@RequestBody() FilterTestData filterTestData) {
 
         ByteArrayOutputStream byteArrayOutputStream = reportService.generateTestDataReport(
-                filterTestData.getUser(),
+                null,
                 filterTestData.getUserSetting(),
                 ReportService.PDF,
                 filterTestData.getWord(),

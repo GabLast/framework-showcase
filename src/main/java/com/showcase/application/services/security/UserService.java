@@ -8,6 +8,7 @@ import com.showcase.application.services.BaseService;
 import com.showcase.application.utils.MyException;
 import com.showcase.application.utils.OffsetBasedPageRequest;
 import com.showcase.application.utils.TranslationProvider;
+import com.showcase.application.utils.Utilities;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -45,8 +46,8 @@ public class UserService extends BaseService<User, Long> {
                 user.setPassword(passwordEncoder.encode("123"));
                 user.setName("Administrator");
                 user.setAdmin(true);
+                saveAndFlush(user);
             }
-            saveAndFlush(user);
 
             log.info("Created admin user");
         } catch (Exception e) {

@@ -23,7 +23,6 @@ import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.server.VaadinSession;
 import org.apache.commons.lang3.StringUtils;
-import org.vaadin.crudui.crud.AddOperationListener;
 import org.vaadin.crudui.crud.CrudOperation;
 import org.vaadin.crudui.crud.LazyCrudListener;
 import org.vaadin.crudui.crud.UpdateOperationListener;
@@ -31,7 +30,6 @@ import org.vaadin.crudui.crud.impl.GridCrud;
 import org.vaadin.crudui.form.impl.form.factory.DefaultCrudFormFactory;
 import org.vaadin.crudui.layout.impl.WindowBasedCrudLayout;
 
-import java.io.Serializable;
 import java.util.Optional;
 
 public abstract class GenericTab<T> extends Div implements AfterNavigationObserver {
@@ -230,7 +228,7 @@ public abstract class GenericTab<T> extends Div implements AfterNavigationObserv
 
             new ErrorNotification(message, 3);
 
-            throw new MyException(code, message);
+//            throw new MyException(code, message); to stop console outs
         });
     }
 

@@ -26,7 +26,7 @@ public class ParameterService extends BaseService<Parameter, Long> {
     public void bootstrap() {
         try {
             create(Parameter.REMEMBER_ME_TOKEN,"param.remembermetoken", UUID.randomUUID().toString());
-            create(Parameter.JWT_KEY,"param.jwtkey", UUID.randomUUID().toString());
+            create(Parameter.TOKEN_EXPIRATION_DAYS,"param.tokenexpiration", "7");
 
             log.info("Parameters created");
         } catch (MyException e) {
@@ -57,6 +57,10 @@ public class ParameterService extends BaseService<Parameter, Long> {
 
     public Parameter findFirstByEnabledAndCode(boolean enabled, String code) {
         return parameterRepository.findFirstByEnabledAndCode(enabled, code);
+    }
+
+    public Parameter findFirstByCode(String code) {
+        return parameterRepository.findFirstByEnabledAndCode(true, code);
     }
 
 }

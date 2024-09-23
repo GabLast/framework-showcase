@@ -1,9 +1,12 @@
 package com.showcase.application.views.module;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.showcase.application.config.security.SecurityUtils;
 import com.showcase.application.models.module.TestData;
 import com.showcase.application.models.module.TestType;
 import com.showcase.application.models.redis.RedisTest;
+import com.showcase.application.models.rest.RestRequestGet;
 import com.showcase.application.models.security.Permit;
 import com.showcase.application.services.module.TestDataService;
 import com.showcase.application.services.module.TestTypeService;
@@ -367,6 +370,12 @@ public class TabTestData extends GenericTab<TestData> implements HasDynamicTitle
     @Override
     protected void modifyBtnState() {
         if (object != null) {
+
+//            System.out.println("JSON:");
+//            System.out.println(new Gson().toJson(object, TestData.class));
+//            RestRequestGet a = new RestRequestGet();
+//            a.setId(1L);
+//            System.out.println(new Gson().toJson(a, RestRequestGet.class));
             miView.setEnabled(true);
             if (object.isEnabled()) {
                 miEdit.setEnabled(true);

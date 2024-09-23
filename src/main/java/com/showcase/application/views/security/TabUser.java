@@ -3,6 +3,7 @@ package com.showcase.application.views.security;
 import com.showcase.application.config.security.SecurityUtils;
 import com.showcase.application.models.security.Permit;
 import com.showcase.application.models.security.User;
+import com.showcase.application.services.security.AuthenticationService;
 import com.showcase.application.services.security.UserService;
 import com.showcase.application.utils.MyException;
 import com.showcase.application.utils.Utilities;
@@ -40,12 +41,14 @@ import org.vaadin.crudui.layout.impl.WindowBasedCrudLayout;
 public class TabUser extends GenericTab<User> implements HasDynamicTitle {
 
     private final UserService userService;
+    private final AuthenticationService authenticationService;
 
-    private MenuItem miCreate, miEdit, miView, miDelete;
+    private MenuItem miCreate, miEdit, miView, miDelete, miCreateToken;
 
-    public TabUser(UserService userService) {
+    public TabUser(UserService userService, AuthenticationService authenticationService) {
         super(User.class, false);
         this.userService = userService;
+        this.authenticationService = authenticationService;
 
         prepareComponets();
     }
@@ -62,6 +65,7 @@ public class TabUser extends GenericTab<User> implements HasDynamicTitle {
         miEdit.setVisible(SecurityUtils.isAccessGranted(Permit.USER_EDIT));
         miView.setVisible(SecurityUtils.isAccessGranted(Permit.USER_VIEW));
         miDelete.setVisible(SecurityUtils.isAccessGranted(Permit.USER_DELETE));
+        miCreateToken.setVisible(SecurityUtils.isAccessGranted(Permit.USER_TOKEN));
     }
 
     @Override
@@ -93,6 +97,10 @@ public class TabUser extends GenericTab<User> implements HasDynamicTitle {
         btnDelete.addThemeVariants(ButtonVariant.LUMO_ERROR);
         btnDelete.setSizeFull();
 
+        Button btnCreateToken = new Button(UI.getCurrent().getTranslation("create.object", UI.getCurrent().getTranslation("token")), new Icon(VaadinIcon.PLUS));
+        btnCreateToken.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        btnCreateToken.setSizeFull();
+
         miCreate = toolBar.addItem(
                 btnCreate, e -> UI.getCurrent().navigate(FormUser.class));
 
@@ -120,6 +128,14 @@ public class TabUser extends GenericTab<User> implements HasDynamicTitle {
                     new ConfirmWindow(
                             UI.getCurrent().getTranslation("action.confirm.question", object.toString()),
                             this::delete);
+            confirmWindow.open();
+        });
+
+        miCreateToken = toolBar.addItem(btnCreateToken, e -> {
+            ConfirmWindow confirmWindow =
+                    new ConfirmWindow(
+                            UI.getCurrent().getTranslation("action.confirm.question", object.toString()),
+                            this::generateToken);
             confirmWindow.open();
         });
     }
@@ -163,10 +179,10 @@ public class TabUser extends GenericTab<User> implements HasDynamicTitle {
 
                 return DataProvider.fromCallbacks(
                         query -> userService.findAllFilter(
-                                null,
-                                null,
-                                null,
-                                null,
+                                enabled.getValue() != null ? Utilities.isYes(enabled.getValue()) : null,
+                                name.getValue(),
+                                mail.getValue(),
+                                admin.getValue() != null ? Utilities.isYes(admin.getValue()) : null,
                                 query.getLimit(),
                                 query.getOffset(),
                                 Utilities.generarSortDeBusquedaTabla(
@@ -177,14 +193,10 @@ public class TabUser extends GenericTab<User> implements HasDynamicTitle {
                                 )
                         ).stream(),
                         query -> userService.countAllFilter(
-                                null,
-                                null,
-                                null,
-                                null
-//                                enabled.getValue() != null ? Utilities.isYes(enabled.getValue()) : null,
-//                                name.getValue(),
-//                                mail.getValue(),
-//                                admin.getValue() != null ? Utilities.isYes(admin.getValue()) : null
+                                enabled.getValue() != null ? Utilities.isYes(enabled.getValue()) : null,
+                                name.getValue(),
+                                mail.getValue(),
+                                admin.getValue() != null ? Utilities.isYes(admin.getValue()) : null
                         )
                 );
             }
@@ -222,18 +234,20 @@ public class TabUser extends GenericTab<User> implements HasDynamicTitle {
             if (object.isEnabled()) {
                 miEdit.setEnabled(true);
                 miDelete.setEnabled(true);
+                miCreateToken.setEnabled(true);
             } else {
                 miDelete.setEnabled(false);
                 miEdit.setEnabled(false);
+                miCreateToken.setEnabled(false);
             }
         } else {
             miEdit.setEnabled(false);
             miView.setEnabled(false);
             miDelete.setEnabled(false);
+            miCreateToken.setEnabled(false);
         }
     }
 
-    @Override
     protected void delete() {
         try {
             if (object == null) {
@@ -244,6 +258,20 @@ public class TabUser extends GenericTab<User> implements HasDynamicTitle {
             gridCrud.refreshGrid();
 
             new SuccessNotification(UI.getCurrent().getTranslation("action.delete"));
+        } catch (MyException e) {
+            new ErrorNotification(e.getMessage());
+        }
+    }
+
+    private void generateToken() {
+        try {
+            if (object == null) {
+                return;
+            }
+
+            Object aux = authenticationService.generateToken(object);
+
+            new SuccessNotification(UI.getCurrent().getTranslation("action.save"));
         } catch (MyException e) {
             new ErrorNotification(e.getMessage());
         }

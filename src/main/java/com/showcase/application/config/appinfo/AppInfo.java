@@ -28,4 +28,7 @@ public class AppInfo {
     @Value("${remember.me.token}")
     private String rememberMeToken;
 
+    @Value("${jwt}")
+    private String jwtSecretKey;
+
 }
