@@ -35,7 +35,7 @@ import org.vaadin.crudui.crud.impl.GridCrud;
 import org.vaadin.crudui.form.impl.form.factory.DefaultCrudFormFactory;
 import org.vaadin.crudui.layout.impl.WindowBasedCrudLayout;
 
-@Route(value = "security/profiles", layout = MainLayout.class)
+@Route(value = "vaadin/security/profiles", layout = MainLayout.class)
 @RolesAllowed(Permit.MENU_PROFILE)
 public class TabProfile extends GenericTab<Profile> implements HasDynamicTitle {
 

@@ -36,7 +36,7 @@ import org.vaadin.crudui.crud.impl.GridCrud;
 import org.vaadin.crudui.form.impl.form.factory.DefaultCrudFormFactory;
 import org.vaadin.crudui.layout.impl.WindowBasedCrudLayout;
 
-@Route(value = "security/users", layout = MainLayout.class)
+@Route(value = "vaadin/security/users", layout = MainLayout.class)
 @RolesAllowed(Permit.MENU_USER)
 public class TabUser extends GenericTab<User> implements HasDynamicTitle {
 

@@ -14,7 +14,7 @@ import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
 import jakarta.annotation.security.PermitAll;
 
-@Route(value = "about", layout = MainLayout.class)
+@Route(value = "vaadin/about", layout = MainLayout.class)
 @PermitAll
 public class AboutView extends VerticalLayout implements HasDynamicTitle {
 

@@ -13,4 +13,5 @@ import lombok.Setter;
 public class ReturnUserRest {
     private RequestFrame requestFrame;
     private UserRest userRest;
+    private String jwt;
 }

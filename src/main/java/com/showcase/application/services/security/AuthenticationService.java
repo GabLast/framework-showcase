@@ -3,6 +3,7 @@ package com.showcase.application.services.security;
 import com.showcase.application.config.appinfo.AppInfo;
 import com.showcase.application.models.configuration.Parameter;
 import com.showcase.application.models.configuration.UserSetting;
+import com.showcase.application.models.rest.dao.UserDao;
 import com.showcase.application.models.security.Token;
 import com.showcase.application.models.security.User;
 import com.showcase.application.repositories.security.TokenRepository;
@@ -10,10 +11,12 @@ import com.showcase.application.services.configuration.ParameterService;
 import com.showcase.application.services.configuration.UserSettingService;
 import com.showcase.application.utils.GlobalConstants;
 import com.showcase.application.utils.MyException;
+import com.showcase.application.utils.Utilities;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,16 +28,18 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class AuthenticationService {
 
     private final AppInfo appInfo;
     private final TokenRepository tokenRepository;
     private final ParameterService parameterService;
     private final UserSettingService userSettingService;
+    private final UserService userService;
 
     @Transactional(readOnly = true)
-    public Token findByTokenAndEnabled(String hash, boolean enabled) {
-        Token token = tokenRepository.findByTokenAndEnabledAndUser_EnabledIsTrue(hash, enabled);
+    public Token findByTokenAndEnabled(String tokenHash, boolean enabled) {
+        Token token = tokenRepository.findByTokenAndEnabledAndUser_EnabledIsTrue(tokenHash, enabled);
 
         if (token == null) {
             throw new MyException(MyException.NO_TOKEN_FOUND, "The token doesnt exist");
@@ -120,28 +125,81 @@ public class AuthenticationService {
         }
     }
 
-    private void isJWTValid(String token) {
-
+    public boolean isJWTValid(String token) {
         try {
             token = token.replace("Bearer", "").trim();
+
             Claims claims = Jwts.parser()
                     .verifyWith(Keys.hmacShaKeyFor(appInfo.getJwtSecretKey().getBytes()))
                     .build()
-                    .parseSignedClaims("receivedJWT")
+                    .parseSignedClaims(token)
                     .getPayload();
-        } catch (Exception ignored) {
 
+            return true;
+        } catch (Exception ignored) {
+            return false;
         }
     }
 
+    public String getJWTPayload(String token) {
+        try {
+            token = token.replace("Bearer", "").trim();
 
-//
-//    FilterTestData fromJason = new Gson().fromJson(claims.get("data").toString(), FilterTestData.class);
-//
-//    String jwt = Jwts.builder()
-//            .issuer("Framework-Showcase-App")
-//            .subject("data")
-//            .claim("data", filterTestData)
-//            .signWith(Utilities.generateJWTKey(parameterService.findFirstByEnabledAndCode(true, Parameter.JWT_KEY).getValue()))
-//            .compact();
+            Claims claims = Jwts.parser()
+                    .verifyWith(Keys.hmacShaKeyFor(appInfo.getJwtSecretKey().getBytes()))
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+
+//            Token fromJason = new Gson().fromJson(claims.get("token").toString(), Token.class);
+            return claims.get("token").toString();
+        } catch (Exception ignored) {
+            return "";
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public String generateJWT(Token myToken) {
+        try {
+
+            if(myToken == null) {
+                throw new MyException(MyException.SERVER_ERROR, "Server token is null");
+            }
+
+            return Jwts.builder()
+                    .issuer("Framework-Showcase-App")
+                    .subject("data")
+                    .claim("token", myToken.getToken())
+                    .signWith(Utilities.generateJWTKey(appInfo.getJwtSecretKey()))
+                    .expiration(myToken.getExpirationDate())
+                    .compact();
+
+        } catch (MyException ignored) {
+            return "";
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public User login(UserDao userDao) {
+        try {
+            User user = userService.findByUsernameOrMail(userDao.getUsername());
+
+//            System.out.println("Compare:");
+//            System.out.println(userDao.getPassword());
+//            System.out.println(user.getPassword());
+
+            if(!userService.getPasswordEncoder().matches(userDao.getPassword(), user.getPassword())) {
+                throw new MyException(MyException.CLIENT_ERROR, "Invalid credentials");
+            }
+
+            return user;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            if (e instanceof MyException) {
+                throw e;
+            } else {
+                throw new MyException(MyException.SERVER_ERROR, e.getMessage());
+            }
+        }
+    }
 }

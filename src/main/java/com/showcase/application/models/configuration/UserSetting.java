@@ -1,5 +1,6 @@
 package com.showcase.application.models.configuration;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.showcase.application.models.Base;
 import com.showcase.application.models.security.User;
 import com.showcase.application.utils.GlobalConstants;

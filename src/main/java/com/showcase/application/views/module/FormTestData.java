@@ -26,7 +26,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Date;
 import java.util.Optional;
 
-@Route(value = "module/form-testdata/:id?/:view?", layout = MainLayout.class)
+@Route(value = "vaadin/module/form-testdata/:id?/:view?", layout = MainLayout.class)
 @RolesAllowed(value = {Permit.TEST_DATA_CREATE, Permit.TEST_DATA_EDIT, Permit.TEST_DATA_VIEW})
 public class FormTestData extends BaseForm<TestData> {
 

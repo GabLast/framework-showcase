@@ -8,7 +8,7 @@ import com.showcase.application.services.BaseService;
 import com.showcase.application.utils.MyException;
 import com.showcase.application.utils.OffsetBasedPageRequest;
 import com.showcase.application.utils.TranslationProvider;
-import com.showcase.application.utils.Utilities;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -30,6 +30,7 @@ public class UserService extends BaseService<User, Long> {
     private final UserRepository userRepository;
     private final ProfileUserService profileUserService;
     private final TranslationProvider translationProvider;
+    @Getter
     private final PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
     @Override
@@ -242,4 +243,5 @@ public class UserService extends BaseService<User, Long> {
             }
         }
     }
+
 }

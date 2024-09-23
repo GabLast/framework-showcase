@@ -23,7 +23,7 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 
 @AnonymousAllowed
-@Route(value = "login")
+@Route(value = "vaadin/login")
 @CssImport(value = "./themes/framework-showcase/components/vaadin-login.css", themeFor = "vaadin-login-overlay-wrapper")
 public class LoginView extends LoginOverlay implements BeforeEnterObserver, HasDynamicTitle {
 

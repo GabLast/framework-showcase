@@ -1,7 +1,6 @@
 package com.showcase.application.models.rest.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.showcase.application.models.rest.RestBase;
 import com.showcase.application.models.security.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -38,7 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Route(value = "security/form-user/:id?/:view?", layout = MainLayout.class)
+@Route(value = "vaadin/security/form-user/:id?/:view?", layout = MainLayout.class)
 @RolesAllowed(value = {Permit.USER_CREATE, Permit.USER_EDIT, Permit.USER_VIEW})
 public class FormUser extends BaseForm<User> {
 

@@ -1,10 +1,11 @@
 package com.showcase.application.controller;
 
 
+import com.showcase.application.models.configuration.UserSetting;
+import com.showcase.application.models.rest.dao.TestDataDao;
 import com.showcase.application.models.module.TestData;
 import com.showcase.application.models.module.TestType;
 import com.showcase.application.models.rest.RequestFrame;
-import com.showcase.application.models.rest.RestBase;
 import com.showcase.application.models.rest.RestRequestGet;
 import com.showcase.application.models.rest.module.*;
 import com.showcase.application.services.configuration.ParameterService;
@@ -104,7 +105,7 @@ public class TestDataController {
     }
 
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody() TestDataRest testDataRest) {
+    public ResponseEntity<?> save(@RequestBody() TestDataDao testDataDao) {
         RequestFrame requestFrame = new RequestFrame();
         ReturnTestData returnData = new ReturnTestData();
 
@@ -112,7 +113,7 @@ public class TestDataController {
             requestFrame.setCode(HttpStatus.OK.value());
             requestFrame.setError(false);
 
-            TestData data = testDataService.saveTestData(new TestData(testDataRest), testDataRest.getUserSetting());
+            TestData data = testDataService.saveTestData(new TestData(testDataDao), new UserSetting());
 
             returnData.getList().add(new TestDataRest(data));
             returnData.setRequestFrame(requestFrame);
@@ -129,7 +130,7 @@ public class TestDataController {
     }
 
     @GetMapping("/testtype/findall")
-    public ResponseEntity<?> findAllTestType(@RequestBody() RestBase restBase) {
+    public ResponseEntity<?> findAllTestType() {
         RequestFrame requestFrame = new RequestFrame();
         ReturnTestType returnData = new ReturnTestType();
 
@@ -163,7 +164,7 @@ public class TestDataController {
 
         ByteArrayOutputStream byteArrayOutputStream = reportService.generateTestDataReport(
                 null,
-                filterTestData.getUserSetting(),
+                new UserSetting(),
                 ReportService.PDF,
                 filterTestData.getWord(),
                 filterTestData.getDescription(),

@@ -2,7 +2,7 @@ package com.showcase.application.models.module;
 
 
 import com.showcase.application.models.Base;
-import com.showcase.application.models.rest.module.TestDataRest;
+import com.showcase.application.models.rest.dao.TestDataDao;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -38,10 +38,10 @@ public class TestData extends Base {
         return word;
     }
 
-    public TestData(TestDataRest testDataRest) {
-        this.word = testDataRest.getWord();
-        this.description = testDataRest.getDescription();
-        this.testType = new TestType(testDataRest.getTestTypeRest());
-        this.word = testDataRest.getWord();
+    public TestData(TestDataDao testDataDao) {
+        this.word = testDataDao.getWord();
+        this.description = testDataDao.getDescription();
+        this.testType = new TestType(testDataDao.getTestTypeRest());
+        this.word = testDataDao.getWord();
     }
 }

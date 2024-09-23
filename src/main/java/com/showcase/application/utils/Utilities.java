@@ -5,6 +5,10 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.grid.GridSortOrder;
 import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.server.StreamResource;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.io.Encoder;
+import io.jsonwebtoken.security.Jwks;
 import io.jsonwebtoken.security.Keys;
 import jakarta.persistence.Id;
 import org.apache.commons.lang3.StringUtils;
@@ -256,6 +260,7 @@ public class Utilities {
 
     public static SecretKey generateJWTKey(String key) {
         //docs at https://github.com/jwtk/jjwt
-        return Keys.hmacShaKeyFor(key.getBytes());
+//        return Keys.hmacShaKeyFor(key.getBytes());
+        return Keys.hmacShaKeyFor(Base64.getEncoder().encode(key.getBytes()));
     }
 }

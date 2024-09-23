@@ -28,7 +28,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.Date;
 import java.util.List;
 
-@Route(value = "reports/testdata", layout = MainLayout.class)
+@Route(value = "vaadin/reports/testdata", layout = MainLayout.class)
 @RolesAllowed(value = Permit.REPORT_TEST_DATA)
 public class TabReportTestData extends GenericReportTab<TestData> implements HasDynamicTitle {
 

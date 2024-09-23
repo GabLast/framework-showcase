@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Route(value = "security/form-profile/:id?/:view?", layout = MainLayout.class)
+@Route(value = "vaadin/security/form-profile/:id?/:view?", layout = MainLayout.class)
 @RolesAllowed(value = {Permit.PROFILE_CREATE, Permit.PROFILE_EDIT, Permit.PROFILE_VIEW})
 public class FormProfile extends BaseForm<Profile> {
 

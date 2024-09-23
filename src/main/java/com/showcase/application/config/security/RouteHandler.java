@@ -8,14 +8,12 @@ import com.vaadin.flow.router.NotFoundException;
 import com.vaadin.flow.router.RouteNotFoundError;
 import com.vaadin.flow.router.internal.DefaultErrorHandler;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 @Tag(Tag.DIV)
 @DefaultErrorHandler
-public class RouteHandler extends RouteNotFoundError {
-
-    private static final Logger log = LoggerFactory.getLogger(RouteHandler.class);
+@Slf4j
+public class RouteHandler extends RouteNotFoundError/* implements AuthenticationEntryPoint*/ {
 
     @Override
     public int setErrorParameter(BeforeEnterEvent event, ErrorParameter<NotFoundException> parameter) {
@@ -24,4 +22,9 @@ public class RouteHandler extends RouteNotFoundError {
         event.forwardTo(HomeView.class);
         return HttpServletResponse.SC_NOT_FOUND;
     }
+
+//    @Override
+//    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+//        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Access Denied");
+//    }
 }

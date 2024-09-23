@@ -1,12 +1,9 @@
 package com.showcase.application.views.module;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import com.showcase.application.config.security.SecurityUtils;
 import com.showcase.application.models.module.TestData;
 import com.showcase.application.models.module.TestType;
 import com.showcase.application.models.redis.RedisTest;
-import com.showcase.application.models.rest.RestRequestGet;
 import com.showcase.application.models.security.Permit;
 import com.showcase.application.services.module.TestDataService;
 import com.showcase.application.services.module.TestTypeService;
@@ -63,7 +60,7 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
 
-@Route(value = "testdata", layout = MainLayout.class)
+@Route(value = "vaadin/module/testdata", layout = MainLayout.class)
 @RolesAllowed(Permit.MENU_TEST_DATA)
 public class TabTestData extends GenericTab<TestData> implements HasDynamicTitle {
 

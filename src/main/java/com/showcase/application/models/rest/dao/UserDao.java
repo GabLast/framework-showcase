@@ -1,4 +1,5 @@
-package com.showcase.application.models.rest;
+package com.showcase.application.models.rest.dao;
+
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
@@ -7,8 +8,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@JsonIgnoreProperties(ignoreUnknown = true)
 @NoArgsConstructor
-public class RestRequestGet extends RestBase {
-    private Long id;
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class UserDao {
+    private String username;
+    private String password;
 }

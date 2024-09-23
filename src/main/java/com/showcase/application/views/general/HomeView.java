@@ -9,8 +9,8 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
 import jakarta.annotation.security.PermitAll;
 
-@Route(value = "", layout = MainLayout.class)
-@RouteAlias(value = "", layout = MainLayout.class)
+@Route(value = "vaadin", layout = MainLayout.class)
+@RouteAlias(value = "vaadin", layout = MainLayout.class)
 @PermitAll
 public class HomeView extends VerticalLayout implements HasDynamicTitle, BeforeEnterListener{
 
@@ -29,7 +29,6 @@ public class HomeView extends VerticalLayout implements HasDynamicTitle, BeforeE
         setSpacing(false);
         add(imgLogo);
     }
-
 
     @Override
     public String getPageTitle() {
