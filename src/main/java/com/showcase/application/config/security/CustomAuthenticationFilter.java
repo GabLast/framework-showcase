@@ -1,8 +1,11 @@
 package com.showcase.application.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.showcase.application.models.configuration.UserSetting;
 import com.showcase.application.models.rest.RequestFrame;
 import com.showcase.application.models.security.Token;
+import com.showcase.application.models.security.User;
+import com.showcase.application.services.configuration.UserSettingService;
 import com.showcase.application.services.security.AuthenticationService;
 import com.showcase.application.services.security.CustomUserDetailsService;
 import com.showcase.application.utils.MyException;
@@ -28,14 +31,16 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
     private final AuthenticationService authenticationService;
     private final CustomUserDetailsService customUserDetailsService;
-//    https://www.geeksforgeeks.org/spring-boot-3-0-jwt-authentication-with-spring-security-using-mysql-database/
+    private final UserSettingService userSettingService;
+
+    //    https://www.geeksforgeeks.org/spring-boot-3-0-jwt-authentication-with-spring-security-using-mysql-database/
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         try {
 
             String authToken = request.getHeader("Authorization");
-            System.out.println("For Request: " + request.getServletPath() + "\n\n");
+//            System.out.println("For Request: " + request.getServletPath() + "\n\n");
             if (!authenticationService.isJWTValid(authToken)) {
                 throw new MyException(MyException.CLIENT_ERROR, "Invalid Token");
             }
@@ -46,12 +51,21 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
             }
 
             Token token = authenticationService.findByTokenAndEnabled(payload, true);
-            if(token == null) {
+            if (token == null) {
                 throw new MyException(MyException.CLIENT_ERROR, "Corrupted Server Token");
             }
 
-            CustomAuthentication authentication = new CustomAuthentication(token, customUserDetailsService.getGrantedAuthorities(token.getUser()));
+            CustomAuthentication authentication = new CustomAuthentication(
+                    token,
+                    customUserDetailsService.getGrantedAuthorities(token.getUser()),
+                    userSettingService.findByEnabledAndUser(true, token.getUser())
+            );
             SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (user == null) {
+                throw new MyException(MyException.CLIENT_ERROR, "No user found");
+            }
 //            customUserDetailsService.grantAuthorities(token.getUser()); //could also do this
 //            if (SecurityContextHolder.getContext().getAuthentication() != null) {
 //                System.out.println("Login Principal");

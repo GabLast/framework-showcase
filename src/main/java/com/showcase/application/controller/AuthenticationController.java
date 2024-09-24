@@ -7,6 +7,7 @@ import com.showcase.application.models.rest.security.ReturnUserRest;
 import com.showcase.application.models.rest.security.UserRest;
 import com.showcase.application.models.security.Token;
 import com.showcase.application.models.security.User;
+import com.showcase.application.services.configuration.UserSettingService;
 import com.showcase.application.services.security.AuthenticationService;
 import com.showcase.application.services.security.CustomUserDetailsService;
 import com.showcase.application.services.security.UserService;
@@ -31,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
 
     private final TranslationProvider translationProvider;
-    private final UserService userService;
+    private final UserSettingService userSettingService;
     private final AuthenticationService authenticationService;
     private final CustomUserDetailsService customUserDetailsService;
 
@@ -62,7 +63,11 @@ public class AuthenticationController {
             returnData.setJwt(jwt);
             returnData.setUserRest(new UserRest(user));
 
-            CustomAuthentication authentication = new CustomAuthentication(token, customUserDetailsService.getGrantedAuthorities(token.getUser()));
+            CustomAuthentication authentication = new CustomAuthentication(
+                    token,
+                    customUserDetailsService.getGrantedAuthorities(token.getUser()),
+                    userSettingService.findByEnabledAndUser(true, user)
+            );
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
 //            System.out.println("Current Auth:");

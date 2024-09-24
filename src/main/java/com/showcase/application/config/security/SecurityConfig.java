@@ -2,6 +2,7 @@ package com.showcase.application.config.security;
 
 import com.showcase.application.config.appinfo.AppInfo;
 import com.showcase.application.services.configuration.ParameterService;
+import com.showcase.application.services.configuration.UserSettingService;
 import com.showcase.application.services.security.AuthenticationService;
 import com.showcase.application.services.security.CustomUserDetailsService;
 import com.showcase.application.views.login.LoginView;
@@ -28,6 +29,7 @@ public class SecurityConfig extends VaadinWebSecurity {
     private final ParameterService parameterService;
     private final CustomUserDetailsService customUserDetailsService;
     private final AuthenticationService authenticationService;
+    private final UserSettingService userSettingService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -70,7 +72,7 @@ public class SecurityConfig extends VaadinWebSecurity {
                 .httpBasic(withDefaults())
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 ////        https://www.geeksforgeeks.org/spring-boot-3-0-jwt-authentication-with-spring-security-using-mysql-database/
-                .addFilterBefore(new CustomAuthenticationFilter(authenticationService, customUserDetailsService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new CustomAuthenticationFilter(authenticationService, customUserDetailsService, userSettingService), UsernamePasswordAuthenticationFilter.class)
         ;
 
         return super.filterChain(http);

@@ -22,6 +22,7 @@ public class FilterTestData extends RestBase {
     private LocalDate dateStart;
     private LocalDate dateEnd;
     private RestPagination restPagination;
+    private Integer reportType;
 
     public TestType getTestType(TestTypeRest testTypeRest) {
         return new TestType(testTypeRest);

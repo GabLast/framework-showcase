@@ -1,6 +1,7 @@
 package com.showcase.application.controller;
 
 
+import com.showcase.application.config.security.SecurityUtils;
 import com.showcase.application.models.configuration.UserSetting;
 import com.showcase.application.models.module.TestData;
 import com.showcase.application.models.module.TestType;
@@ -8,7 +9,10 @@ import com.showcase.application.models.rest.RequestFrame;
 import com.showcase.application.models.rest.RestRequestGet;
 import com.showcase.application.models.rest.dao.TestDataDao;
 import com.showcase.application.models.rest.module.*;
+import com.showcase.application.models.security.Permit;
+import com.showcase.application.models.security.User;
 import com.showcase.application.services.configuration.ParameterService;
+import com.showcase.application.services.configuration.UserSettingService;
 import com.showcase.application.services.module.TestDataService;
 import com.showcase.application.services.module.TestTypeService;
 import com.showcase.application.services.reports.ReportService;
@@ -20,6 +24,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +38,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TestDataController {
 
+    private final UserSettingService userSettingService;
     private final TranslationProvider translationProvider;
     private final ParameterService parameterService;
     private final TestDataService testDataService;
@@ -47,6 +53,12 @@ public class TestDataController {
         try {
             requestFrame.setCode(HttpStatus.OK.value());
             requestFrame.setError(false);
+
+            UserSetting userSetting = (UserSetting) SecurityContextHolder.getContext().getAuthentication().getDetails();
+
+            if (!SecurityUtils.isAccessGranted(Permit.MENU_TEST_DATA)) {
+                throw new MyException(MyException.CLIENT_ERROR, translationProvider.getTranslation("error.noaccess", userSetting.getLocale()));
+            }
 
             List<TestData> list = testDataService.findAllFilter(
                     true,
@@ -85,9 +97,17 @@ public class TestDataController {
             requestFrame.setCode(HttpStatus.OK.value());
             requestFrame.setError(false);
 
+            UserSetting userSetting = (UserSetting) SecurityContextHolder.getContext().getAuthentication().getDetails();
+
+            if (!SecurityUtils.isAccessGranted(Permit.TEST_DATA_CREATE) ||
+                    !SecurityUtils.isAccessGranted(Permit.TEST_DATA_VIEW) ||
+                    !SecurityUtils.isAccessGranted(Permit.TEST_DATA_EDIT)) {
+                throw new MyException(MyException.CLIENT_ERROR, translationProvider.getTranslation("error.noaccess", userSetting.getLocale()));
+            }
+
             TestData data = testDataService.getTestDataById(restRequestGet.getId()).orElse(null);
             if (data == null) {
-                throw new MyException(HttpStatus.OK.value(), translationProvider.getTranslation("error.null", restRequestGet.getUserSetting().getLocale()));
+                throw new MyException(HttpStatus.OK.value(), translationProvider.getTranslation("error.notfound", userSetting.getLocale()));
             }
 
             returnData.getList().add(new TestDataRest(data));
@@ -113,7 +133,13 @@ public class TestDataController {
             requestFrame.setCode(HttpStatus.OK.value());
             requestFrame.setError(false);
 
-            TestData data = testDataService.saveTestData(new TestData(testDataDao), new UserSetting());
+            UserSetting userSetting = (UserSetting) SecurityContextHolder.getContext().getAuthentication().getDetails();
+
+            if (!SecurityUtils.isAccessGranted(Permit.TEST_DATA_CREATE)) {
+                throw new MyException(MyException.CLIENT_ERROR, translationProvider.getTranslation("error.noaccess", userSetting.getLocale()));
+            }
+
+            TestData data = testDataService.saveTestData(new TestData(testDataDao), userSetting);
 
             returnData.getList().add(new TestDataRest(data));
             returnData.setRequestFrame(requestFrame);
@@ -131,6 +157,7 @@ public class TestDataController {
 
     @GetMapping("/testtype/findall")
     public ResponseEntity<?> findAllTestType() {
+        //can be called as long as the user is authenticated, so it doesnt need any permit
         RequestFrame requestFrame = new RequestFrame();
         ReturnTestType returnData = new ReturnTestType();
 
@@ -162,9 +189,16 @@ public class TestDataController {
     @GetMapping(value = "/report")
     public ResponseEntity<?> generateReportPDF(@RequestBody() FilterTestData filterTestData) {
 
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserSetting userSetting = (UserSetting) SecurityContextHolder.getContext().getAuthentication().getDetails();
+
+        if (!SecurityUtils.isAccessGranted(Permit.REPORT_TEST_DATA)) {
+            throw new MyException(MyException.CLIENT_ERROR, translationProvider.getTranslation("error.noaccess", userSetting.getLocale()));
+        }
+
         ByteArrayOutputStream byteArrayOutputStream = reportService.generateTestDataReport(
-                null,
-                new UserSetting(),
+                user,
+                userSetting,
                 ReportService.PDF,
                 filterTestData.getWord(),
                 filterTestData.getDescription(),

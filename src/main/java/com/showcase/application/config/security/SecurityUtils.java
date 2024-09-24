@@ -23,6 +23,7 @@ public final class SecurityUtils {
         return userAuthentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .anyMatch(list::contains);
+//                .anyMatch(it -> it.equals(permit));
     }
 
     public static void updateGrantedAuthorities(Set<Permit> permits) {

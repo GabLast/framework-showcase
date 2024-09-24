@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RestPagination {
-    private String sortProperty;
+    private String sortProperty = "id";
     private Integer offset = 0;
     private Integer limit = 10;
 }

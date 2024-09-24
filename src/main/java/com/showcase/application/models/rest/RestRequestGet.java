@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 @NoArgsConstructor
-public class RestRequestGet extends RestBase {
+public class RestRequestGet {
     private Long id;
 }
