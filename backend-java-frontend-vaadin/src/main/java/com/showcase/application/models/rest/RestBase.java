@@ -13,5 +13,5 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RestBase {
     private UserRest user;
-    private UserSettingDto userSetting;
+    private UserSettingDto userSetting = new UserSettingDto();
 }

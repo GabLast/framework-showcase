@@ -10,5 +10,5 @@ import lombok.Setter;
 public class RestPagination {
     private String sortProperty = "id";
     private Integer offset = 0;
-    private Integer limit = 10;
+    private Integer limit = 20;
 }

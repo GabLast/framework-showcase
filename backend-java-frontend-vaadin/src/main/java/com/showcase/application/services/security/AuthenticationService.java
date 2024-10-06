@@ -158,7 +158,6 @@ public class AuthenticationService {
         }
     }
 
-    @Transactional(readOnly = true)
     public String generateJWT(Token token) {
         try {
 
@@ -169,6 +168,9 @@ public class AuthenticationService {
             UserSetting userSetting = userSettingService.findByEnabledAndUser(true, token.getUser());
             if (userSetting == null) {
                 userSetting = new UserSetting();
+            }
+            if (token.getExpirationDate().toInstant().isBefore(new Date().toInstant().atZone(userSetting.getTimezone().toZoneId()).toInstant())) {
+                token = generateToken(token.getUser());
             }
 
 //            String encryptedData = Utilities.encrypt(token.getToken(), Utilities.generateSecretKey());

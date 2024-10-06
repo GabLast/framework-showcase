@@ -16,15 +16,18 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class FilterTestData extends RestBase {
 
-    private String word;
-    private String description;
-    private TestTypeRest testTypeRest;
-    private LocalDate dateStart;
-    private LocalDate dateEnd;
-    private RestPagination restPagination;
+    private String word = null;
+    private String description = null;
+    private TestTypeRest testTypeRest = null;
+    private LocalDate dateStart = null;
+    private LocalDate dateEnd = null;
+    private RestPagination restPagination = new RestPagination();
     private Integer reportType;
 
     public TestType getTestType(TestTypeRest testTypeRest) {
+        if(testTypeRest == null) {
+            return null;
+        }
         return new TestType(testTypeRest);
     }
 }

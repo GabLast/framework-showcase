@@ -41,6 +41,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
             String authToken = request.getHeader("Authorization");
 //            System.out.println("For Request: " + request.getServletPath() + "\n\n");
+//            System.out.println("Token: " + authToken + "\n\n");
             if (!authenticationService.isJWTValid(authToken)) {
                 throw new MyException(MyException.CLIENT_ERROR, "Invalid Token");
             }
@@ -66,6 +67,8 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
             if (user == null) {
                 throw new MyException(MyException.CLIENT_ERROR, "No user found");
             }
+
+
 //            customUserDetailsService.grantAuthorities(token.getUser()); //could also do this
 //            if (SecurityContextHolder.getContext().getAuthentication() != null) {
 //                System.out.println("Login Principal");

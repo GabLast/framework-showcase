@@ -46,7 +46,7 @@ public class TestDataController {
     private final ReportService reportService;
 
     @GetMapping("/findall")
-    public ResponseEntity<?> findAllFilter(@RequestBody() FilterTestData filterTestData) {
+    public ResponseEntity<?> findAllFilter(/*@RequestBody() FilterTestData filterTestData*/) {
         RequestFrame requestFrame = new RequestFrame();
         ReturnTestData returnData = new ReturnTestData();
 
@@ -54,10 +54,16 @@ public class TestDataController {
             requestFrame.setCode(HttpStatus.OK.value());
             requestFrame.setError(false);
 
-            UserSetting userSetting = (UserSetting) SecurityContextHolder.getContext().getAuthentication().getDetails();
+//            UserSetting userSetting = (UserSetting) SecurityContextHolder.getContext().getAuthentication().getDetails();
+//
+//            if (!SecurityUtils.isAccessGranted(Permit.MENU_TEST_DATA)) {
+//                throw new MyException(MyException.CLIENT_ERROR, translationProvider.getTranslation("error.noaccess", userSetting.getLocale()));
+//            }
 
-            if (!SecurityUtils.isAccessGranted(Permit.MENU_TEST_DATA)) {
-                throw new MyException(MyException.CLIENT_ERROR, translationProvider.getTranslation("error.noaccess", userSetting.getLocale()));
+            FilterTestData filterTestData = null;
+
+            if(filterTestData == null) {
+                filterTestData = new FilterTestData();
             }
 
             List<TestData> list = testDataService.findAllFilter(
@@ -68,8 +74,8 @@ public class TestDataController {
                     filterTestData.getTestType(filterTestData.getTestTypeRest()),
                     filterTestData.getDateStart(),
                     filterTestData.getDateEnd(),
-                    filterTestData.getRestPagination().getOffset(),
                     filterTestData.getRestPagination().getLimit(),
+                    filterTestData.getRestPagination().getOffset(),
                     Sort.by(Sort.Direction.DESC, filterTestData.getRestPagination().getSortProperty()));
 
             for (TestData it : list) {
