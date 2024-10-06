@@ -21,3 +21,9 @@ TODO Docker
 
 - Vaadin Docs [vaadin.com/docs](https://vaadin.com/docs).
 
+## Pending Integrations
+
+- GraphQL: https://www.youtube.com/playlist?list=PLiwhu8iLxKwL1TU0RMM6z7TtkyW-3-5Wi
+			(Fairly Simple on the Backend - Resolves the need to make multiple
+			requests for a set of data through the frontend using rest services)
+
