@@ -76,8 +76,8 @@ public class SecurityConfig extends VaadinWebSecurity {
                 .authorizeHttpRequests(authorizeRequests ->
                                 authorizeRequests
                                         .requestMatchers(HttpMethod.GET, "/rest/auth/login").permitAll() // -> http method POST doesnt work for some reason
-//                                        .requestMatchers("/rest/**").authenticated()
-                                        .requestMatchers("/rest/**").permitAll()
+                                        .requestMatchers("/rest/**").authenticated()
+//                                        .requestMatchers("/rest/**").permitAll()
                 )
                 .httpBasic(withDefaults())
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

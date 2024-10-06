@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
 import { findAllTestData } from "./api/module/TestDataService"
-import TestDataTableHeader from "./components/module/tableheaders/TestDataHeader"
 import TestDataRow from "./components/module/tablerows/TestDataRow"
-import { Table } from "./components/Table"
+import { Table } from "./components/generics/Table"
 import { TestDataRestProps } from "./models/TestDataRest"
-import { AxiosResponse } from "axios"
+import Navbar from "./components/generics/NavBar"
+import { TableHeader } from "./components/generics/TableHeader"
 
 function App() {
 
@@ -23,11 +23,12 @@ function App() {
     fetch()
   }, [])
 
-  // console.log(data)
-
   return (
     <div className="container mx-auto">
-      <Table caption="List" header={<TestDataTableHeader/>} list={data} render={(it: TestDataRestProps) => <TestDataRow value={it} />}/>
+      <Navbar />
+
+      <Table caption="List" header={<TableHeader columns={["Word", "Test Type", "Date", "Number", "Description"]} />}
+       list={data} render={(it: TestDataRestProps) => <TestDataRow value={it} />} />
     </div>
   )
 }
