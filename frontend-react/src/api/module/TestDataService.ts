@@ -1,27 +1,15 @@
-import { TestTypeRest } from "../../models/TestTypeRest"
-import { getRequest } from "../AxiosConfig"
+import { fi } from "date-fns/locale";
+import { TestTypeRest } from "../../models/TestTypeRest";
+import { getRequest, postRequest } from "../AxiosConfig";
+import { FilterTestData } from "../../models/FilterTestData";
 
-type FilterTestData = {
-    word?: string
-    description?: string
-    testTypeRest?: TestTypeRest
-    dateStart?: Date
-    dateEnd?: Date
-    restPagination: RestPagination
-}
+const URL = "/rest/testdata";
 
-type RestPagination = {
-    sortProperty?: string
-    offset?: number
-    limit?: number
-}
+export const findAllTestData = async (filters?: FilterTestData) => {
 
-const URL = "/rest/testdata"
+  const other = await getRequest(URL + "/findall", filters).catch((error) => {
+    console.log(error);
+  });
 
-export const findAllTestData = async (filters?:FilterTestData) => {
-    const other = await getRequest(URL+"/findall", undefined, filters).catch(error => {
-        console.log(error)  
-    })
-
-    return other
-}
+  return other;
+};
