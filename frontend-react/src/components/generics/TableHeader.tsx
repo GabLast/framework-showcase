@@ -1,17 +1,18 @@
-type HeaderProps = {
+import { Typography } from "@material-tailwind/react";import React from "react";
+ type HeaderProps = {
   columns: string[]
 }
 
-export const TableHeader = (headers:HeaderProps) => {
+export const TableHeader = (headers: HeaderProps) => {
   return (
     <tr>
       {
         headers.columns.map(it => {
           return (
-            <th className="p-4 border-b border-slate-300 bg-slate-50">
-              <p className="block text-sm font-normal leading-none text-slate-500">
+            <th key={it} className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+              <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70">
                 {it}
-              </p>
+              </Typography>
             </th>
           )
         })

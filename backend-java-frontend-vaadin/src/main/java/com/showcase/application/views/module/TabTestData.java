@@ -189,6 +189,7 @@ public class TabTestData extends GenericTab<TestData> implements HasDynamicTitle
                                 word.getValue(),
                                 description.getValue(),
                                 type.getValue(),
+                                null,
                                 start.getValue(), end.getValue(),
                                 query.getLimit(),
                                 query.getOffset(),

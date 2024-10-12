@@ -28,6 +28,7 @@ public interface TestDataRepository extends JpaRepository<TestData, Long> {
             "and (:word is null or u.word like '' or lower(u.word) like lower(trim(concat('%', :word,'%')))) " +
             "and (:description is null or u.description like '' or u.description is null or lower(u.description) like lower(trim(concat('%', :description,'%')))) " +
             "and (:testType is null or u.testType = :testType) " +
+            "and (:testTypeId is null or u.testType.id = :testTypeId) " +
             "and (:start is null or u.date >= :start) " +
             "and (:end is null or u.date <= :end) "
     )
@@ -35,6 +36,7 @@ public interface TestDataRepository extends JpaRepository<TestData, Long> {
                                  @Param("word") String word,
                                  @Param("description") String description,
                                  @Param("testType") TestType testType,
+                                 @Param("testTypeId") Long testTypeId,
                                  @Param("start") Date start,
                                  @Param("end") Date end,
                                  Pageable pageable

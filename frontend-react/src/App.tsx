@@ -12,7 +12,17 @@ function App() {
 
   const fetch = async () => {
     try {
-      const request = await findAllTestData()
+      const request = await findAllTestData({
+        word: undefined,
+        testType: 1,
+        description: undefined,
+        dateStart: undefined,
+        dateEnd: undefined,
+        sortProperty: "id",
+        offset: 0,
+        limit: 20
+      })
+
       setData(request.list)
     } catch (error) {
       console.log(error)
@@ -26,9 +36,8 @@ function App() {
   return (
     <div className="container mx-auto">
       <Navbar />
-
       <Table caption="List" header={<TableHeader columns={["Word", "Test Type", "Date", "Number", "Description"]} />}
-       list={data} render={(it: TestDataRestProps) => <TestDataRow value={it} />} />
+        list={data} render={(it: TestDataRestProps) => <TestDataRow value={it} />} />
     </div>
   )
 }

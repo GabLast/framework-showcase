@@ -71,6 +71,7 @@ public class SecurityConfig extends VaadinWebSecurity {
     @Override
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+//                .cors(AbstractHttpConfigurer::disable)
                 .cors(c -> c.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests ->

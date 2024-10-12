@@ -1,42 +1,37 @@
 import { TestDataProps } from '../../../models/TestDataRest'
 import { formatDate } from '../../../utils/Utilities'
+import { Card, Typography } from "@material-tailwind/react";
 
 function TestDataRow(data: TestDataProps) {
+
   return (
-    <tr className="hover:bg-slate-50">
-      {/* 
-            <td>{data.value.word}</td>
-            <td>{data.value.testTypeRest?.description}</td>
-            <td>{formatDate(data.value.date)}</td>
-            <td>{data.value.number?.toPrecision(2)}</td>
-            <td>{data.value.description}</td> 
-            */}
-      <td className="p-4 border-b border-slate-200">
-        <p className="block text-sm text-slate-800">
+    <>
+      <td className="p-4">
+        <Typography variant="small" color="blue-gray" className="font-normal">
           {data.value.word}
-        </p>
+        </Typography>
       </td>
-      <td className="p-4 border-b border-slate-200">
-        <p className="block text-sm text-slate-800">
-          {data.value.testTypeRest?.description}
-        </p>
+      <td className="p-4">
+        <Typography variant="small" color="blue-gray" className="font-normal">
+          {data.value.testTypeRest?.name}
+        </Typography>
       </td>
-      <td className="p-4 border-b border-slate-200">
-        <p className="block text-sm text-slate-800">
+      <td className="p-4">
+        <Typography variant="small" color="blue-gray" className="font-normal">
           {formatDate(data.value.date)}
-        </p>
+        </Typography>
       </td>
-      <td className="p-4 border-b border-slate-200">
-        <p className="block text-sm text-slate-800">
+      <td className="p-4">
+        <Typography variant="small" color="blue-gray" className="font-normal">
           {data.value.number?.toPrecision(2)}
-        </p>
+        </Typography>
       </td>
-      <td className="p-4 border-b border-slate-200">
-        <p className="block text-sm text-slate-800">
+      <td className="p-4">
+        <Typography variant="paragraph" color="blue-gray" className="font-normal text-ellipsis">
           {data.value.description}
-        </p>
+        </Typography>
       </td>
-    </tr>
+    </>
   )
 }
 

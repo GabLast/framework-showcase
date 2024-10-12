@@ -46,40 +46,40 @@ public class TestDataController {
     private final ReportService reportService;
 
     @GetMapping("/findall")
-    public ResponseEntity<?> findAllFilter(/*@RequestBody() FilterTestData filterTestData*/) {
+    public ResponseEntity<?> findAllFilter(FilterTestData filterTestData) {
         RequestFrame requestFrame = new RequestFrame();
         ReturnTestData returnData = new ReturnTestData();
 
         try {
+
             requestFrame.setCode(HttpStatus.OK.value());
             requestFrame.setError(false);
 
-//            UserSetting userSetting = (UserSetting) SecurityContextHolder.getContext().getAuthentication().getDetails();
-//
-//            if (!SecurityUtils.isAccessGranted(Permit.MENU_TEST_DATA)) {
-//                throw new MyException(MyException.CLIENT_ERROR, translationProvider.getTranslation("error.noaccess", userSetting.getLocale()));
-//            }
+//            System.out.println("Filter:" + filterTestData.toString());
 
-            FilterTestData filterTestData = null;
+            UserSetting userSetting = (UserSetting) SecurityContextHolder.getContext().getAuthentication().getDetails();
 
-            if(filterTestData == null) {
-                filterTestData = new FilterTestData();
+            if (!SecurityUtils.isAccessGranted(Permit.MENU_TEST_DATA)) {
+                throw new MyException(MyException.CLIENT_ERROR, translationProvider.getTranslation("error.noaccess", userSetting.getLocale()));
             }
 
             List<TestData> list = testDataService.findAllFilter(
                     true,
-                    filterTestData.getUserSetting().getTimeZoneString(),
+                    userSetting.getTimeZoneString(),
                     filterTestData.getWord(),
                     filterTestData.getDescription(),
-                    filterTestData.getTestType(filterTestData.getTestTypeRest()),
+                    null,
+                    filterTestData.getTestType(),
                     filterTestData.getDateStart(),
                     filterTestData.getDateEnd(),
-                    filterTestData.getRestPagination().getLimit(),
-                    filterTestData.getRestPagination().getOffset(),
-                    Sort.by(Sort.Direction.DESC, filterTestData.getRestPagination().getSortProperty()));
+                    filterTestData.getLimit(),
+                    filterTestData.getOffset(),
+                    Sort.by(Sort.Direction.DESC, filterTestData.getSortProperty()));
 
             for (TestData it : list) {
-                returnData.getList().add(new TestDataRest(it));
+                TestDataRest tmp = new TestDataRest(it);
+                tmp.getTestTypeRest().setName(translationProvider.getTranslation(tmp.getTestTypeRest().getName(), userSetting.getLocale()));
+                returnData.getList().add(tmp);
             }
             returnData.setRequestFrame(requestFrame);
 
@@ -208,7 +208,7 @@ public class TestDataController {
                 ReportService.PDF,
                 filterTestData.getWord(),
                 filterTestData.getDescription(),
-                filterTestData.getTestType(filterTestData.getTestTypeRest()),
+                null,
                 filterTestData.getDateStart(),
                 filterTestData.getDateEnd()
         );
@@ -218,7 +218,7 @@ public class TestDataController {
         headers.add("Content-Type", "application/pdf");
 
         return new ResponseEntity<Resource>(
-                new ByteArrayResource(byteArrayOutputStream.toByteArray(), translationProvider.getTranslation("report.testdata", filterTestData.getUserSetting().getLocale())),
+                new ByteArrayResource(byteArrayOutputStream.toByteArray(), translationProvider.getTranslation("report.testdata", userSetting.getLocale())),
                 headers,
                 HttpStatus.OK
         );

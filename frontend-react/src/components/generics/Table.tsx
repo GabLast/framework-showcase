@@ -1,10 +1,12 @@
 import { ReactNode } from "react"
+import { Card, Typography } from "@material-tailwind/react";
 
 interface TableDataProps<T> {
     list?: T[]
     render: (item: T) => ReactNode
     caption: string
     header: React.ReactNode
+    children?: React.ReactNode
 }
 
 export const Table = <T,>(properties: TableDataProps<T>) => {
@@ -14,18 +16,21 @@ export const Table = <T,>(properties: TableDataProps<T>) => {
     }
 
     return (
-        <table className="table-fixed">
-            <caption className="caption-bottom">
-                {properties.caption}
-            </caption>
-            <thead>
-                {properties.header}
-            </thead>
-            {properties.list.map((item, i) => (
-                <li key={i}>
-                    {properties.render(item)}
-                </li>
-            ))}
-        </table>
+        <Card className="h-full w-full overflow-scroll">
+            <table className="w-full min-w-max table-auto">
+                <thead>
+                    {properties.header}
+                </thead>
+                <tbody>
+                    {properties.list.map((item, i) => (
+                        <tr key={i} className="even:bg-blue-gray-50/50">
+                            {properties.render(item)}
+                        </tr>
+                    ))}
+                </tbody>
+                {properties.children? properties.children : null}
+            </table>
+        </Card>
+
     )
 }

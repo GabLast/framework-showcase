@@ -46,7 +46,7 @@ public class TestDataService extends BaseService<TestData, Long> {
 
     @Transactional(readOnly = true)
     public List<TestData> findAllFilter(boolean enabled, String timeZoneId,
-                                        String word, String description, TestType testType, LocalDate dateStart, LocalDate dateEnd,
+                                        String word, String description, TestType testType, Long testTypeId, LocalDate dateStart, LocalDate dateEnd,
                                         Integer limit, Integer offset, Sort sort) {
         try {
 
@@ -60,6 +60,7 @@ public class TestDataService extends BaseService<TestData, Long> {
                     word,
                     description,
                     testType,
+                    testTypeId,
                     dateStart != null ? Date.from(dateStart.atStartOfDay().atZone(timeZone.toZoneId()).toInstant()) : null,
                     dateEnd != null ? Date.from(dateEnd.atTime(LocalTime.MAX).atZone(timeZone.toZoneId()).toInstant()) : null,
                     sort == null ? new OffsetBasedPageRequest(limit, offset) : new OffsetBasedPageRequest(limit, offset, sort)

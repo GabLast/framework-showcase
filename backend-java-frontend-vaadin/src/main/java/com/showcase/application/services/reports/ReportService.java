@@ -85,7 +85,7 @@ public class ReportService {
             //tmp data to be transformed into report class
             List<TestData> tmp = testDataService.findAllFilter(
                     true, userSetting.getTimeZoneString(),
-                    word, description, testType,
+                    word, description, testType, null,
                     dateStart, dateEnd,
                     testDataService.countAllFilter(true, userSetting.getTimeZoneString(), word, description, testType, dateStart, dateEnd),
                     0,
@@ -209,7 +209,7 @@ public class ReportService {
             //tmp data to be transformed into report class
             List<TestData> tmp = testDataService.findAllFilter(
                     true, userSetting.getTimeZoneString(),
-                    word, description, testType,
+                    word, description, testType, null,
                     dateStart, dateEnd,
                     testDataService.countAllFilter(true, userSetting.getTimeZoneString(), word, description, testType, dateStart, dateEnd),
                     0,
@@ -339,7 +339,7 @@ public class ReportService {
             //tmp data to be transformed into report class
             List<TestData> tmp = testDataService.findAllFilter(
                     true, userSetting.getTimeZoneString(),
-                    word, description, testType,
+                    word, description, testType, null,
                     dateStart, dateEnd,
                     testDataService.countAllFilter(true, userSetting.getTimeZoneString(), word, description, testType, dateStart, dateEnd),
                     0,

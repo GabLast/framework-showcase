@@ -124,7 +124,7 @@ public class AuthenticationService {
         }
     }
 
-    public boolean isJWTValid(String token) {
+    public Claims isJWTValid(String token) {
         try {
             token = token.replace("Bearer", "").trim();
 
@@ -134,9 +134,11 @@ public class AuthenticationService {
                     .parseSignedClaims(token)
                     .getPayload();
 
-            return true;
+//            System.out.println("Expires in:" + Utilities.formatDate(claims.getExpiration(),"", ""));
+
+            return claims;
         } catch (Exception ignored) {
-            return false;
+            return null;
         }
     }
 
@@ -149,7 +151,6 @@ public class AuthenticationService {
                     .build()
                     .parseSignedClaims(token)
                     .getPayload();
-
 
 //            return Utilities.decrypt(claims.get("token").toString(), Utilities.generateSecretKey());
             return claims.get("token").toString();

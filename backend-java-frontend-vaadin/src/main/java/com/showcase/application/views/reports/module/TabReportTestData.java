@@ -80,6 +80,7 @@ public class TabReportTestData extends GenericReportTab<TestData> implements Has
                                 word.getValue(),
                                 description.getValue(),
                                 type.getValue(),
+                                null,
                                 start.getValue(), end.getValue(),
                                 query.getLimit(),
                                 query.getOffset(),
