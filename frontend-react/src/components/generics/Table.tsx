@@ -23,7 +23,7 @@ export const Table = <T,>(properties: TableDataProps<T>) => {
                 </thead>
                 <tbody>
                     {properties.list.map((item, i) => (
-                        <tr key={i} className="even:bg-blue-gray-50/50">
+                        <tr key={JSON.stringify(item)} className="even:bg-blue-gray-50/50">
                             {properties.render(item)}
                         </tr>
                     ))}

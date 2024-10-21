@@ -1,4 +1,4 @@
-import { UserSetting } from "../models/UserSetting"
+import { UserSetting } from "../models/config/UserSetting"
 
 const generateDefaultSettings = ():UserSetting => {
     return {

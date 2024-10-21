@@ -1,5 +1,5 @@
-import { FilterBase } from "./FilterBase"
-import { RestPagination } from "./RestPagination"
+import { FilterBase } from "../config/FilterBase"
+import { RestPagination } from "../config/RestPagination"
 import { TestTypeRest } from "./TestTypeRest"
 
 export interface FilterTestData extends FilterBase {

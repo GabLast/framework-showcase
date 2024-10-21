@@ -1,7 +1,7 @@
 import { fi } from "date-fns/locale";
-import { TestTypeRest } from "../../models/TestTypeRest";
+import { TestTypeRest } from "../../models/module/TestTypeRest";
 import { getRequest, postRequest } from "../AxiosConfig";
-import { FilterTestData } from "../../models/FilterTestData";
+import { FilterTestData } from "../../models/module/FilterTestData";
 
 const URL = "/rest/testdata";
 

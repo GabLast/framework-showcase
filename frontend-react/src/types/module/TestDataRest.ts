@@ -1,4 +1,4 @@
-import { TestTypeRest } from "../models/TestTypeRest";
+import { TestTypeRest } from "./TestTypeRest";
 
 export type TestDataRestProps = {
   word?: string;

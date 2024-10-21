@@ -23,7 +23,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @PWA(name = "Framework Showcase", shortName = "FS"/*, iconPath = "icons/icon.png"*/)
 @EnableAsync
 @EnableScheduling
-@Push(value = PushMode.AUTOMATIC, transport = Transport.WEBSOCKET_XHR)
+//@Push(value = PushMode.AUTOMATIC, transport = Transport.WEBSOCKET_XHR)
 public class Application implements AppShellConfigurator {
 
     public static void main(String[] args) {

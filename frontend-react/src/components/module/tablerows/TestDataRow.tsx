@@ -1,5 +1,5 @@
-import { TestDataProps } from '../../../models/TestDataRest'
-import { formatDate } from '../../../utils/Utilities'
+import { TestDataProps } from '../../../models/module/TestDataRest'
+import { formatDate } from '../../../utils/formatDate'
 import { Card, Typography } from "@material-tailwind/react";
 
 function TestDataRow(data: TestDataProps) {
