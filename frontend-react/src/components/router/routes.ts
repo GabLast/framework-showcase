@@ -1,8 +1,5 @@
-type RouteProps = {
-  caption: string;
-  icon?: string;
-  route: string;
-};
+import { RouteProps } from "../../types/routes/RouteProps";
+
 
 export const processesRoutes: RouteProps[] = [
   {

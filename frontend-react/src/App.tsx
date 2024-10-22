@@ -2,13 +2,14 @@ import { useEffect, useState } from "react"
 import { findAllTestData } from "./api/module/TestDataService"
 import TestDataRow from "./components/module/tablerows/TestDataRow"
 import { Table } from "./components/generics/Table"
-import { TestDataRestProps } from "./models/module/TestDataRest"
 import Navbar from "./components/generics/NavBar"
 import { TableHeader } from "./components/generics/TableHeader"
 import { MdInfoOutline } from "react-icons/md";
 import 'material-icons/iconfont/material-icons.css';
 import { NavigationBar } from "./components/router/NavigationBar"
 import { TopNavigation } from "./components/router/TopNavigation"
+import Example from "./components/router/test"
+import { TestDataRestProps } from "./types/module/TestDataRest"
 
 function App() {
 
@@ -40,11 +41,14 @@ function App() {
   return (
     <div className="container mx-auto" >
       <NavigationBar />
-      <Table
-        caption="List"
-        header={<TableHeader columns={["Word", "Test Type", "Date", "Number", "Description"]} />}
-        list={data}
-        render={(it: TestDataRestProps) => <TestDataRow value={it} />} />
+      <div id="layout" className="flex">
+        <Table
+          caption="List"
+          header={<TableHeader columns={["Word", "Test Type", "Date", "Number", "Description"]} />}
+          list={data}
+          render={(it: TestDataRestProps) => <TestDataRow value={it} />} />
+      </div>
+
     </div>
   )
 }

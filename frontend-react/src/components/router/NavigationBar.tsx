@@ -16,6 +16,7 @@ import { TopNavigation } from "./TopNavigation";
 import MyIcon from "../icons/MyIcon";
 import { processesRoutes, securityRoutes } from "./routes";
 import { NavItem } from "./NavItem";
+import { RouteProps } from "../../types/routes/RouteProps";
 
 type CollapseProps = {
     state: boolean
@@ -34,6 +35,12 @@ export const NavigationBar = () => {
     const [securityCollapse, setSecurityCollapse] = useState<CollapseProps>({ state: false, icon: "keyboard_arrow_right" });
     const toggleSecurityCollapse = () => setSecurityCollapse({ state: !securityCollapse.state, icon: securityCollapse.state ? "keyboard_arrow_right" : "keyboard_arrow_down" });
 
+    const renderView = (props: RouteProps) => {
+        if (props.component) { 
+        }
+        
+    }
+
     useEffect(() => {
         window.addEventListener(
             "resize",
@@ -43,20 +50,20 @@ export const NavigationBar = () => {
 
     return (
         <React.Fragment>
-            <TopNavigation action={openDrawer}/>
+            <TopNavigation action={openDrawer} />
             <Drawer open={open} onClose={closeDrawer}>
                 <div className="grid grid-cols-1 place-content-center">
                     <Typography variant="h5" className="p-3 flex items-center justify-center">
                         Framework Showcase
                     </Typography>
                 </div>
-                <NavItem caption="Module" action={toggleModuleCollapse} icon="content_paste_search" suffix={processesCollapse.icon}/>
+                <NavItem caption="Module" action={toggleModuleCollapse} icon="content_paste_search" suffix={processesCollapse.icon} />
                 <Collapse open={processesCollapse.state}>
                     <List>
                         {
                             processesRoutes.map((it) => {
                                 return (
-                                    <ListItem>
+                                    <ListItem >
                                         {it.icon ?
                                             <ListItemPrefix>
                                                 <MyIcon name={it.icon} />
@@ -69,7 +76,7 @@ export const NavigationBar = () => {
                         }
                     </List>
                 </Collapse>
-                <NavItem caption="Security" action={toggleSecurityCollapse} icon="format_line_spacing" suffix={securityCollapse.icon}/>
+                <NavItem caption="Security" action={toggleSecurityCollapse} icon="format_line_spacing" suffix={securityCollapse.icon} />
                 <Collapse open={securityCollapse.state}>
                     <List>
                         {

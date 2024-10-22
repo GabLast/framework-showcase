@@ -12,7 +12,6 @@ import {
     MenuList,
     MenuItem,
 } from "@material-tailwind/react";
-import 'material-icons/iconfont/material-icons.css';
 import MyIcon from "../icons/MyIcon";
 
 type TopNavigationProps = {
@@ -32,13 +31,14 @@ export const TopNavigation = (props: TopNavigationProps) => {
     // }, []);
 
     return (
-        <Navbar className="mx-auto max-w-screen-xl p-2 lg:pl-6">
-            <div className="relative mx-auto flex items-center justify-between text-blue-gray-900">
-                <MyIcon name="view_headline" action={props.action} />
-                <ProfileMenu/>
-            </div>
-
-        </Navbar>
+        <div className=" max-h-[768px] w-[calc(100%+48px)] p-2">
+            <Navbar className="mx-auto max-w-full p-2 lg:pl-6 sticky top-0 z-10 h-max lg:px-8 lg:py-4">
+                <div className="relative mx-auto flex items-center justify-between text-blue-gray-900">
+                    <MyIcon name="view_headline" action={props.action} />
+                    <ProfileMenu />
+                </div>
+            </Navbar>
+        </div>
     );
 }
 
