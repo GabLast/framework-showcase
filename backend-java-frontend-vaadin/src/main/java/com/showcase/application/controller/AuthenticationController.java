@@ -2,7 +2,7 @@ package com.showcase.application.controller;
 
 import com.showcase.application.config.security.CustomAuthentication;
 import com.showcase.application.models.rest.RequestFrame;
-import com.showcase.application.models.rest.dao.UserDao;
+import com.showcase.application.models.rest.dto.UserDto;
 import com.showcase.application.models.rest.security.ReturnUserRest;
 import com.showcase.application.models.rest.security.UserRest;
 import com.showcase.application.models.security.Token;
@@ -10,7 +10,6 @@ import com.showcase.application.models.security.User;
 import com.showcase.application.services.configuration.UserSettingService;
 import com.showcase.application.services.security.AuthenticationService;
 import com.showcase.application.services.security.CustomUserDetailsService;
-import com.showcase.application.services.security.UserService;
 import com.showcase.application.utils.MyException;
 import com.showcase.application.utils.TranslationProvider;
 import lombok.RequiredArgsConstructor;
@@ -35,17 +34,17 @@ public class AuthenticationController {
 
 //    @RequestMapping(value = "login", method = RequestMethod.POST)
     @GetMapping("login")
-    public ResponseEntity<?> login(@RequestBody UserDao userDao) {
+    public ResponseEntity<?> login(@RequestBody UserDto userDto) {
         RequestFrame requestFrame = new RequestFrame();
         ReturnUserRest returnData = new ReturnUserRest();
 
         try {
 
-            if (userDao == null) {
+            if (userDto == null) {
                 throw new MyException(MyException.CLIENT_ERROR, "Invalid Credentials");
             }
 
-            User user = authenticationService.login(userDao);
+            User user = authenticationService.login(userDto);
 
             requestFrame.setCode(HttpStatus.OK.value());
             returnData.setRequestFrame(requestFrame);

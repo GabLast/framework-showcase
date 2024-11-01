@@ -3,7 +3,7 @@ package com.showcase.application.services.security;
 import com.showcase.application.config.appinfo.AppInfo;
 import com.showcase.application.models.configuration.Parameter;
 import com.showcase.application.models.configuration.UserSetting;
-import com.showcase.application.models.rest.dao.UserDao;
+import com.showcase.application.models.rest.dto.UserDto;
 import com.showcase.application.models.security.Token;
 import com.showcase.application.models.security.User;
 import com.showcase.application.repositories.security.TokenRepository;
@@ -195,15 +195,15 @@ public class AuthenticationService {
     }
 
     @Transactional(readOnly = true)
-    public User login(UserDao userDao) {
+    public User login(UserDto userDto) {
         try {
-            User user = userService.findByUsernameOrMail(userDao.getUsername());
+            User user = userService.findByUsernameOrMail(userDto.getUsername());
 
 //            System.out.println("Compare:");
 //            System.out.println(userDao.getPassword());
 //            System.out.println(user.getPassword());
 
-            if (!userService.getPasswordEncoder().matches(userDao.getPassword(), user.getPassword())) {
+            if (!userService.getPasswordEncoder().matches(userDto.getPassword(), user.getPassword())) {
                 throw new MyException(MyException.CLIENT_ERROR, "Invalid credentials");
             }
 

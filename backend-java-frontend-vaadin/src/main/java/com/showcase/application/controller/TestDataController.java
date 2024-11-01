@@ -7,7 +7,7 @@ import com.showcase.application.models.module.TestData;
 import com.showcase.application.models.module.TestType;
 import com.showcase.application.models.rest.RequestFrame;
 import com.showcase.application.models.rest.RestRequestGet;
-import com.showcase.application.models.rest.dao.TestDataDao;
+import com.showcase.application.models.rest.dto.TestDataDto;
 import com.showcase.application.models.rest.module.*;
 import com.showcase.application.models.security.Permit;
 import com.showcase.application.models.security.User;
@@ -131,7 +131,7 @@ public class TestDataController {
     }
 
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody() TestDataDao testDataDao) {
+    public ResponseEntity<?> save(@RequestBody() TestDataDto testDataDto) {
         RequestFrame requestFrame = new RequestFrame();
         ReturnTestData returnData = new ReturnTestData();
 
@@ -145,7 +145,7 @@ public class TestDataController {
                 throw new MyException(MyException.CLIENT_ERROR, translationProvider.getTranslation("error.noaccess", userSetting.getLocale()));
             }
 
-            TestData data = testDataService.saveTestData(new TestData(testDataDao), userSetting);
+            TestData data = testDataService.saveTestData(new TestData(testDataDto), userSetting);
 
             returnData.getList().add(new TestDataRest(data));
             returnData.setRequestFrame(requestFrame);

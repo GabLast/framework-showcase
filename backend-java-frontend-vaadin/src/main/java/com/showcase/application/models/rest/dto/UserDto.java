@@ -1,4 +1,4 @@
-package com.showcase.application.models.rest.dao;
+package com.showcase.application.models.rest.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserDao {
+public class UserDto {
     private String username;
     private String password;
 }

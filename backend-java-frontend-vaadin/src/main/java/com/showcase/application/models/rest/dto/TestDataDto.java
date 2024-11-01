@@ -1,4 +1,4 @@
-package com.showcase.application.models.rest.dao;
+package com.showcase.application.models.rest.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.showcase.application.models.rest.RestBase;
@@ -13,7 +13,7 @@ import java.util.Date;
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 @NoArgsConstructor
-public class TestDataDao extends RestBase {
+public class TestDataDto extends RestBase {
 
     private Long id;
     private String word;
