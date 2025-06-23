@@ -17,7 +17,12 @@ import com.showcase.application.models.module.TestType;
 import com.showcase.application.models.reports.ReportTestData;
 import com.showcase.application.models.security.User;
 import com.showcase.application.services.module.TestDataService;
-import com.showcase.application.utils.*;
+import com.showcase.application.utils.ExcelReports;
+import com.showcase.application.utils.GlobalConstants;
+import com.showcase.application.utils.ReportUtilities;
+import com.showcase.application.utils.TranslationProvider;
+import com.showcase.application.utils.Utilities;
+import com.showcase.application.utils.exceptions.MyException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
@@ -40,7 +45,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -48,8 +57,8 @@ import java.util.*;
 @Slf4j
 public class ReportService {
     public static final Integer EXCEL = 0;
-    public static final Integer CSV = 0;
-    public static final Integer PDF = 1;
+    public static final Integer CSV = 1;
+    public static final Integer PDF = 2;
     private final String JASPER_SUFFIX = ".jasper";
     private final String JASPER_PATH = "/templates/jasper/";
 
@@ -108,7 +117,7 @@ public class ReportService {
                     .build();
 
             DynamicReportBuilder reportBuilder = new FastReportBuilder()
-                    .setDefaultStyles(ReportUtilities.titleStyle, null, ReportUtilities.prettyColumnHeaderStyle,  ReportUtilities.detailsStyle)
+                    .setDefaultStyles(ReportUtilities.titleStyle, null, ReportUtilities.prettyColumnHeaderStyle, ReportUtilities.detailsStyle)
                     .addColumn(wordCol)
                     .addColumn(dateCol)
                     .addColumn(ColumnBuilder.getNew()
@@ -123,7 +132,7 @@ public class ReportService {
                             .build())
                     .setTitle(translationProvider.getTranslation("report", userSetting.getLocale(), translationProvider.getTranslation("title.testdata", userSetting.getLocale())))
                     .addAutoText(ReportUtilities.generateAutoText(user != null ? translationProvider.getTranslation("createdby", userSetting.getLocale()) + ": " + user.getName() : "-", AutoText.AUTOTEXT_CUSTOM_MESSAGE, AutoText.POSITION_HEADER, AutoText.ALIGNMENT_RIGHT, 200, 0, ReportUtilities.prettyPageHeadersStyle))
-                    .addAutoText(ReportUtilities.generateAutoText(translationProvider.getTranslation("creationdate", userSetting.getLocale()) + ": " + Utilities.formatDate(currentDate, userSetting.getDateTimeFormat(), userSetting.getTimeZoneString()), AutoText.AUTOTEXT_CUSTOM_MESSAGE, AutoText.POSITION_HEADER, AutoText.ALIGNMENT_RIGHT, 200, 0,  ReportUtilities.prettyPageHeadersStyle));
+                    .addAutoText(ReportUtilities.generateAutoText(translationProvider.getTranslation("creationdate", userSetting.getLocale()) + ": " + Utilities.formatDate(currentDate, userSetting.getDateTimeFormat(), userSetting.getTimeZoneString()), AutoText.AUTOTEXT_CUSTOM_MESSAGE, AutoText.POSITION_HEADER, AutoText.ALIGNMENT_RIGHT, 200, 0, ReportUtilities.prettyPageHeadersStyle));
 
             if (!StringUtils.isBlank(range)) {
                 reportBuilder.addAutoText(ReportUtilities.generateAutoText(range, AutoText.AUTOTEXT_CUSTOM_MESSAGE, AutoText.POSITION_HEADER, AutoText.ALIGNMENT_LEFT, 200, 0, ReportUtilities.prettyColumnHeaderStyle));
@@ -183,9 +192,8 @@ public class ReportService {
     }
 
     @Transactional(readOnly = true)
-    public List<ByteArrayOutputStream> generateTestDataReport(User user, UserSetting userSetting,
-                                                              String word, String description, TestType testType, LocalDate dateStart, LocalDate dateEnd
-    ) {
+    public HashMap<Integer, ByteArrayOutputStream> generateTestDataReport(User user, UserSetting userSetting,
+                                                                          String word, String description, TestType testType, LocalDate dateStart, LocalDate dateEnd) {
         try {
             Date currentDate = new Date();
 
@@ -232,7 +240,7 @@ public class ReportService {
                     .build();
 
             DynamicReportBuilder reportBuilder = new FastReportBuilder()
-                    .setDefaultStyles(ReportUtilities.titleStyle, null, ReportUtilities.prettyColumnHeaderStyle,  ReportUtilities.detailsStyle)
+                    .setDefaultStyles(ReportUtilities.titleStyle, null, ReportUtilities.prettyColumnHeaderStyle, ReportUtilities.detailsStyle)
                     .addColumn(wordCol)
                     .addColumn(dateCol)
                     .addColumn(ColumnBuilder.getNew()
@@ -247,7 +255,7 @@ public class ReportService {
                             .build())
                     .setTitle(translationProvider.getTranslation("report", userSetting.getLocale(), translationProvider.getTranslation("title.testdata", userSetting.getLocale())))
                     .addAutoText(ReportUtilities.generateAutoText(user != null ? translationProvider.getTranslation("createdby", userSetting.getLocale()) + ": " + user.getName() : "-", AutoText.AUTOTEXT_CUSTOM_MESSAGE, AutoText.POSITION_HEADER, AutoText.ALIGNMENT_RIGHT, 200, 0, ReportUtilities.prettyPageHeadersStyle))
-                    .addAutoText(ReportUtilities.generateAutoText(translationProvider.getTranslation("creationdate", userSetting.getLocale()) + ": " + Utilities.formatDate(currentDate, userSetting.getDateTimeFormat(), userSetting.getTimeZoneString()), AutoText.AUTOTEXT_CUSTOM_MESSAGE, AutoText.POSITION_HEADER, AutoText.ALIGNMENT_RIGHT, 200, 0,  ReportUtilities.prettyPageHeadersStyle));
+                    .addAutoText(ReportUtilities.generateAutoText(translationProvider.getTranslation("creationdate", userSetting.getLocale()) + ": " + Utilities.formatDate(currentDate, userSetting.getDateTimeFormat(), userSetting.getTimeZoneString()), AutoText.AUTOTEXT_CUSTOM_MESSAGE, AutoText.POSITION_HEADER, AutoText.ALIGNMENT_RIGHT, 200, 0, ReportUtilities.prettyPageHeadersStyle));
 
             if (!StringUtils.isBlank(range)) {
                 reportBuilder.addAutoText(ReportUtilities.generateAutoText(range, AutoText.AUTOTEXT_CUSTOM_MESSAGE, AutoText.POSITION_HEADER, AutoText.ALIGNMENT_LEFT, 200, 0, ReportUtilities.prettyColumnHeaderStyle));
@@ -281,9 +289,9 @@ public class ReportService {
             JasperPrint print = DynamicJasperHelper.generateJasperPrint(report, new ClassicLayoutManager(), data);
 
             //
-            List<ByteArrayOutputStream> list = new ArrayList<>();
+            HashMap<Integer, ByteArrayOutputStream> map = new HashMap<>();
 
-            //EXCEL
+            //CSV
             ByteArrayOutputStream csv = new ByteArrayOutputStream();
             JRCsvExporter csvExporter = new JRCsvExporter();
             csvExporter.setExporterOutput(new SimpleWriterExporterOutput(csv));
@@ -291,7 +299,10 @@ public class ReportService {
             csvExporter.exportReport();
             csv.flush();
             csv.close();
-            list.add(csv);
+            map.put(CSV, csv);
+
+            //Excel
+            map.put(EXCEL, generateExcelReportFromTemplate(user, userSetting, word, description, testType, dateStart, dateEnd));
 
             //PDF
             ByteArrayOutputStream pdf = new ByteArrayOutputStream();
@@ -301,13 +312,82 @@ public class ReportService {
             pdfExporter.exportReport();
             pdf.flush();
             pdf.close();
-            list.add(pdf);
+            map.put(PDF, pdf);
 
-            return list;
+            return map;
         } catch (MyException e) {
             log.error(e.getMessage());
             throw e;
         } catch (JRException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public ByteArrayOutputStream generateExcelReportFromTemplate(User user, UserSetting userSetting,
+                                                                 String word, String description, TestType testType, LocalDate dateStart, LocalDate dateEnd) {
+        try {
+            Date currentDate = new Date();
+
+            Date start = dateStart != null ? Date.from(dateStart.atStartOfDay().atZone(userSetting.getTimezone().toZoneId()).toInstant()) : null;
+            Date end = dateStart != null ? Date.from(dateEnd.atTime(LocalTime.MAX).atZone(userSetting.getTimezone().toZoneId()).toInstant()) : null;
+            String range = "";
+            if (start != null) {
+                range += translationProvider.getTranslation("daterange.from", userSetting.getLocale(),
+                        Utilities.formatDate(start, userSetting.getDateTimeFormat(), userSetting.getTimeZoneString()));
+            }
+
+            if (end != null) {
+                range += " ";
+                range += translationProvider.getTranslation("daterange.to", userSetting.getLocale(),
+                        Utilities.formatDate(end, userSetting.getDateTimeFormat(), userSetting.getTimeZoneString()));
+            }
+
+            //data for report
+            List<ReportTestData> data = new ArrayList<>();
+            //tmp data to be transformed into report class
+            List<TestData> tmp = testDataService.findAllFilter(
+                    true, userSetting.getTimeZoneString(),
+                    word, description, testType, null,
+                    dateStart, dateEnd,
+                    testDataService.countAllFilter(true, userSetting.getTimeZoneString(), word, description, testType, dateStart, dateEnd),
+                    0,
+                    Sort.by(Sort.Direction.ASC, "id")
+            );
+            tmp.forEach(it -> data.add(new ReportTestData(it, userSetting)));
+
+            Map<String, Object> params = new HashMap<>();
+            params.put("page", translationProvider.getTranslation("page", userSetting.getLocale()));
+            params.put("of", translationProvider.getTranslation("of", userSetting.getLocale()));
+            params.put("range", range);
+            params.put("logo", GlobalConstants.LOGO);
+            params.put("creationDate", translationProvider.getTranslation("creationdate", userSetting.getLocale()) + ": " + Utilities.formatDate(currentDate, userSetting.getDateTimeFormat(), userSetting.getTimeZoneString()));
+            params.put("user", user != null ? translationProvider.getTranslation("createdby", userSetting.getLocale()) + ": " + user.getName() : translationProvider.getTranslation("createdby", userSetting.getLocale()) + ": -");
+            params.put("title", translationProvider.getTranslation("report", userSetting.getLocale(), translationProvider.getTranslation("title.testdata", userSetting.getLocale())));
+            params.put("total", translationProvider.getTranslation("total.rows", userSetting.getLocale()));
+            params.put("wordCol", translationProvider.getTranslation("tab.testdata.word", userSetting.getLocale()));
+            params.put("typeCol", translationProvider.getTranslation("tab.testdata.testtype", userSetting.getLocale()));
+            params.put("dateCol", translationProvider.getTranslation("tab.testdata.word", userSetting.getLocale()));
+            params.put("descriptionCol", translationProvider.getTranslation("tab.testdata.word", userSetting.getLocale()));
+            params.put("data", data);
+
+            //EXCEL
+//            https://jxls.sourceforge.net/migration-to-v3-0.html
+//            https://jxls.sourceforge.net/each.html
+            byte[] tmpBytes = JxlsPoiTemplateFillerBuilder.newInstance()
+                    .withTemplate(getClass().getResourceAsStream(ExcelReports.REPORT_TEMPLATE))
+                    .withStreaming(JxlsStreaming.STREAMING_ON)
+                    .buildAndFill(params);
+            ByteArrayOutputStream excel = new ByteArrayOutputStream(tmpBytes.length);
+            excel.write(tmpBytes, 0, tmpBytes.length);
+            excel.flush();
+            excel.close();
+
+            return excel;
+        } catch (MyException e) {
+            log.error(e.getMessage());
+            throw e;
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }

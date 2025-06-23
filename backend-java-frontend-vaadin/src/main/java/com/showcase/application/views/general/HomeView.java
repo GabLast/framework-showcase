@@ -6,11 +6,14 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.*;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterListener;
+import com.vaadin.flow.router.HasDynamicTitle;
+import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 
 @Route(value = "vaadin", layout = MainLayout.class)
-@RouteAlias(value = "vaadin", layout = MainLayout.class)
+//@RouteAlias(value = "vaadin", layout = MainLayout.class)
 @PermitAll
 public class HomeView extends VerticalLayout implements HasDynamicTitle, BeforeEnterListener{
 

@@ -1,10 +1,8 @@
 package com.showcase.application.utils;
 
-import com.showcase.application.models.configuration.Document;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.grid.GridSortOrder;
 import com.vaadin.flow.data.provider.SortDirection;
-import com.vaadin.flow.server.StreamResource;
 import io.jsonwebtoken.security.Keys;
 import jakarta.persistence.Id;
 import org.apache.commons.lang3.StringUtils;
@@ -14,16 +12,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 
 import javax.crypto.SecretKey;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Connection;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 public class Utilities {
@@ -127,30 +128,34 @@ public class Utilities {
         return value != null ? df.format(value) : "0.00";
     }
 
-    public static StreamResource getStreamResource(ByteArrayOutputStream baos, String nombre, String extension) {
-        if (baos != null) {
-            return new StreamResource(nombre + System.currentTimeMillis() + extension, () -> new ByteArrayInputStream(baos.toByteArray()));
-        } else {
-            return null;
-        }
+    public static String generateFileName(String name, String extension) {
+        return name + System.currentTimeMillis() + "." + extension;
     }
 
-    public static StreamResource getStreamResource(Document adjunto, String extension) {
-        if (adjunto != null) {
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            try {
-                byteArrayOutputStream.write(adjunto.getFile());
-                byteArrayOutputStream.flush();
-                byteArrayOutputStream.close();
-
-                return new StreamResource(adjunto.getName() + System.currentTimeMillis() + extension, () -> new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            return null;
-        }
-    }
+//    public static StreamResource getStreamResource(ByteArrayOutputStream baos, String nombre, String extension) {
+//        if (baos != null) {
+//            return new StreamResource(nombre + System.currentTimeMillis() + extension, () -> new ByteArrayInputStream(baos.toByteArray()));
+//        } else {
+//            return null;
+//        }
+//    }
+//
+//    public static StreamResource getStreamResource(Document adjunto, String extension) {
+//        if (adjunto != null) {
+//            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//            try {
+//                byteArrayOutputStream.write(adjunto.getFile());
+//                byteArrayOutputStream.flush();
+//                byteArrayOutputStream.close();
+//
+//                return new StreamResource(adjunto.getName() + System.currentTimeMillis() + extension, () -> new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//        } else {
+//            return null;
+//        }
+//    }
 
     public static <T> String getIdName(Class<T> entityType) {
         if (entityType == null) {

@@ -26,7 +26,7 @@ import org.vaadin.crudui.crud.LazyCrudListener;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Date;
-import java.util.List;
+import java.util.HashMap;
 
 @Route(value = "vaadin/reports/testdata", layout = MainLayout.class)
 @RolesAllowed(value = Permit.REPORT_TEST_DATA)
@@ -137,25 +137,14 @@ public class TabReportTestData extends GenericReportTab<TestData> implements Has
         DatePicker start = (DatePicker) filterBox.getFilter("datestart");
         DatePicker end = (DatePicker) filterBox.getFilter("dateend");
 
-//        ByteArrayOutputStream csvOutput =
-//                reportService.generateTestDataReport(
-//                        user, settings, reportService.EXCEL,
-//                        word.getValue(), description.getValue(), type.getValue(), start.getValue(), end.getValue()
-//                );
-//
-        List<ByteArrayOutputStream> list = reportService.generateTestDataReport(
+        HashMap<Integer, ByteArrayOutputStream> map = reportService.generateTestDataReport(
                 user, settings,
                 word.getValue(), description.getValue(), type.getValue(), start.getValue(), end.getValue()
         );
-//
-//        List<ByteArrayOutputStream> list = reportService.generateReportFromTemplate(
-//                user, settings,
-//                word.getValue(), description.getValue(), type.getValue(), start.getValue(), end.getValue()
-//        );
 
-        filterBox.setDownloadFileCsv(list.get(ReportService.EXCEL), UI.getCurrent().getTranslation("title.testdata"));
-//        filterBox.setDownloadFileExcel(list.get(ReportService.EXCEL), UI.getCurrent().getTranslation("title.testdata"));
-        filterBox.setDownloadFilePdf(list.get(ReportService.PDF), UI.getCurrent().getTranslation("title.testdata"));
+        filterBox.setDownloadFileCsv(map.get(ReportService.CSV), UI.getCurrent().getTranslation("title.testdata"));
+        filterBox.setDownloadFileExcel(map.get(ReportService.EXCEL), UI.getCurrent().getTranslation("title.testdata"));
+        filterBox.setDownloadFilePdf(map.get(ReportService.PDF), UI.getCurrent().getTranslation("title.testdata"));
     }
 
     @Override

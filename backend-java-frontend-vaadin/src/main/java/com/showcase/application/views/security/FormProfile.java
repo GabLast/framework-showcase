@@ -7,7 +7,7 @@ import com.showcase.application.models.security.ProfilePermit;
 import com.showcase.application.services.security.PermitService;
 import com.showcase.application.services.security.ProfilePermitService;
 import com.showcase.application.services.security.ProfileService;
-import com.showcase.application.utils.MyException;
+import com.showcase.application.utils.exceptions.MyException;
 import com.showcase.application.views.MainLayout;
 import com.showcase.application.views.generics.BaseForm;
 import com.showcase.application.views.generics.notifications.ErrorNotification;

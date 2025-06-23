@@ -10,9 +10,13 @@ import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
+import com.vaadin.flow.server.streams.DownloadHandler;
 import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
 import jakarta.annotation.security.PermitAll;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 @Route(value = "vaadin/about", layout = MainLayout.class)
 @PermitAll
@@ -32,15 +36,26 @@ public class AboutView extends VerticalLayout implements HasDynamicTitle {
         add(new Paragraph("Gabriel José Marte Lantigua\t"));
         add(new Paragraph(UI.getCurrent().getTranslation("links") + ":"));
         add(new Anchor("https://github.com/GabLast", UI.getCurrent().getTranslation("github")));
-        add(new Anchor("https://www.linkedin.com/in/gabriel-marte-899417276/", "Linkedin"));
+        add(new Anchor("https://www.linkedin.com/in/gabriel-marte-899417276/", "LinkedIn"));
 
-        Anchor cv = new Anchor();
-        cv.setText("Gabriel's CV");
-        cv.getElement().setAttribute("download", "Gabriel-Marte-Curriculum");
-        StreamResource streamResource = new StreamResource(
-                "Gabriel-Marte-Curriculum.pdf",
-                () -> getClass().getResourceAsStream("/other/gabriel-cv.pdf"));
-        cv.setHref(streamResource);
+
+        DownloadHandler downloadHandler = downloadEvent -> {
+            downloadEvent.setFileName("Gabriel's CV.pdf");
+            downloadEvent.setContentType("application/pdf");
+            try (OutputStream out = downloadEvent.getOutputStream();
+                 FileInputStream in = new FileInputStream("/other/gabriel-cv.pdf")) {
+                // Write your data to the output stream
+                out.write(in.readAllBytes());
+            } catch (IOException ignored) {
+            }
+        };
+
+        Anchor cv = new Anchor(downloadHandler, "Gabriel's CV");
+//        cv.setText("Gabriel's CV");
+//        cv.getElement().setAttribute("download", "Gabriel-Marte-Curriculum");
+//        DownloadHandler streamResource = new DownloadHandler(
+//                "Gabriel-Marte-Curriculum.pdf",
+//                () -> getClass().getResourceAsStream("/other/gabriel-cv.pdf"));
         add(cv);
 
         setSizeFull();

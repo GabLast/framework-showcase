@@ -20,7 +20,6 @@ public class BootstrapRedis implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         try {
             redisTestRedisService.bootstrap();
-
             log.info("Redis bootstrap done");
         } catch (Exception e) {
             log.error(e.getMessage());

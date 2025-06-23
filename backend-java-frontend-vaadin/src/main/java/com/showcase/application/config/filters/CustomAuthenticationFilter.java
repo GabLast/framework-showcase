@@ -1,14 +1,14 @@
-package com.showcase.application.config.security;
+package com.showcase.application.config.filters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.showcase.application.models.configuration.UserSetting;
+import com.showcase.application.config.security.CustomAuthentication;
 import com.showcase.application.models.rest.RequestFrame;
 import com.showcase.application.models.security.Token;
 import com.showcase.application.models.security.User;
 import com.showcase.application.services.configuration.UserSettingService;
 import com.showcase.application.services.security.AuthenticationService;
 import com.showcase.application.services.security.CustomUserDetailsService;
-import com.showcase.application.utils.MyException;
+import com.showcase.application.utils.exceptions.MyException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,15 +16,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-@Component
+//@Component
 @RequiredArgsConstructor
 @Slf4j
 public class CustomAuthenticationFilter extends OncePerRequestFilter {
@@ -43,17 +43,17 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
             System.out.println("For Request: " + request.getServletPath() + "\n\n");
 //            System.out.println("Token: " + authToken + "\n\n");
             if (authenticationService.isJWTValid(authToken) == null) {
-                throw new MyException(MyException.CLIENT_ERROR, "Invalid Token");
+                throw new MyException(HttpStatus.UNAUTHORIZED.value(), "Invalid Token");
             }
 
             String payload = authenticationService.getJWTPayload(authToken);
             if (StringUtils.isBlank(payload)) {
-                throw new MyException(MyException.CLIENT_ERROR, "Corrupted Token");
+                throw new MyException(HttpStatus.UNAUTHORIZED.value(), "Corrupted Token");
             }
 
             Token token = authenticationService.findByTokenAndEnabled(payload, true);
             if (token == null) {
-                throw new MyException(MyException.CLIENT_ERROR, "Corrupted Server Token");
+                throw new MyException(HttpStatus.UNAUTHORIZED.value(), "Corrupted Server Token");
             }
 
             CustomAuthentication authentication = new CustomAuthentication(
@@ -65,7 +65,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
             User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             if (user == null) {
-                throw new MyException(MyException.CLIENT_ERROR, "No user found");
+                throw new MyException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "No user found");
             }
 
 //            customUserDetailsService.grantAuthorities(token.getUser()); //could also do this
@@ -81,7 +81,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
         } catch (MyException exception) {
             log.error(exception.getMessage());
 
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setStatus(exception.getCode());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.getWriter().println(new ObjectMapper().writeValueAsString(new RequestFrame(exception.getCode(), exception.getMessage(), true)));
             response.getWriter().flush();

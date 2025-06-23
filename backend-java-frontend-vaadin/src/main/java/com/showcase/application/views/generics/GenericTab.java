@@ -3,7 +3,7 @@ package com.showcase.application.views.generics;
 import com.showcase.application.config.security.MyVaadinSession;
 import com.showcase.application.models.configuration.UserSetting;
 import com.showcase.application.models.security.User;
-import com.showcase.application.utils.MyException;
+import com.showcase.application.utils.exceptions.MyException;
 import com.showcase.application.views.generics.notifications.ErrorNotification;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;

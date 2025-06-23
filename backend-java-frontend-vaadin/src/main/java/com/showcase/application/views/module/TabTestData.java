@@ -3,13 +3,12 @@ package com.showcase.application.views.module;
 import com.showcase.application.config.security.SecurityUtils;
 import com.showcase.application.models.module.TestData;
 import com.showcase.application.models.module.TestType;
-import com.showcase.application.models.redis.RedisTest;
 import com.showcase.application.models.security.Permit;
 import com.showcase.application.services.module.TestDataService;
 import com.showcase.application.services.module.TestTypeService;
 import com.showcase.application.services.redis.RedisTestRedisService;
-import com.showcase.application.utils.MyException;
 import com.showcase.application.utils.Utilities;
+import com.showcase.application.utils.exceptions.MyException;
 import com.showcase.application.views.MainLayout;
 import com.showcase.application.views.broadcaster.module.BroadcasterTestData;
 import com.showcase.application.views.generics.FilterBox;
@@ -355,10 +354,10 @@ public class TabTestData extends GenericTab<TestData> implements HasDynamicTitle
 
     @Override
     protected void configOtherComponents(Div divCustomizeBar) {
-        Optional<RedisTest> redisTest = redisTestRedisService.findById("testdata");
+        Optional<Integer> redisTest = redisTestRedisService.getSimpleDataCountCache();
         Span span;
         span = redisTest.map(
-                        test -> new Span(UI.getCurrent().getTranslation("redis.testdata.count", test.getTestTypeCount())))
+                        test -> new Span(UI.getCurrent().getTranslation("redis.testdata.count", test)))
                 .orElseGet(() -> new Span(UI.getCurrent().getTranslation("redis.testdata.count", UI.getCurrent().getTranslation("empty"))));
 
         divCustomizeBar.add(span);

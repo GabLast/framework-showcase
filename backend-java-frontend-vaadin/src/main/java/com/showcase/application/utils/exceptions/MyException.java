@@ -1,7 +1,8 @@
-package com.showcase.application.utils;
+package com.showcase.application.utils.exceptions;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.http.HttpStatus;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -10,9 +11,9 @@ import java.util.ResourceBundle;
 @EqualsAndHashCode(callSuper = true)
 public class MyException extends RuntimeException {
 
-    public static final Integer CLIENT_ERROR = 400;
-    public static final Integer NO_TOKEN_FOUND = 401;
-    public static final Integer SERVER_ERROR = 500;
+    public static final Integer CLIENT_ERROR = HttpStatus.FORBIDDEN.value();
+    public static final Integer NO_TOKEN_FOUND = HttpStatus.UNAUTHORIZED.value();
+    public static final Integer SERVER_ERROR = HttpStatus.INTERNAL_SERVER_ERROR.value();
 
     private Integer code;
     private String message;

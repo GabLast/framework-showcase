@@ -1,6 +1,7 @@
 package com.showcase.application.config.security;
 
 import com.showcase.application.config.appinfo.AppInfo;
+import com.showcase.application.config.filters.CustomAuthenticationFilter;
 import com.showcase.application.services.configuration.ParameterService;
 import com.showcase.application.services.configuration.UserSettingService;
 import com.showcase.application.services.security.AuthenticationService;
@@ -11,18 +12,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 import java.util.List;
 
@@ -42,18 +40,31 @@ public class SecurityConfig extends VaadinWebSecurity {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.authorizeHttpRequests(
-                        requests -> requests
-                                .requestMatchers(new AntPathRequestMatcher("/line-awesome/**/*.svg")).permitAll()
-                                .requestMatchers(new AntPathRequestMatcher("/images/*")).permitAll()
-//                                .requestMatchers(new AntPathRequestMatcher("/rest/auth/login", HttpPost.METHOD_NAME)).permitAll()
-                                .requestMatchers(new AntPathRequestMatcher("/rest/**")).permitAll()
-//                                .requestMatchers(new AntPathRequestMatcher("/dbconsole/**")).permitAll()
-//                                .anyRequest().authenticated()
+        //old vaadin config
+//        http.authorizeHttpRequests(
+//                        requests -> requests
+//                                .requestMatchers(new AntPathRequestMatcher("/line-awesome/**/*.svg")).permitAll()
+//                                .requestMatchers(new AntPathRequestMatcher("/images/*")).permitAll()
+//                                .requestMatchers(new AntPathRequestMatcher("/rest/**")).permitAll()
+////                                .requestMatchers(new AntPathRequestMatcher("/rest/auth/login", HttpPost.METHOD_NAME)).permitAll()
+////                                .requestMatchers(new AntPathRequestMatcher("/dbconsole/**")).permitAll()
+////                                .anyRequest().authenticated()
+//                )
+////                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .httpBasic(withDefaults());
+////                .addFilterBefore(authenticationJwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+
+        http.authorizeHttpRequests((
+                                authorize) ->
+                                authorize
+                                        .requestMatchers("line-awesome/**").permitAll()
+                                        .requestMatchers("/images/*").permitAll()
+                                        .requestMatchers("/rest/**").permitAll()
+                                        .requestMatchers("/vaadin/login").permitAll()
+                                        .requestMatchers("/vaadin/**").authenticated()
+//                        .requestMatchers(HttpMethod.GET, "/rest/auth/login").permitAll()
                 )
-//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(withDefaults());
-//                .addFilterBefore(authenticationJwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
         //https://github.com/jcgueriaud1/remember-me
         http.rememberMe(
@@ -81,7 +92,8 @@ public class SecurityConfig extends VaadinWebSecurity {
 //                                        .requestMatchers("/rest/**").permitAll()
                 )
                 .httpBasic(withDefaults())
-                .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(httpSecuritySessionManagementConfigurer ->
+                        httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 ////        https://www.geeksforgeeks.org/spring-boot-3-0-jwt-authentication-with-spring-security-using-mysql-database/
                 .addFilterBefore(new CustomAuthenticationFilter(authenticationService, customUserDetailsService, userSettingService), UsernamePasswordAuthenticationFilter.class)
         ;

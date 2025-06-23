@@ -3,7 +3,7 @@ package com.showcase.application.services.security;
 import com.showcase.application.models.security.Permit;
 import com.showcase.application.repositories.security.PermitRepository;
 import com.showcase.application.services.BaseService;
-import com.showcase.application.utils.MyException;
+import com.showcase.application.utils.exceptions.MyException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.JpaRepository;

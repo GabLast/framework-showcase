@@ -3,7 +3,7 @@ package com.showcase.application.services.module;
 import com.showcase.application.models.module.TestType;
 import com.showcase.application.repositories.module.TestTypeRepository;
 import com.showcase.application.services.BaseService;
-import com.showcase.application.utils.MyException;
+import com.showcase.application.utils.exceptions.MyException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -6,7 +6,7 @@ import com.showcase.application.models.module.TestType;
 import com.showcase.application.models.security.Permit;
 import com.showcase.application.services.module.TestDataService;
 import com.showcase.application.services.module.TestTypeService;
-import com.showcase.application.utils.MyException;
+import com.showcase.application.utils.exceptions.MyException;
 import com.showcase.application.views.MainLayout;
 import com.showcase.application.views.generics.BaseForm;
 import com.showcase.application.views.generics.notifications.ErrorNotification;

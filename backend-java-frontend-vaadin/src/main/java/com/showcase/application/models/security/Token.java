@@ -1,7 +1,11 @@
 package com.showcase.application.models.security;
 
 import com.showcase.application.models.Base;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedEntityGraph;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

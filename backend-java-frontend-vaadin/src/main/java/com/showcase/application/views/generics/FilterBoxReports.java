@@ -26,9 +26,11 @@ import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.server.streams.DownloadHandler;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -303,21 +305,49 @@ public class FilterBoxReports extends Accordion {
     public void setDownloadFileCsv(ByteArrayOutputStream byteArrayOutputStream, String fileName) {
 
         btnDownloadCSV.setVisible(true);
-        btnDownloadCSV.getElement().setAttribute("download", fileName + System.currentTimeMillis());
-        btnDownloadCSV.setHref(Utilities.getStreamResource(byteArrayOutputStream, fileName, ".csv"));
+//        btnDownloadCSV.getElement().setAttribute("download", fileName + System.currentTimeMillis());
+        DownloadHandler handler = event -> {
+            event.setFileName(Utilities.generateFileName(fileName, "csv"));
+            event.setContentType("text/csv");
+            try (OutputStream out = event.getOutputStream()) {
+                // Write your data to the output stream
+                out.write(byteArrayOutputStream.toByteArray());
+            }
+        };
+
+        btnDownloadCSV.setHref(handler);
     }
 
     public void setDownloadFileExcel(ByteArrayOutputStream byteArrayOutputStream, String fileName) {
 
         btnDownloadExcel.setVisible(true);
-        btnDownloadExcel.getElement().setAttribute("download", fileName + System.currentTimeMillis());
-        btnDownloadExcel.setHref(Utilities.getStreamResource(byteArrayOutputStream, fileName, ".xlsx"));
+//        btnDownloadExcel.getElement().setAttribute("download", fileName + System.currentTimeMillis());
+//        btnDownloadExcel.setHref(Utilities.getStreamResource(byteArrayOutputStream, fileName, ".xlsx"));
+        DownloadHandler handler = event -> {
+            event.setFileName(Utilities.generateFileName(fileName, "xlsx"));
+            event.setContentType("application/vnd.ms-excel");
+            try (OutputStream out = event.getOutputStream()) {
+                // Write your data to the output stream
+                out.write(byteArrayOutputStream.toByteArray());
+            }
+        };
+        btnDownloadExcel.setHref(handler);
     }
 
     public void setDownloadFilePdf(ByteArrayOutputStream byteArrayOutputStream, String fileName) {
         btnDownloadPDF.setVisible(true);
-        btnDownloadPDF.getElement().setAttribute("download", fileName + System.currentTimeMillis());
-        btnDownloadPDF.setHref(Utilities.getStreamResource(byteArrayOutputStream, fileName, ".pdf"));
+//        btnDownloadPDF.getElement().setAttribute("download", fileName + System.currentTimeMillis());
+//        btnDownloadPDF.setHref(Utilities.getStreamResource(byteArrayOutputStream, fileName, ".pdf"));
+        DownloadHandler handler = event -> {
+            event.setFileName(Utilities.generateFileName(fileName, "pdf"));
+            event.setContentType("application/pdf");
+            try (OutputStream out = event.getOutputStream()) {
+                // Write your data to the output stream
+                out.write(byteArrayOutputStream.toByteArray());
+            }
+        };
+
+        btnDownloadPDF.setHref(handler);
     }
 
     private void refreshData() {

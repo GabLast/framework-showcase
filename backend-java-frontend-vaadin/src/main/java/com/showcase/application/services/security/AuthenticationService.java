@@ -10,8 +10,8 @@ import com.showcase.application.repositories.security.TokenRepository;
 import com.showcase.application.services.configuration.ParameterService;
 import com.showcase.application.services.configuration.UserSettingService;
 import com.showcase.application.utils.GlobalConstants;
-import com.showcase.application.utils.MyException;
 import com.showcase.application.utils.Utilities;
+import com.showcase.application.utils.exceptions.MyException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.Base64;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor

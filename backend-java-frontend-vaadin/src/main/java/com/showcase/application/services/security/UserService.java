@@ -5,15 +5,16 @@ import com.showcase.application.models.security.ProfileUser;
 import com.showcase.application.models.security.User;
 import com.showcase.application.repositories.security.UserRepository;
 import com.showcase.application.services.BaseService;
-import com.showcase.application.utils.MyException;
 import com.showcase.application.utils.OffsetBasedPageRequest;
 import com.showcase.application.utils.TranslationProvider;
+import com.showcase.application.utils.exceptions.MyException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -168,7 +169,7 @@ public class UserService extends BaseService<User, Long> {
         try {
 
             if (user == null) {
-                throw new MyException(MyException.CLIENT_ERROR, "error.null", userSetting.getLocale());
+                throw new MyException(HttpStatus.BAD_REQUEST.value(), "error.null", userSetting.getLocale());
             }
 
             User tmp = get(user.getId()).orElse(user);
