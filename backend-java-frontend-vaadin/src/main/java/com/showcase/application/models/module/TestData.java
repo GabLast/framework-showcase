@@ -7,6 +7,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,6 +29,8 @@ public class TestData extends Base {
 
     @ManyToOne(fetch = FetchType.EAGER)
     private TestType testType;
+    @Transient
+    private Long testTypeId;
 
     @Column(columnDefinition = "longtext")
     private String description;
@@ -39,9 +42,9 @@ public class TestData extends Base {
     }
 
     public TestData(TestDataDto testDataDto) {
+        this.id = testDataDto.getId();
         this.word = testDataDto.getWord();
         this.description = testDataDto.getDescription();
-        this.testType = new TestType(testDataDto.getTestTypeRest());
-        this.word = testDataDto.getWord();
+        this.testTypeId = testDataDto.getTestTypeId();
     }
 }

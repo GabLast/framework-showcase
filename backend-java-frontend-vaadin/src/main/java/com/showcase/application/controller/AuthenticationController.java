@@ -19,7 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,8 +36,8 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
     private final CustomUserDetailsService customUserDetailsService;
 
-//    @RequestMapping(value = "login", method = RequestMethod.POST)
-    @GetMapping("login")
+    @PostMapping(value = "login",
+            produces = "application/json")
     public ResponseEntity<?> login(@RequestBody UserDto userDto) {
         RequestFrame requestFrame = new RequestFrame();
         ReturnUserRest returnData = new ReturnUserRest();
@@ -56,7 +56,7 @@ public class AuthenticationController {
             Token token = authenticationService.findByUserAndEnabled(user, true);
             String jwt = authenticationService.generateJWT(token);
 
-            if(token == null || StringUtils.isBlank(jwt)) {
+            if (token == null || StringUtils.isBlank(jwt)) {
                 throw new MyException(MyException.CLIENT_ERROR, "This user doesnt have API Access");
             }
 

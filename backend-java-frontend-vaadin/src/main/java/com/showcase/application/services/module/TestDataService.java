@@ -7,6 +7,7 @@ import com.showcase.application.repositories.module.TestDataRepository;
 import com.showcase.application.services.BaseService;
 import com.showcase.application.utils.GlobalConstants;
 import com.showcase.application.utils.OffsetBasedPageRequest;
+import com.showcase.application.utils.TranslationProvider;
 import com.showcase.application.utils.exceptions.MyException;
 import com.showcase.application.views.broadcaster.module.BroadcasterTestData;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ import java.util.TimeZone;
 @Slf4j
 public class TestDataService extends BaseService<TestData, Long> {
 
+    private final TranslationProvider translationProvider;
     private final TestDataRepository testDataRepository;
     private final TestTypeService testTypeService;
 
@@ -107,17 +109,15 @@ public class TestDataService extends BaseService<TestData, Long> {
         try {
 
             if (testData == null) {
-                throw new MyException(MyException.CLIENT_ERROR, "error.null", userSetting.getLocale());
+                throw new MyException(MyException.CLIENT_ERROR, translationProvider.getTranslation("error.value.null", userSetting.getLocale()));
             }
 
-            if(testData.getTestType() == null || testData.getTestType().getId() == 0L) {
-                throw new MyException(MyException.CLIENT_ERROR, "error.null", userSetting.getLocale());
+            if (testData.getTestTypeId() != null && testData.getTestTypeId() != 0L) {
+                testData.setTestType(testTypeService.get(testData.getTestTypeId()).orElse(null));
             }
 
-            testData.setTestType(testTypeService.get(testData.getTestType().getId()).orElse(null));
-
-            if(testData.getTestType() == null || testData.getTestType().getId() == 0L) {
-                throw new MyException(MyException.CLIENT_ERROR, "error.null", userSetting.getLocale());
+            if (testData.getTestType() == null || testData.getTestType().getId() == 0L) {
+                throw new MyException(MyException.CLIENT_ERROR, translationProvider.getTranslation("error.value.null", userSetting.getLocale()));
             }
 
             testData = saveAndFlush(testData);

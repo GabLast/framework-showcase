@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -169,7 +168,7 @@ public class UserService extends BaseService<User, Long> {
         try {
 
             if (user == null) {
-                throw new MyException(HttpStatus.BAD_REQUEST.value(), "error.null", userSetting.getLocale());
+                throw new MyException(MyException.CLIENT_ERROR, translationProvider.getTranslation("error.value.null", userSetting.getLocale()));
             }
 
             User tmp = get(user.getId()).orElse(user);
@@ -196,11 +195,11 @@ public class UserService extends BaseService<User, Long> {
             }
 
             if (findByUsername(user.getUsername()) != null && !tmp.getId().equals(user.getId())) {
-                throw new MyException(MyException.CLIENT_ERROR, "error.usernametaken", userSetting.getLocale());
+                throw new MyException(MyException.CLIENT_ERROR, translationProvider.getTranslation("error.usernametaken", userSetting.getLocale()));
             }
 
             if (findByMail(user.getMail()) != null && !tmp.getId().equals(user.getId())) {
-                throw new MyException(MyException.CLIENT_ERROR, "error.mailtaken", userSetting.getLocale());
+                throw new MyException(MyException.CLIENT_ERROR, translationProvider.getTranslation("error.mailtaken", userSetting.getLocale()));
             }
 
             user.setUsername(username);
@@ -226,7 +225,7 @@ public class UserService extends BaseService<User, Long> {
         try {
 
             if (user == null) {
-                throw new MyException(MyException.CLIENT_ERROR, "error.null", userSetting.getLocale());
+                throw new MyException(MyException.CLIENT_ERROR, translationProvider.getTranslation("error.value.null", userSetting.getLocale()));
             }
 
             for (ProfileUser profile : profileUserService.findAllByEnabledAndUser(true, user)) {

@@ -7,6 +7,7 @@ import com.showcase.application.models.security.ProfilePermit;
 import com.showcase.application.repositories.security.ProfileRepository;
 import com.showcase.application.services.BaseService;
 import com.showcase.application.utils.OffsetBasedPageRequest;
+import com.showcase.application.utils.TranslationProvider;
 import com.showcase.application.utils.exceptions.MyException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ import java.util.List;
 @Slf4j
 public class ProfileService extends BaseService<Profile, Long> {
 
+    private final TranslationProvider translationProvider;
     private final ProfileRepository profileRepository;
     private final ProfilePermitService profilePermitService;
 
@@ -78,11 +80,11 @@ public class ProfileService extends BaseService<Profile, Long> {
         try {
 
             if (profile == null) {
-                throw new MyException(MyException.CLIENT_ERROR, "error.null", userSetting.getLocale());
+                throw new MyException(MyException.CLIENT_ERROR, translationProvider.getTranslation("error.value.null", userSetting.getLocale()));
             }
 
             if (list == null || list.isEmpty()) {
-                throw new MyException(MyException.CLIENT_ERROR, "error.empty.details", userSetting.getLocale());
+                throw new MyException(MyException.CLIENT_ERROR, translationProvider.getTranslation("error.value.null", userSetting.getLocale()));
             }
 
             profile = saveAndFlush(profile);
@@ -110,7 +112,7 @@ public class ProfileService extends BaseService<Profile, Long> {
         try {
 
             if (profile == null) {
-                throw new MyException(MyException.CLIENT_ERROR, "error.null", userSetting.getLocale());
+                throw new MyException(MyException.CLIENT_ERROR, translationProvider.getTranslation("error.value.null", userSetting.getLocale()));
             }
 
             for (ProfilePermit profilePermit : profilePermitService.findAllByEnabledAndProfile(true, profile)) {

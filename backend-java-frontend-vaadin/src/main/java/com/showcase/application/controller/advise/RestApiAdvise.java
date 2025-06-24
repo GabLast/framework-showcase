@@ -20,7 +20,7 @@ public class RestApiAdvise {
     protected StandardResponse badRequest(MyException ex, WebRequest request) {
         return StandardResponse.builder()
                 .message(ex.getMessage())
-                .status(HttpStatus.BAD_REQUEST.value())
+                .status(ex.getCode())
                 .path(request.getDescription(false))
                 .build();
     }

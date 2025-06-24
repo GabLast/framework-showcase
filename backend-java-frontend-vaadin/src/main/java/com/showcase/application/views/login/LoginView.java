@@ -3,6 +3,7 @@ package com.showcase.application.views.login;
 import com.showcase.application.config.appinfo.AppInfo;
 import com.showcase.application.config.security.AuthenticatedUser;
 import com.showcase.application.utils.GlobalConstants;
+import com.showcase.application.views.general.HomeView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -71,7 +72,7 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver, HasD
 
         setTitle(vl);
         setDescription(null);
-        addRememberMeCheckbox();
+//        addRememberMeCheckbox();
 
         setForgotPasswordButtonVisible(true);
         addForgotPasswordListener(forgotPasswordEvent -> UI.getCurrent().navigate(RecoverPasswordView.class));
@@ -108,9 +109,9 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver, HasD
         if (authenticatedUser.get().isPresent()) {
             // Already logged in
             setOpened(false);
-            event.forwardTo("");
+//            event.forwardTo("");
+            UI.getCurrent().navigate(HomeView.class);
         }
-
         //Error message
         setError(event.getLocation().getQueryParameters().getParameters().containsKey("error"));
     }

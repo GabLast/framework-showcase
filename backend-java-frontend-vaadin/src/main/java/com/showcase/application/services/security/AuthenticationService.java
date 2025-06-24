@@ -17,6 +17,7 @@ import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -170,10 +171,19 @@ public class AuthenticationService {
                 throw new MyException(MyException.SERVER_ERROR, "Server token is null");
             }
 
+            if (!token.isEnabled()) {
+                throw new MyException(HttpStatus.FORBIDDEN.value(), token.getUser().getUsername() + ": Token is not enabled");
+            }
+
             UserSetting userSetting = userSettingService.findByEnabledAndUser(true, token.getUser());
             if (userSetting == null) {
                 userSetting = new UserSetting();
             }
+
+            //update the token's expiration date if it has expired.
+            //if expiration date (future date) is before today (current date)
+            //it has to be renewed
+            //** only renew the token when required
             if (token.getExpirationDate().toInstant().isBefore(new Date().toInstant().atZone(userSetting.getTimezone().toZoneId()).toInstant())) {
                 token = generateToken(token.getUser());
             }

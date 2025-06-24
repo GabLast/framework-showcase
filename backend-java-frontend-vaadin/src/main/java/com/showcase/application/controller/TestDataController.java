@@ -41,6 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.ByteArrayOutputStream;
 import java.util.List;
+import java.util.Optional;
 
 @RestController()
 @CrossOrigin(maxAge = 1800, origins = "*")
@@ -148,7 +149,21 @@ public class TestDataController {
                 throw new MyException(MyException.CLIENT_ERROR, translationProvider.getTranslation("error.noaccess", userSetting.getLocale()));
             }
 
-            TestData data = testDataService.saveTestData(new TestData(testDataDto), userSetting);
+            TestData data = null;
+
+            Optional<TestData> getValue = testDataService.getTestDataById(testDataDto.getId());
+            if(getValue.isPresent()) {
+                data = getValue.get();
+                data.setWord(testDataDto.getWord());
+                data.setDate(testDataDto.getDate());
+                data.setDescription(testDataDto.getDescription());
+                data.setTestTypeId(testDataDto.getTestTypeId());
+                data.setNumber(testDataDto.getNumber());
+            } else {
+                data = new TestData(testDataDto);
+            }
+
+            data = testDataService.saveTestData(data, userSetting);
 
             returnData.getList().add(new TestDataRest(data));
             returnData.setRequestFrame(requestFrame);

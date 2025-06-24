@@ -40,7 +40,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
         try {
 
             String authToken = request.getHeader("Authorization");
-            System.out.println("For Request: " + request.getServletPath() + "\n\n");
+//            System.out.println("For Request: " + request.getServletPath() + "\n\n");
 //            System.out.println("Token: " + authToken + "\n\n");
             if (authenticationService.isJWTValid(authToken) == null) {
                 throw new MyException(HttpStatus.UNAUTHORIZED.value(), "Invalid Token");
@@ -95,6 +95,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
         boolean filter;
 
         filter = new AntPathMatcher().match("/rest/auth/login", request.getServletPath()) ||
+                new AntPathMatcher().match("/vaadin/login", request.getServletPath()) ||
                 new AntPathMatcher().match("/", request.getServletPath()) ||
                 new AntPathMatcher().match("/vaadin", request.getServletPath()) ||
                 new AntPathMatcher().match("/vaadin/**", request.getServletPath()) ||
@@ -107,6 +108,8 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
                 new AntPathMatcher().match("/icons/*.png", request.getServletPath()) ||
                 new AntPathMatcher().match("/line-awesome/**", request.getServletPath())
         ;
+
+//        System.out.println("For Request: " + request.getServletPath() + "\t | " + filter);
 
         return filter;
     }

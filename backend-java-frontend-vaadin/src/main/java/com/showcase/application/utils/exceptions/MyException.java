@@ -5,13 +5,12 @@ import lombok.EqualsAndHashCode;
 import org.springframework.http.HttpStatus;
 
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class MyException extends RuntimeException {
 
-    public static final Integer CLIENT_ERROR = HttpStatus.FORBIDDEN.value();
+    public static final Integer CLIENT_ERROR = HttpStatus.BAD_REQUEST.value();
     public static final Integer NO_TOKEN_FOUND = HttpStatus.UNAUTHORIZED.value();
     public static final Integer SERVER_ERROR = HttpStatus.INTERNAL_SERVER_ERROR.value();
 
@@ -33,12 +32,5 @@ public class MyException extends RuntimeException {
 
         this.code = code;
         this.message = message;
-    }
-
-    public MyException(Integer code, String key, Locale locale) {
-        super(key);
-
-        this.code = code;
-        this.message = ResourceBundle.getBundle("message", locale).getString(key);;
     }
 }
