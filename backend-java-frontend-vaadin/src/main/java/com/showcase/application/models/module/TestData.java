@@ -46,5 +46,7 @@ public class TestData extends Base {
         this.word = testDataDto.getWord();
         this.description = testDataDto.getDescription();
         this.testTypeId = testDataDto.getTestTypeId();
+        this.date = testDataDto.getDate();
+        this.number = testDataDto.getNumber();
     }
 }

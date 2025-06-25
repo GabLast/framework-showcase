@@ -10,4 +10,9 @@ import lombok.EqualsAndHashCode;
 public class FrameworkApiException extends RuntimeException {
     private Integer status;
     private String message;
+
+    public FrameworkApiException(String message) {
+        super(message);
+        this.message = message;
+    }
 }

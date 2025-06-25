@@ -55,7 +55,8 @@ public class TranslationProvider implements I18NProvider {
             return MessageFormat.format(translation, params);
         } catch (final MissingResourceException e) {
             // Translation not found, return error message instead of null as per API
-            System.out.printf("No translation found for key {%s}%n", key);
+            log.info("No translation found for key {}", key );
+//            System.out.printf("No translation found for key {%s}%n", key);
             return String.format("!{%s}", key);
         } catch (final IllegalArgumentException e) {
             log.error(e.getMessage(), e); // for devs to find where this happened

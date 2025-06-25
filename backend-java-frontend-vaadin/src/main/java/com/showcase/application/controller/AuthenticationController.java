@@ -1,5 +1,6 @@
 package com.showcase.application.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.showcase.application.config.security.CustomAuthentication;
 import com.showcase.application.models.rest.RequestFrame;
 import com.showcase.application.models.rest.dto.UserDto;
@@ -35,6 +36,7 @@ public class AuthenticationController {
     private final UserSettingService userSettingService;
     private final AuthenticationService authenticationService;
     private final CustomUserDetailsService customUserDetailsService;
+    private final ObjectMapper objectMapper;
 
     @PostMapping(value = "login",
             produces = "application/json")

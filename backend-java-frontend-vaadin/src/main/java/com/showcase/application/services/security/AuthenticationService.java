@@ -10,6 +10,7 @@ import com.showcase.application.repositories.security.TokenRepository;
 import com.showcase.application.services.configuration.ParameterService;
 import com.showcase.application.services.configuration.UserSettingService;
 import com.showcase.application.utils.GlobalConstants;
+import com.showcase.application.utils.TranslationProvider;
 import com.showcase.application.utils.Utilities;
 import com.showcase.application.utils.exceptions.MyException;
 import io.jsonwebtoken.Claims;
@@ -26,6 +27,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -40,6 +42,7 @@ public class AuthenticationService {
     private final ParameterService parameterService;
     private final UserSettingService userSettingService;
     private final UserService userService;
+    private final TranslationProvider translationProvider;
 
     @Transactional(readOnly = true)
     public Token findByTokenAndEnabled(String tokenHash, boolean enabled) {
@@ -213,12 +216,14 @@ public class AuthenticationService {
         try {
             User user = userService.findByUsernameOrMail(userDto.getUsername());
 
-//            System.out.println("Compare:");
-//            System.out.println(userDao.getPassword());
-//            System.out.println(user.getPassword());
+            if(Objects.isNull(user)) {
+                throw new MyException(MyException.CLIENT_ERROR,
+                        translationProvider.getTranslation("login.error.message", TranslationProvider.ENGLISH));
+            }
 
             if (!userService.getPasswordEncoder().matches(userDto.getPassword(), user.getPassword())) {
-                throw new MyException(MyException.CLIENT_ERROR, "Invalid credentials");
+                throw new MyException(MyException.CLIENT_ERROR,
+                        translationProvider.getTranslation("login.error. message", TranslationProvider.ENGLISH));
             }
 
             return user;

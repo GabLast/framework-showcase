@@ -14,6 +14,6 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @NoArgsConstructor
 public class ReturnTestType {
-    private List<TestTypeRest> list = new ArrayList<>();
+    private List<TestTypeRest> data = new ArrayList<>();
     private RequestFrame requestFrame = new RequestFrame();
 }

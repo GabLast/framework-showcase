@@ -19,8 +19,18 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class FrameworkShowcaseClient {
 
-    private final String BASE_URL = "localhost:8082";
-    private final String REST_ENDPOINT = "/rest";
+    //Base
+//    public static final String BASE_URL = "localhost:8082";
+    public static final String BASE_URL = "http://" + "127.0.0.1:8082";
+    public static final String REST_ENDPOINT = "/rest";
+    public static final String TEST_DATA_API = "/testdata";
+
+    //Login
+    public static final String ENDPOINT_LOGIN = "/auth/login";
+
+    //Test Data API
+    public static final String ENDPOINT_TEST_DATA_API = TEST_DATA_API; //base url for get/post
+    public static final String ENDPOINT_TEST_DATA_API_FIND_ALL = ENDPOINT_TEST_DATA_API + "/findall";
 
     @Bean(name = BeanConstant.BEAN_FRAMEWORK_SHOWCASE_CLIENT_NAME)
     public WebClient.Builder frameworkShowcaseBuilder() {

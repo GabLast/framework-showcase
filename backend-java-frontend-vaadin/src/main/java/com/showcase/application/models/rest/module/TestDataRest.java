@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Getter
@@ -20,6 +21,7 @@ public class TestDataRest {
         this.date = testData.getDate();
         this.testTypeRest = new TestTypeRest(testData.getTestType());
         this.description = testData.getDescription();
+        this.number = testData.getNumber();
     }
 
     private Long id;
@@ -27,4 +29,5 @@ public class TestDataRest {
     private Date date;
     private TestTypeRest testTypeRest;
     private String description;
+    private BigDecimal number;
 }

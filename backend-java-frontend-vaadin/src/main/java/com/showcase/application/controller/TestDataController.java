@@ -1,6 +1,7 @@
 package com.showcase.application.controller;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.showcase.application.config.security.SecurityUtils;
 import com.showcase.application.models.configuration.UserSetting;
 import com.showcase.application.models.module.TestData;
@@ -55,6 +56,7 @@ public class TestDataController {
     private final TestDataService testDataService;
     private final TestTypeService testTypeService;
     private final ReportService reportService;
+    private final ObjectMapper objectMapper;
 
     //since this api doesnt catch the exception, it returns the
     //error code in the RestApiAdvise for http code UNAUTHORIZED
@@ -66,7 +68,10 @@ public class TestDataController {
         requestFrame.setCode(HttpStatus.OK.value());
         requestFrame.setError(false);
 
-//            System.out.println("Filter:" + filterTestData.toString());
+//        try {
+//            System.out.println("Filter received:" + objectMapper.writeValueAsString(filterTestData));
+//        } catch (JsonProcessingException ignored) {
+//        }
 
         UserSetting userSetting = (UserSetting) SecurityContextHolder.getContext().getAuthentication().getDetails();
 
@@ -90,7 +95,7 @@ public class TestDataController {
         for (TestData it : list) {
             TestDataRest tmp = new TestDataRest(it);
             tmp.getTestTypeRest().setName(translationProvider.getTranslation(tmp.getTestTypeRest().getName(), userSetting.getLocale()));
-            returnData.getList().add(tmp);
+            returnData.getData().add(tmp);
         }
         returnData.setRequestFrame(requestFrame);
 
@@ -120,7 +125,7 @@ public class TestDataController {
                 throw new MyException(HttpStatus.OK.value(), translationProvider.getTranslation("error.notfound", userSetting.getLocale()));
             }
 
-            returnData.getList().add(new TestDataRest(data));
+            returnData.getData().add(new TestDataRest(data));
             returnData.setRequestFrame(requestFrame);
 
             return new ResponseEntity<>(returnData, HttpStatus.OK);
@@ -152,7 +157,7 @@ public class TestDataController {
             TestData data = null;
 
             Optional<TestData> getValue = testDataService.getTestDataById(testDataDto.getId());
-            if(getValue.isPresent()) {
+            if (getValue.isPresent()) {
                 data = getValue.get();
                 data.setWord(testDataDto.getWord());
                 data.setDate(testDataDto.getDate());
@@ -163,9 +168,16 @@ public class TestDataController {
                 data = new TestData(testDataDto);
             }
 
+//            try {
+//                System.out.printf("Received Data1: " +  objectMapper.writeValueAsString(testDataDto));
+//                System.out.printf("Received Data2: " +  objectMapper.writeValueAsString(data));
+//            } catch (JsonProcessingException ignored) {
+//
+//            }
+
             data = testDataService.saveTestData(data, userSetting);
 
-            returnData.getList().add(new TestDataRest(data));
+            returnData.getData().add(new TestDataRest(data));
             returnData.setRequestFrame(requestFrame);
 
             return new ResponseEntity<>(returnData, HttpStatus.OK);
@@ -192,7 +204,7 @@ public class TestDataController {
             List<TestType> list = testTypeService.findAllByEnabled(true);
 
             for (TestType it : list) {
-                returnData.getList().add(new TestTypeRest(it));
+                returnData.getData().add(new TestTypeRest(it));
             }
 
             returnData.setRequestFrame(requestFrame);
