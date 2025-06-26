@@ -14,9 +14,7 @@ import com.vaadin.flow.server.streams.DownloadHandler;
 import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
 import jakarta.annotation.security.PermitAll;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.File;
 
 @Route(value = "vaadin/about", layout = MainLayout.class)
 @PermitAll
@@ -38,24 +36,14 @@ public class AboutView extends VerticalLayout implements HasDynamicTitle {
         add(new Anchor("https://github.com/GabLast", UI.getCurrent().getTranslation("github")));
         add(new Anchor("https://www.linkedin.com/in/gabriel-marte-899417276/", "LinkedIn"));
 
-
-        DownloadHandler downloadHandler = downloadEvent -> {
-            downloadEvent.setFileName("Gabriel's CV.pdf");
-            downloadEvent.setContentType("application/pdf");
-            try (OutputStream out = downloadEvent.getOutputStream();
-                 FileInputStream in = new FileInputStream("/other/gabriel-cv.pdf")) {
-                // Write your data to the output stream
-                out.write(in.readAllBytes());
-            } catch (IOException ignored) {
-            }
-        };
-
-        Anchor cv = new Anchor(downloadHandler, "Gabriel's CV");
-//        cv.setText("Gabriel's CV");
-//        cv.getElement().setAttribute("download", "Gabriel-Marte-Curriculum");
-//        DownloadHandler streamResource = new DownloadHandler(
-//                "Gabriel-Marte-Curriculum.pdf",
-//                () -> getClass().getResourceAsStream("/other/gabriel-cv.pdf"));
+        //new File() sets the current relative path to the project root on the current version
+        //due to this, we have to add the resources folder path to the file path
+        String filename = "gabriel-cv.pdf";
+        String currentRelativePath = "src/main/resources";
+        String pathToFile = currentRelativePath + "/other/" + filename;
+//        System.out.println("PATH: " + pathToFile);
+//        System.out.println("file path: " + new File(pathToFile).getAbsolutePath());
+        Anchor cv = new Anchor(DownloadHandler.forFile(new File(pathToFile)), "Gabriel's CV");
         add(cv);
 
         setSizeFull();

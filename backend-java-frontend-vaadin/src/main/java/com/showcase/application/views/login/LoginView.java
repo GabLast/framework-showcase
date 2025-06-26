@@ -72,7 +72,7 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver, HasD
 
         setTitle(vl);
         setDescription(null);
-//        addRememberMeCheckbox();
+        addRememberMeCheckbox();
 
         setForgotPasswordButtonVisible(true);
         addForgotPasswordListener(forgotPasswordEvent -> UI.getCurrent().navigate(RecoverPasswordView.class));

@@ -1,6 +1,7 @@
 package com.showcase.application.config.security;
 
 import com.showcase.application.config.appinfo.AppInfo;
+import com.showcase.application.services.security.CustomUserDetailsService;
 import com.showcase.application.views.login.LoginView;
 import com.vaadin.flow.spring.security.VaadinWebSecurity;
 import lombok.RequiredArgsConstructor;
@@ -26,15 +27,16 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class VaadinSecurityConfig extends VaadinWebSecurity {
 
     private final AppInfo appInfo;
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
         http.authorizeHttpRequests((
-                                authorize) ->
-                                authorize
-                                        .requestMatchers("line-awesome/**").permitAll()
-                                        .requestMatchers("/images/*").permitAll()
+                        authorize) ->
+                        authorize
+                                .requestMatchers("line-awesome/**").permitAll()
+                                .requestMatchers("/images/*").permitAll()
                 )
                 .cors(c -> c.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
@@ -45,14 +47,16 @@ public class VaadinSecurityConfig extends VaadinWebSecurity {
         ;
 ////        https://www.geeksforgeeks.org/spring-boot-3-0-jwt-authentication-with-spring-security-using-mysql-database/
 
-        //https://github.com/jcgueriaud1/remember-me
-//        http.rememberMe(
-//                httpSecurityRememberMeConfigurer ->
-//                        httpSecurityRememberMeConfigurer
-//                                .key(appInfo.getRememberMeToken())
-//                                .tokenValiditySeconds(86400)
-//                                .userDetailsService(customUserDetailsService)
-//        );
+        // remember-me cookie, always-on (no checkbox in Login UI needed). Valid for 14 days
+        // http.rememberMe().alwaysRemember(true)
+        // https://github.com/jcgueriaud1/remember-me
+        http.rememberMe(
+                httpSecurityRememberMeConfigurer ->
+                        httpSecurityRememberMeConfigurer
+                                .key(appInfo.getRememberMeToken())
+                                .tokenValiditySeconds(86400)
+                                .userDetailsService(customUserDetailsService)
+        );
 
         super.configure(http);
         setLoginView(http, LoginView.class);
