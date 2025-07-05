@@ -32,6 +32,7 @@ import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @Service
 @Slf4j
@@ -49,13 +50,15 @@ public class FrameworkShowcaseService {
         this.objectMapper = objectMapper;
     }
 
-    public LoginResponse login(RequestLogin request) {
+    public LoginResponse login(RequestLogin request) throws ExecutionException, InterruptedException {
 
         LoginResponse response = post(
                 FrameworkShowcaseClient.ENDPOINT_LOGIN,
                 request,
                 LoginResponse.class
-        ).block();
+        )
+                .toFuture().get();
+//                .block();
 
         if (response == null) {
             throw new FrameworkApiException("The client did not receive a response from the Server");
@@ -64,13 +67,15 @@ public class FrameworkShowcaseService {
         return response;
     }
 
-    public TestDataFindAllResponse findAllTestData(RequestTestDataFindAll request) {
+    public TestDataFindAllResponse findAllTestData(RequestTestDataFindAll request) throws ExecutionException, InterruptedException {
 
         TestDataFindAllResponse response = get(
                 FrameworkShowcaseClient.ENDPOINT_TEST_DATA_API_FIND_ALL,
                 request,
                 TestDataFindAllResponse.class
-        ).block();
+        )
+                .toFuture().get();
+//                .block();
 
         if (response == null) {
             throw new FrameworkApiException("The client did not receive a response from the Server");
@@ -79,13 +84,15 @@ public class FrameworkShowcaseService {
         return response;
     }
 
-    public TestDataResponse postTestData(RequestTestData request) {
+    public TestDataResponse postTestData(RequestTestData request) throws ExecutionException, InterruptedException {
 
         TestDataResponse response = post(
                 FrameworkShowcaseClient.ENDPOINT_TEST_DATA_API,
                 request,
                 TestDataResponse.class
-        ).block();
+        )
+                .toFuture().get();
+//                .block();
 
         if (response == null) {
             throw new FrameworkApiException("The client did not receive a response from the Server");
@@ -197,14 +204,14 @@ public class FrameworkShowcaseService {
 
     }
 
-    public TestDataFindAllResponse findAllTestDataRetry(RequestTestDataFindAll request) {
+    public TestDataFindAllResponse findAllTestDataRetry(RequestTestDataFindAll request) throws ExecutionException, InterruptedException {
 
         return getWithRetry(
                 request
         );
     }
 
-    private TestDataFindAllResponse getWithRetry(BaseRequestGet<BaseRequestParams, BaseHeader, String> clientRequest) {
+    private TestDataFindAllResponse getWithRetry(BaseRequestGet<BaseRequestParams, BaseHeader, String> clientRequest) throws ExecutionException, InterruptedException {
 
         WebClient.RequestHeadersUriSpec<?> request = frameworkShowcaseBuilder
                 .build()
@@ -242,7 +249,9 @@ public class FrameworkShowcaseService {
 
         @SuppressWarnings("unchecked")
         RetryResponse<TestDataFindAllResponse> response =
-                (RetryResponse<TestDataFindAllResponse>) retryRequest(responseMono).block();
+                (RetryResponse<TestDataFindAllResponse>) retryRequest(responseMono)
+                        .toFuture().get();
+//                        .block();
 
         if (response == null) {
             throw new FrameworkApiException("The client did not receive a response from the Server");

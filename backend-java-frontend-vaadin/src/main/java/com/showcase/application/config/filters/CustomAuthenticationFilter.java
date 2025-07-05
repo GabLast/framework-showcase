@@ -2,7 +2,7 @@ package com.showcase.application.config.filters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.showcase.application.config.security.CustomAuthentication;
-import com.showcase.application.models.rest.RequestFrame;
+import com.showcase.application.models.rest.ResponseFrame;
 import com.showcase.application.models.security.Token;
 import com.showcase.application.models.security.User;
 import com.showcase.application.services.configuration.UserSettingService;
@@ -83,7 +83,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
             response.setStatus(exception.getCode());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            response.getWriter().println(new ObjectMapper().writeValueAsString(new RequestFrame(exception.getCode(), exception.getMessage(), true)));
+            response.getWriter().println(new ObjectMapper().writeValueAsString(new ResponseFrame(exception.getCode(), exception.getMessage(), true)));
             response.getWriter().flush();
             response.getWriter().close();
         }

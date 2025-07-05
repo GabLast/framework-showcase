@@ -11,7 +11,7 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class RequestFrame {
+public class ResponseFrame {
 
     private Integer code = 0;
     private String message = "";

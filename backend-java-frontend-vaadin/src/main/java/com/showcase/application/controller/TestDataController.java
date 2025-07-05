@@ -6,7 +6,7 @@ import com.showcase.application.config.security.SecurityUtils;
 import com.showcase.application.models.configuration.UserSetting;
 import com.showcase.application.models.module.TestData;
 import com.showcase.application.models.module.TestType;
-import com.showcase.application.models.rest.RequestFrame;
+import com.showcase.application.models.rest.ResponseFrame;
 import com.showcase.application.models.rest.RestRequestGet;
 import com.showcase.application.models.rest.dto.TestDataDto;
 import com.showcase.application.models.rest.module.FilterTestData;
@@ -62,11 +62,11 @@ public class TestDataController {
     //error code in the RestApiAdvise for http code UNAUTHORIZED
     @GetMapping("/findall")
     public ResponseEntity<?> findAllFilter(FilterTestData filterTestData) {
-        RequestFrame requestFrame = new RequestFrame();
+        ResponseFrame responseFrame = new ResponseFrame();
         ReturnTestData returnData = new ReturnTestData();
 
-        requestFrame.setCode(HttpStatus.OK.value());
-        requestFrame.setError(false);
+        responseFrame.setCode(HttpStatus.OK.value());
+        responseFrame.setError(false);
 
 //        try {
 //            System.out.println("Filter received:" + objectMapper.writeValueAsString(filterTestData));
@@ -97,19 +97,19 @@ public class TestDataController {
             tmp.getTestTypeRest().setName(translationProvider.getTranslation(tmp.getTestTypeRest().getName(), userSetting.getLocale()));
             returnData.getData().add(tmp);
         }
-        returnData.setRequestFrame(requestFrame);
+        returnData.setResponseFrame(responseFrame);
 
         return new ResponseEntity<>(returnData, HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<?> get(@RequestBody() RestRequestGet restRequestGet) {
-        RequestFrame requestFrame = new RequestFrame();
+        ResponseFrame responseFrame = new ResponseFrame();
         ReturnTestData returnData = new ReturnTestData();
 
         try {
-            requestFrame.setCode(HttpStatus.OK.value());
-            requestFrame.setError(false);
+            responseFrame.setCode(HttpStatus.OK.value());
+            responseFrame.setError(false);
 
             UserSetting userSetting = (UserSetting) SecurityContextHolder.getContext().getAuthentication().getDetails();
 
@@ -126,14 +126,14 @@ public class TestDataController {
             }
 
             returnData.getData().add(new TestDataRest(data));
-            returnData.setRequestFrame(requestFrame);
+            returnData.setResponseFrame(responseFrame);
 
             return new ResponseEntity<>(returnData, HttpStatus.OK);
         } catch (MyException e) {
-            requestFrame.setCode(e.getCode());
-            requestFrame.setError(true);
-            requestFrame.setMessage(e.getMessage());
-            returnData.setRequestFrame(requestFrame);
+            responseFrame.setCode(e.getCode());
+            responseFrame.setError(true);
+            responseFrame.setMessage(e.getMessage());
+            returnData.setResponseFrame(responseFrame);
 
             return new ResponseEntity<>(returnData, HttpStatus.OK);
         }
@@ -141,12 +141,12 @@ public class TestDataController {
 
     @PostMapping
     public ResponseEntity<?> save(@RequestBody() TestDataDto testDataDto) {
-        RequestFrame requestFrame = new RequestFrame();
+        ResponseFrame responseFrame = new ResponseFrame();
         ReturnTestData returnData = new ReturnTestData();
 
         try {
-            requestFrame.setCode(HttpStatus.OK.value());
-            requestFrame.setError(false);
+            responseFrame.setCode(HttpStatus.OK.value());
+            responseFrame.setError(false);
 
             UserSetting userSetting = (UserSetting) SecurityContextHolder.getContext().getAuthentication().getDetails();
 
@@ -178,14 +178,14 @@ public class TestDataController {
             data = testDataService.saveTestData(data, userSetting);
 
             returnData.getData().add(new TestDataRest(data));
-            returnData.setRequestFrame(requestFrame);
+            returnData.setResponseFrame(responseFrame);
 
             return new ResponseEntity<>(returnData, HttpStatus.OK);
         } catch (MyException e) {
-            requestFrame.setCode(e.getCode());
-            requestFrame.setError(true);
-            requestFrame.setMessage(e.getMessage());
-            returnData.setRequestFrame(requestFrame);
+            responseFrame.setCode(e.getCode());
+            responseFrame.setError(true);
+            responseFrame.setMessage(e.getMessage());
+            returnData.setResponseFrame(responseFrame);
 
             return new ResponseEntity<>(returnData, HttpStatus.OK);
         }
@@ -194,12 +194,12 @@ public class TestDataController {
     @GetMapping("/testtype/findall")
     public ResponseEntity<?> findAllTestType() {
         //can be called as long as the user is authenticated, so it doesnt need any permit
-        RequestFrame requestFrame = new RequestFrame();
+        ResponseFrame responseFrame = new ResponseFrame();
         ReturnTestType returnData = new ReturnTestType();
 
         try {
-            requestFrame.setCode(HttpStatus.OK.value());
-            requestFrame.setError(false);
+            responseFrame.setCode(HttpStatus.OK.value());
+            responseFrame.setError(false);
 
             List<TestType> list = testTypeService.findAllByEnabled(true);
 
@@ -207,14 +207,14 @@ public class TestDataController {
                 returnData.getData().add(new TestTypeRest(it));
             }
 
-            returnData.setRequestFrame(requestFrame);
+            returnData.setResponseFrame(responseFrame);
 
             return new ResponseEntity<>(returnData, HttpStatus.OK);
         } catch (MyException e) {
-            requestFrame.setCode(e.getCode());
-            requestFrame.setError(true);
-            requestFrame.setMessage(e.getMessage());
-            returnData.setRequestFrame(requestFrame);
+            responseFrame.setCode(e.getCode());
+            responseFrame.setError(true);
+            responseFrame.setMessage(e.getMessage());
+            returnData.setResponseFrame(responseFrame);
 
             return new ResponseEntity<>(returnData, HttpStatus.OK);
         }

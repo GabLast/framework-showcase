@@ -1,3 +1,6 @@
 spring:
   application:
     name: simple-rest-client
+
+server:
+  port: ${PORT:8089}

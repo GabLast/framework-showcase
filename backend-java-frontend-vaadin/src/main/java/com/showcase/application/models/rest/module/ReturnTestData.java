@@ -1,7 +1,7 @@
 package com.showcase.application.models.rest.module;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.showcase.application.models.rest.RequestFrame;
+import com.showcase.application.models.rest.ResponseFrame;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,5 +15,5 @@ import java.util.List;
 @NoArgsConstructor
 public class ReturnTestData {
     private List<TestDataRest> data = new ArrayList<>();
-    private RequestFrame requestFrame = new RequestFrame();
+    private ResponseFrame responseFrame = new ResponseFrame();
 }

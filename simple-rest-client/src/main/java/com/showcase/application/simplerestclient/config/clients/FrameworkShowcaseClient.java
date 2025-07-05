@@ -21,7 +21,7 @@ public class FrameworkShowcaseClient {
 
     //Base
 //    public static final String BASE_URL = "localhost:8082";
-    public static final String BASE_URL = "http://" + "127.0.0.1:8082";
+    public static final String BASE_URL = "http://" + "127.0.0.1:8080";
     public static final String REST_ENDPOINT = "/rest";
     public static final String TEST_DATA_API = "/testdata";
 

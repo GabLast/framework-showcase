@@ -2,7 +2,7 @@ package com.showcase.application.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.showcase.application.config.security.CustomAuthentication;
-import com.showcase.application.models.rest.RequestFrame;
+import com.showcase.application.models.rest.ResponseFrame;
 import com.showcase.application.models.rest.dto.UserDto;
 import com.showcase.application.models.rest.security.ReturnUserRest;
 import com.showcase.application.models.rest.security.UserRest;
@@ -41,7 +41,7 @@ public class AuthenticationController {
     @PostMapping(value = "login",
             produces = "application/json")
     public ResponseEntity<?> login(@RequestBody UserDto userDto) {
-        RequestFrame requestFrame = new RequestFrame();
+        ResponseFrame responseFrame = new ResponseFrame();
         ReturnUserRest returnData = new ReturnUserRest();
 
         try {
@@ -52,8 +52,8 @@ public class AuthenticationController {
 
             User user = authenticationService.login(userDto);
 
-            requestFrame.setCode(HttpStatus.OK.value());
-            returnData.setRequestFrame(requestFrame);
+            responseFrame.setCode(HttpStatus.OK.value());
+            returnData.setResponseFrame(responseFrame);
 
             Token token = authenticationService.findByUserAndEnabled(user, true);
             String jwt = authenticationService.generateJWT(token);
@@ -78,10 +78,10 @@ public class AuthenticationController {
 
             return new ResponseEntity<>(returnData, HttpStatus.OK);
         } catch (MyException e) {
-            requestFrame.setCode(HttpStatus.OK.value());
-            requestFrame.setError(true);
-            requestFrame.setMessage(e.getMessage());
-            returnData.setRequestFrame(requestFrame);
+            responseFrame.setCode(HttpStatus.OK.value());
+            responseFrame.setError(true);
+            responseFrame.setMessage(e.getMessage());
+            returnData.setResponseFrame(responseFrame);
 
             return new ResponseEntity<>(returnData, HttpStatus.OK);
         }

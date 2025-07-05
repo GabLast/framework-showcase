@@ -1,7 +1,7 @@
 package com.showcase.application.models.rest.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.showcase.application.models.rest.RequestFrame;
+import com.showcase.application.models.rest.ResponseFrame;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,7 +11,7 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @NoArgsConstructor
 public class ReturnUserRest {
-    private RequestFrame requestFrame;
+    private ResponseFrame responseFrame;
     private UserRest userRest;
     private String jwt;
 }
