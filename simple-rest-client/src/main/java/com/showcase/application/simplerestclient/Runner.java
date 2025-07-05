@@ -1,15 +1,15 @@
 package com.showcase.application.simplerestclient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.showcase.application.simplerestclient.models.dto.request.BaseRequestParams;
-import com.showcase.application.simplerestclient.models.dto.request.authentication.BodyLogin;
-import com.showcase.application.simplerestclient.models.dto.request.authentication.RequestLogin;
-import com.showcase.application.simplerestclient.models.dto.request.testdata.BodyTestData;
-import com.showcase.application.simplerestclient.models.dto.request.testdata.RequestTestData;
-import com.showcase.application.simplerestclient.models.dto.request.testdata.RequestTestDataFindAll;
-import com.showcase.application.simplerestclient.models.dto.response.authentication.LoginResponse;
-import com.showcase.application.simplerestclient.models.dto.response.testdata.TestDataFindAllResponse;
-import com.showcase.application.simplerestclient.models.dto.response.testdata.TestDataResponse;
+import com.showcase.application.simplerestclient.dto.request.BaseRequestParams;
+import com.showcase.application.simplerestclient.dto.request.authentication.BodyLogin;
+import com.showcase.application.simplerestclient.dto.request.authentication.RequestLogin;
+import com.showcase.application.simplerestclient.dto.request.testdata.BodyTestData;
+import com.showcase.application.simplerestclient.dto.request.testdata.RequestTestData;
+import com.showcase.application.simplerestclient.dto.request.testdata.RequestTestDataFindAll;
+import com.showcase.application.simplerestclient.dto.response.authentication.LoginResponse;
+import com.showcase.application.simplerestclient.dto.response.testdata.TestDataFindAllResponse;
+import com.showcase.application.simplerestclient.dto.response.testdata.TestDataResponse;
 import com.showcase.application.simplerestclient.services.FrameworkShowcaseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,8 +1,8 @@
-package com.showcase.application.simplerestclient.models.dto.request.authentication;
+package com.showcase.application.simplerestclient.dto.request.authentication;
 
-import com.showcase.application.simplerestclient.models.dto.request.BaseHeader;
-import com.showcase.application.simplerestclient.models.dto.request.BaseRequest;
-import com.showcase.application.simplerestclient.models.dto.request.BaseRequestBody;
+import com.showcase.application.simplerestclient.dto.request.BaseHeader;
+import com.showcase.application.simplerestclient.dto.request.BaseRequest;
+import com.showcase.application.simplerestclient.dto.request.BaseRequestBody;
 import lombok.Builder;
 
 @Builder

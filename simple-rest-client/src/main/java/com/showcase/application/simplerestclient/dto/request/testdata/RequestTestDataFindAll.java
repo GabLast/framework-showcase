@@ -1,8 +1,8 @@
-package com.showcase.application.simplerestclient.models.dto.request.testdata;
+package com.showcase.application.simplerestclient.dto.request.testdata;
 
-import com.showcase.application.simplerestclient.models.dto.request.BaseHeader;
-import com.showcase.application.simplerestclient.models.dto.request.BaseRequestGet;
-import com.showcase.application.simplerestclient.models.dto.request.BaseRequestParams;
+import com.showcase.application.simplerestclient.dto.request.BaseHeader;
+import com.showcase.application.simplerestclient.dto.request.BaseRequestGet;
+import com.showcase.application.simplerestclient.dto.request.BaseRequestParams;
 import lombok.Builder;
 
 import java.util.Objects;

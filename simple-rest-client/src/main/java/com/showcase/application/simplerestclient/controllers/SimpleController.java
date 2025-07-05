@@ -1,8 +1,8 @@
 package com.showcase.application.simplerestclient.controllers;
 
-import com.showcase.application.simplerestclient.models.dto.request.authentication.BodyLogin;
-import com.showcase.application.simplerestclient.models.dto.request.authentication.RequestLogin;
-import com.showcase.application.simplerestclient.models.dto.response.authentication.LoginResponse;
+import com.showcase.application.simplerestclient.dto.request.authentication.BodyLogin;
+import com.showcase.application.simplerestclient.dto.request.authentication.RequestLogin;
+import com.showcase.application.simplerestclient.dto.response.authentication.LoginResponse;
 import com.showcase.application.simplerestclient.services.FrameworkShowcaseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

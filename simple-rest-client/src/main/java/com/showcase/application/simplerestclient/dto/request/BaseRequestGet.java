@@ -1,6 +1,6 @@
-package com.showcase.application.simplerestclient.models.dto.request;
+package com.showcase.application.simplerestclient.dto.request;
 
-import com.showcase.application.simplerestclient.models.dto.JsonBase;
+import com.showcase.application.simplerestclient.dto.JsonBase;
 
 public interface BaseRequestGet<T, B, V> extends JsonBase {
     public T getParams();

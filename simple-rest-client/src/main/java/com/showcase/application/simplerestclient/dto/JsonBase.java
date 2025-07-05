@@ -1,4 +1,4 @@
-package com.showcase.application.simplerestclient.models.dto;
+package com.showcase.application.simplerestclient.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

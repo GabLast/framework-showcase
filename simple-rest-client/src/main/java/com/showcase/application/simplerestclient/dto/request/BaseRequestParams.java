@@ -1,4 +1,4 @@
-package com.showcase.application.simplerestclient.models.dto.request;
+package com.showcase.application.simplerestclient.dto.request;
 
 import lombok.Builder;
 

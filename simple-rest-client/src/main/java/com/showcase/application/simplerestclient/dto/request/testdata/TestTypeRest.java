@@ -1,6 +1,6 @@
-package com.showcase.application.simplerestclient.models.dto.request.testdata;
+package com.showcase.application.simplerestclient.dto.request.testdata;
 
-import com.showcase.application.simplerestclient.models.dto.JsonBase;
+import com.showcase.application.simplerestclient.dto.JsonBase;
 
 public record TestTypeRest(Long id,
                            Integer code,
