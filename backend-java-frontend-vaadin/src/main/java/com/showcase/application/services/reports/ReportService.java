@@ -52,7 +52,6 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 @Slf4j
 public class ReportService {
