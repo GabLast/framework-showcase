@@ -265,6 +265,25 @@ public class Utilities {
         return Keys.hmacShaKeyFor(Base64.getEncoder().encode(key.getBytes()));
     }
 
+//        public static String validatePhoneNumber(String string, String fieldName) {
+//        if (string.isBlank()) {
+//            throw new RuntimeException(String.format("%s is empty", fieldName));
+ //       }
+   //     if (string.length() >= 25) {
+     //       throw new RuntimeException(String.format("%s is too long", fieldName));
+      //  }
+
+        //String regex = "^([,.+ ()a-zA-Z0-9-]+)$";
+        //Pattern pattern = Pattern.compile(regex);
+        //if(!pattern.matcher(string).matches()) {
+         //   throw new RuntimeException(String.format("%s doesn't match a valid phone number format", fieldName));
+        //}
+
+//        string = CommonUtil.removeInvalidCharactersButSpace(string).trim();
+        //string = CommonUtil.normalizePhoneNumber(string).trim();
+        //return string;
+    //}
+
 //    public static IvParameterSpec generateIv() {
 //        byte[] iv = new byte[16];
 //        new SecureRandom().nextBytes(iv);
